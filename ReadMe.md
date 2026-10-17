@@ -1,5 +1,5 @@
 
-## Project Name: AI-Driven Insurance Agent Persona & Sales Journey Analytics Platform
+**Project Name: AI-Driven Insurance Agent Persona & Sales Journey Analytics Platform**
 
 > Brief: An AI-empowered, human-centred research and analytics Platform designed to bridge complex insurance agent behaviours with enterprise-grade service design maturity models.
 
@@ -7,7 +7,7 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 
-## Background, Challenge & Purpose
+**Background, Challenge & Purpose**
 
 ### The Challenge
 Traditional tools often rely on rigid, fixed target personas. This platform takes a more empirical approach: **it classifies insurance agents by dynamic behavioural patterns** rather than static preconceptions.
