@@ -40,8 +40,8 @@ Built to help enterprises analyse complex agent activity logs and tackle challen
 
 ---
 
-## 📂 Repository Structure & Documentation
-This repository is organized to maintain a clear separation between source code, system design specifications, and data mapping guidelines:
+## Repository Structure & Documentation
+This repository is organised to maintain a clear separation between source code, system design specifications, and data mapping guidelines:
 
 ```text
 ├── index.html                               # Main application entry point
