@@ -6,7 +6,7 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 
-## 🎯 Background, Challenge & Purpose
+## Background, Challenge & Purpose
 
 ### The Challenge
 Traditional tools often rely on rigid, fixed target personas. This platform takes a more empirical approach: **it classifies insurance agents by dynamic behavioural patterns** rather than static preconceptions.
@@ -19,7 +19,7 @@ Built to help enterprises analyse complex agent activity logs and tackle challen
 
 ---
 
-## 🏗️ Core Features & Capabilities
+## Core Features & Capabilities
 *   **Interactive Analytics Dashboard:** Real-time visualisation of survey metrics and behavioural response patterns.
 *   **Data Mapping & Clustering:** Integrates structured metrics with unsupervised clustering logic to uncover hidden persona segments.
 *   **Human-in-the-Loop Frameworks:** Aligned with enterprise AI adoption and multi-phase maturity models.
@@ -27,7 +27,7 @@ Built to help enterprises analyse complex agent activity logs and tackle challen
 
 ---
 
-## 📊 How to Use & Test with Your Own Data
+## How to Use & Test with Your Own Data
 
 1. **Download the Questionnaire Template:** 
    Access the provided standardised Agent Workstyle Questionnaire template within the platform to collect raw respondent feedback.
