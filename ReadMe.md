@@ -45,7 +45,7 @@ This repository is organised to maintain a clear separation between source code,
 
 ```text
 ├── index.html                               # Main application entry point
-├── assets/                                  # Images, icons, and visual branding
+├── assets/                                  # Images and icons
 ├── css/                                     # Stylesheets
 ├── js/                                      # Core application logic and data models
 ├── docs/                                    # Extended documentation & design specs
