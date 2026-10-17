@@ -3,7 +3,7 @@
 > [Brief: An AI-empowered, human-centred research and analytics Platform designed to bridge complex insurance agent behaviours with enterprise-grade service design maturity models.]
 
 [![Live Demo](https://quan-persona.netlify.app/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Live Demo](https://img.shields.io/badge/live-demo-brightgreen)](https://quan-persona.netlify.app) ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 
 ## 🎯 Background, Challenge & Purpose
