@@ -1,23 +1,36 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Insurance Agent Persona & Sales Journey Analytics Platform</title>
     
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
-    
-    <!-- Chart.js & PapaParse -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-    <!-- html2canvas for PNG Export -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Local Offline Libraries (Zero Third-Party Network Requests) -->
+    <script src="chart.min.js"></script>
+    <script src="papaparse.min.js"></script>
+    <script src="html2canvas.min.js"></script>
     <script src="survey_data_2500.js"></script>
+    <script src="survey_data_zh_2500.js"></script>
 
     <style>
+        /* Local Offline Font Faces */
+        @font-face {
+            font-family: 'Outfit';
+            font-style: normal;
+            font-weight: 300 700;
+            font-display: swap;
+            src: url('outfit.woff2') format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+        @font-face {
+            font-family: 'Outfit';
+            font-style: normal;
+            font-weight: 300 700;
+            font-display: swap;
+            src: url('outfit-ext.woff2') format('woff2');
+            unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+        }
+
         :root {
             --bg-gradient: radial-gradient(circle at 50% 50%, #1a1d20 0%, #0d0f11 100%);
             --panel-bg: rgba(33, 37, 41, 0.7);
@@ -48,7 +61,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Noto Sans TC', 'Outfit', sans-serif;
+            font-family: 'Outfit', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang TC", "Microsoft JhengHei", "Noto Sans CJK TC", sans-serif;
             -webkit-font-smoothing: antialiased;
         }
 
@@ -1836,21 +1849,27 @@
         <!-- Header -->
         <header>
             <div class="logo-section">
-                <h1>Agent Persona & Sales Journey Analytics Platform</h1>
-                <p style="max-width: 650px; line-height: 1.5; margin-top: 4px; color: var(--text-secondary);">Upload survey data to dynamically discover agent behaviour clusters, pain points, and system optimisation directions at each sales stage — cluster count and character are data-driven, not predefined</p>
+                <h1 data-i18n="portalTitle">Agent Persona & Sales Journey Analytics Platform</h1>
+                <p data-i18n="portalSubtitle" style="max-width: 650px; line-height: 1.5; margin-top: 4px; color: var(--text-secondary);">Upload survey data to dynamically discover agent behaviour clusters, pain points, and system optimisation directions at each sales stage — cluster count and character are data-driven, not predefined</p>
             </div>
             <div class="header-actions" style="display: flex; gap: 8px; align-items: center; flex-shrink: 0;">
+                <!-- Language Toggle -->
+                <button id="lang-toggle-btn" onclick="toggleLanguage()" title="Switch Language / 切換語言" style="display: inline-flex; align-items: center; gap: 0; padding: 0; border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; background: rgba(255,255,255,0.05); overflow: hidden; cursor: pointer; flex-shrink: 0; font-size: 0.78rem; font-weight: 600; height: 36px;">
+                    <span id="lang-en-label" style="padding: 0 12px; height: 100%; display: flex; align-items: center; transition: background 0.2s, color 0.2s; background: var(--accent-yellow); color: #1a1d20;">EN</span>
+                    <span style="width: 1px; height: 60%; background: rgba(255,255,255,0.2);"></span>
+                    <span id="lang-zh-label" style="padding: 0 12px; height: 100%; display: flex; align-items: center; transition: background 0.2s, color 0.2s; background: transparent; color: var(--text-secondary);">中文</span>
+                </button>
                 <input type="file" id="file-input" accept=".csv" style="display: none;" onchange="handleFileSelect(event)">
-                <button class="btn btn-primary" onclick="document.getElementById('file-input').click()" style="white-space: nowrap; display: inline-flex; align-items: center; gap: 8px;">
+                <button class="btn btn-primary" id="upload-csv-btn" onclick="document.getElementById('file-input').click()" style="white-space: nowrap; display: inline-flex; align-items: center; gap: 8px;">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                    Upload Survey CSV
+                    <span data-i18n="uploadCSV">Upload Survey CSV</span>
                 </button>
                 <button class="btn btn-secondary" onclick="downloadActivePersona()" id="download-btn-header" style="display: none;">
-                    <span id="download-btn-text">Download This Persona's Data</span>
+                    <span id="download-btn-text" data-i18n="downloadPersona">Download This Persona's Data</span>
                 </button>
-                <button class="btn btn-secondary" onclick="window.open('Modular_Questionnaire_Template.pdf', '_blank');" style="white-space: nowrap;">
+                <button class="btn btn-secondary" onclick="openQuestionnaireTemplate()" style="white-space: nowrap;">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                    Modular Questionnaire Template
+                    <span data-i18n="questionnaireTemplate">Modular Questionnaire Template</span>
                 </button>
             </div>
         </header>
@@ -1859,15 +1878,15 @@
         <div class="main-navigator" id="main-nav">
             <button class="nav-tab-btn active" id="btn-sec-personas" onclick="switchMainSection('personas')">
                 <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                Persona Dashboard
+                <span data-i18n="navPersonas">Persona Dashboard</span>
             </button>
             <button class="nav-tab-btn" id="btn-sec-journeys" onclick="switchMainSection('journeys')">
                 <svg viewBox="0 0 24 24"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon><line x1="9" y1="3" x2="9" y2="18"></line><line x1="15" y1="6" x2="15" y2="21"></line></svg>
-                Journey Map
+                <span data-i18n="navJourneys">Journey Map</span>
             </button>
             <button class="nav-tab-btn" id="btn-sec-analytics" onclick="switchMainSection('analytics')">
                 <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-                Analytics & DB
+                <span data-i18n="navAnalytics">Analytics & DB</span>
             </button>
         </div>
 
@@ -1899,7 +1918,7 @@
                 <!-- Tablet Swipe Indicator Hint -->
                 <div class="journey-swipe-hint">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="display:inline-block;"><path d="M18 8L22 12L18 16"></path><path d="M6 8L2 12L6 16"></path><line x1="2" y1="12" x2="22" y2="12"></line></svg>
-                    Swipe horizontally to explore all 6 sales journey stages &amp; emotional curve
+                    <span data-i18n="journeySwipeHint">Swipe horizontally to explore all 6 sales journey stages &amp; emotional curve</span>
                 </div>
                 <!-- Scroll Wrapper for Timeline, Curve, and Footer -->
                 <div class="journey-scroll-container">
@@ -1915,11 +1934,11 @@
 
                         <!-- Emotional SVG Map -->
                         <div class="glass-panel j-graph-panel" style="margin-top: 15px; margin-bottom: 15px;">
-                            <h4>Emotional Journey Curve</h4>
+                            <h4 data-i18n="emotionalCurveTitle">Emotional Journey Curve</h4>
                             <div class="j-graph-y-labels">
-                                <span style="color: var(--accent-green)">High Satisfaction<br><small style="font-size:0.82em; opacity:0.85; font-weight:400;">(4.0 - 5.0)</small></span>
-                                <span style="color: var(--accent-yellow)">Medium Satisfaction<br><small style="font-size:0.82em; opacity:0.85; font-weight:400;">(2.5 - 3.8)</small></span>
-                                <span style="color: var(--accent-red)">Significant Pain Points<br><small style="font-size:0.82em; opacity:0.85; font-weight:400;">(1.0 - 2.4)</small></span>
+                                <span style="color: var(--accent-green)"><span data-i18n="highSat">High Satisfaction</span><br><small style="font-size:0.82em; opacity:0.85; font-weight:400;">(4.0 - 5.0)</small></span>
+                                <span style="color: var(--accent-yellow)"><span data-i18n="medSat">Medium Satisfaction</span><br><small style="font-size:0.82em; opacity:0.85; font-weight:400;">(2.5 - 3.8)</small></span>
+                                <span style="color: var(--accent-red)"><span data-i18n="sigPain">Significant Pain Points</span><br><small style="font-size:0.82em; opacity:0.85; font-weight:400;">(1.0 - 2.4)</small></span>
                             </div>
                             
                             <div class="j-svg-container">
@@ -1951,16 +1970,16 @@
                 <div id="ai-cluster-discovery" class="glass-panel chart-card" style="margin-bottom: 12px; padding: 20px;">
                     <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px; margin-bottom: 14px;">
                         <div style="max-width: 680px;">
-                            <h3 style="margin:0 0 6px 0; border-left: 3px solid var(--accent-primary); padding-left: 8px; font-size: 1rem;">AI Data-Driven Cluster Discovery</h3>
-                            <p style="margin:0; font-size:0.75rem; color: var(--text-secondary); line-height:1.5;">This section uses the K-means algorithm to group similar agents based on multi-dimensional skill and satisfaction ratings from the survey data—without pre-applying tenure groups or predefined qualitative archetype definitions. It helps explore the similarities and differences between data-driven clusters and research-defined personas.</p>
+                            <h3 data-i18n="clusterDiscoveryTitle" style="margin:0 0 6px 0; border-left: 3px solid var(--accent-primary); padding-left: 8px; font-size: 1rem;">AI Data-Driven Cluster Discovery</h3>
+                            <p data-i18n="clusterDiscoveryDesc" style="margin:0; font-size:0.75rem; color: var(--text-secondary); line-height:1.5;">This section uses the K-means algorithm to group similar agents based on multi-dimensional skill and satisfaction ratings from the survey data—without pre-applying tenure groups or predefined qualitative archetype definitions. It helps explore the similarities and differences between data-driven clusters and research-defined personas.</p>
                         </div>
                         <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
                             <label style="font-size:0.78rem; color:var(--text-secondary); display:flex; align-items:center; gap:8px;">
-                                Number of Clusters (K)
+                                <span data-i18n="numClusters">Number of Clusters (K)</span>
                                 <input type="range" id="cluster-k-slider" min="3" max="8" value="5" style="accent-color: var(--accent-primary);" oninput="document.getElementById('cluster-k-value').textContent=this.value">
                                 <span id="cluster-k-value" style="color:var(--accent-primary); font-weight:700; min-width: 14px; display:inline-block;">5</span>
                             </label>
-                            <button class="btn btn-primary" onclick="runClusterDiscovery()">Run AI Clustering</button>
+                            <button class="btn btn-primary" onclick="runClusterDiscovery()" data-i18n="runClustering">Run AI Clustering</button>
                         </div>
                     </div>
                     <div id="cluster-discovery-status" style="font-size:0.78rem; color: var(--text-muted); margin-bottom: 12px;"></div>
@@ -1976,7 +1995,7 @@
                 <!-- Graphs distribution & radar comparison (Now at the bottom of the section) -->
                 <div class="charts-grid" style="margin-bottom: 12px;">
                     <div id="analytics-dist-card" class="glass-panel chart-card" style="display: flex; flex-direction: column; height: 100%;">
-                        <h3 style="margin: 0 0 1rem 0; border-left: 3px solid var(--accent-yellow); padding-left: 8px; font-size: 1rem;">Agent Experience Distribution</h3>
+                        <h3 data-i18n="expDistTitle" style="margin: 0 0 1rem 0; border-left: 3px solid var(--accent-yellow); padding-left: 8px; font-size: 1rem;">Agent Experience Distribution</h3>
                         <div style="display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap; width: 100%; flex-grow: 1;">
                             <div style="height: 220px; width: 220px; position: relative;">
                                 <canvas id="distDoughnutChart"></canvas>
@@ -1985,7 +2004,7 @@
                         </div>
                     </div>
                     <div id="analytics-radar-card" class="glass-panel chart-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
-                        <h3 style="margin: 0 0 1rem 0; border-left: 3px solid var(--accent-yellow); padding-left: 8px; font-size: 1rem;">Impact of Skills on Sales Performance (by Experience)</h3>
+                        <h3 data-i18n="skillsImpactTitle" style="margin: 0 0 1rem 0; border-left: 3px solid var(--accent-yellow); padding-left: 8px; font-size: 1rem;">Impact of Skills on Sales Performance (by Experience)</h3>
                         <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px; width: 100%; flex-grow: 1;">
                             <div class="chart-wrapper" style="height: 360px; flex: 1;">
                                 <canvas id="compRadarChart"></canvas>
@@ -1999,7 +2018,7 @@
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px 30px; margin-bottom: 24px;">
                         <!-- Row 1, Col 1: Daily Work Content (Doughnut Chart + Legend) -->
                         <div class="glass-panel chart-card" style="display: flex; flex-direction: column; height: 100%;">
-                            <h3 style="margin: 0 0 1rem 0; border-left: 3px solid var(--accent-yellow); padding-left: 8px; font-size: 1rem;">Daily Task Allocation (Overall Average)</h3>
+                            <h3 data-i18n="dailyWorkAvgTitle" style="margin: 0 0 1rem 0; border-left: 3px solid var(--accent-yellow); padding-left: 8px; font-size: 1rem;">Daily Task Allocation (Overall Average)</h3>
                             <div style="display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap; width: 100%; flex-grow: 1;">
                                 <div style="height: 180px; width: 180px; position: relative;">
                                     <canvas id="analyticsAllWorkCanvas"></canvas>
@@ -2010,32 +2029,32 @@
 
                         <!-- Row 1, Col 2: Core Contradiction -->
                         <div class="glass-panel chart-card" style="display: flex; flex-direction: column; height: 100%;">
-                            <h3 style="margin: 0 0 1rem 0; border-left: 3px solid var(--accent-yellow); padding-left: 8px; font-size: 1rem;">Core Conflicts (Keyword Analysis)</h3>
+                            <h3 data-i18n="coreConflictsCloudTitle" style="margin: 0 0 1rem 0; border-left: 3px solid var(--accent-yellow); padding-left: 8px; font-size: 1rem;">Core Conflicts (Keyword Analysis)</h3>
                             <div id="analytics-all-barriers-cloud" style="display: flex; flex-wrap: wrap; gap: 6px; padding: 10px; background: rgba(255,255,255,0.02); border-radius: 8px; min-height: 120px; align-content: center; width: 100%; box-sizing: border-box;"></div>
                         </div>
 
                         <!-- Row 2, Col 1: Core Needs -->
                         <div class="glass-panel chart-card" style="display: flex; flex-direction: column;">
-                            <h3 style="margin: 0 0 1rem 0; border-left: 3px solid var(--accent-yellow); padding-left: 8px; font-size: 1rem;">Core Needs (Keyword Analysis)</h3>
+                            <h3 data-i18n="coreNeedsCloudTitle" style="margin: 0 0 1rem 0; border-left: 3px solid var(--accent-yellow); padding-left: 8px; font-size: 1rem;">Core Needs (Keyword Analysis)</h3>
                             <div id="analytics-all-needs-cloud" style="display: flex; flex-wrap: wrap; gap: 6px; padding: 10px; background: rgba(255,255,255,0.02); border-radius: 8px; min-height: 120px; align-content: center; width: 100%; box-sizing: border-box;"></div>
                         </div>
 
                         <!-- Row 2, Col 2: Major Pains -->
                         <div class="glass-panel chart-card" style="display: flex; flex-direction: column;">
-                            <h3 style="margin: 0 0 1rem 0; border-left: 3px solid var(--accent-yellow); padding-left: 8px; font-size: 1rem;">Main Pain Points (Keyword Analysis)</h3>
+                            <h3 data-i18n="mainPainsCloudTitle" style="margin: 0 0 1rem 0; border-left: 3px solid var(--accent-yellow); padding-left: 8px; font-size: 1rem;">Main Pain Points (Keyword Analysis)</h3>
                             <div id="analytics-all-pains-cloud" style="display: flex; flex-wrap: wrap; gap: 6px; padding: 10px; background: rgba(255,255,255,0.02); border-radius: 8px; min-height: 120px; align-content: center; width: 100%; box-sizing: border-box;"></div>
                         </div>
                     </div>
 
                     <!-- Direct Quotes section -->
                     <div>
-                        <h3 style="margin: 0 0 1rem 0; border-left: 3px solid var(--accent-yellow); padding-left: 8px; font-size: 1rem;">Agent Pain Points & Tool Opportunities</h3>
+                        <h3 data-i18n="painPointsToolOppTitle" style="margin: 0 0 1rem 0; border-left: 3px solid var(--accent-yellow); padding-left: 8px; font-size: 1rem;">Agent Pain Points & Tool Opportunities</h3>
                         <div id="quote-category-tabs" style="display: flex; gap: 6px; margin-bottom: 15px; flex-wrap: wrap; width: 100%;">
-                            <button class="quote-category-btn active" onclick="switchQuoteCategory('sales')" style="font-size: 0.78rem; padding: 6px 12px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; white-space: nowrap; flex-shrink: 1; box-sizing: border-box; min-height: 38px; display: inline-flex; align-items: center;">Sales Pitch Communication (<span id="count-q-sales">0</span>)</button>
-                            <button class="quote-category-btn" onclick="switchQuoteCategory('relations')" style="font-size: 0.78rem; padding: 6px 12px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; white-space: nowrap; flex-shrink: 1; box-sizing: border-box; min-height: 38px; display: inline-flex; align-items: center;">Customer Relationship Management (<span id="count-q-relations">0</span>)</button>
-                            <button class="quote-category-btn" onclick="switchQuoteCategory('tools')" style="font-size: 0.78rem; padding: 6px 12px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; white-space: nowrap; flex-shrink: 1; box-sizing: border-box; min-height: 38px; display: inline-flex; align-items: center;">Digital Tool Usage (<span id="count-q-tools">0</span>)</button>
-                            <button class="quote-category-btn" onclick="switchQuoteCategory('knowledge')" style="font-size: 0.78rem; padding: 6px 12px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; white-space: nowrap; flex-shrink: 1; box-sizing: border-box; min-height: 38px; display: inline-flex; align-items: center;">Insurance Knowledge (<span id="count-q-knowledge">0</span>)</button>
-                            <button class="quote-category-btn" onclick="switchQuoteCategory('other')" style="font-size: 0.78rem; padding: 6px 12px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; white-space: nowrap; flex-shrink: 1; box-sizing: border-box; min-height: 38px; display: inline-flex; align-items: center;">Device/System Familiarity (<span id="count-q-other">0</span>)</button>
+                            <button class="quote-category-btn active" onclick="switchQuoteCategory('sales')" style="font-size: 0.78rem; padding: 6px 12px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; white-space: nowrap; flex-shrink: 1; box-sizing: border-box; min-height: 38px; display: inline-flex; align-items: center;"><span data-i18n="catSales">Sales Pitch Communication</span> (<span id="count-q-sales">0</span>)</button>
+                            <button class="quote-category-btn" onclick="switchQuoteCategory('relations')" style="font-size: 0.78rem; padding: 6px 12px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; white-space: nowrap; flex-shrink: 1; box-sizing: border-box; min-height: 38px; display: inline-flex; align-items: center;"><span data-i18n="catRelations">Customer Relationship Management</span> (<span id="count-q-relations">0</span>)</button>
+                            <button class="quote-category-btn" onclick="switchQuoteCategory('tools')" style="font-size: 0.78rem; padding: 6px 12px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; white-space: nowrap; flex-shrink: 1; box-sizing: border-box; min-height: 38px; display: inline-flex; align-items: center;"><span data-i18n="catTools">Digital Tool Usage</span> (<span id="count-q-tools">0</span>)</button>
+                            <button class="quote-category-btn" onclick="switchQuoteCategory('knowledge')" style="font-size: 0.78rem; padding: 6px 12px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; white-space: nowrap; flex-shrink: 1; box-sizing: border-box; min-height: 38px; display: inline-flex; align-items: center;"><span data-i18n="catKnowledge">Insurance Knowledge</span> (<span id="count-q-knowledge">0</span>)</button>
+                            <button class="quote-category-btn" onclick="switchQuoteCategory('other')" style="font-size: 0.78rem; padding: 6px 12px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; white-space: nowrap; flex-shrink: 1; box-sizing: border-box; min-height: 38px; display: inline-flex; align-items: center;"><span data-i18n="catOther">Device/System Familiarity</span> (<span id="count-q-other">0</span>)</button>
                         </div>
                         
                         <!-- Unified parent card container -->
@@ -2045,13 +2064,13 @@
                             <div class="quotes-analysis-grid">
                                 <!-- Left: Word Cloud -->
                                 <div style="display: flex; flex-direction: column; background: rgba(255,255,255,0.01); border-radius: 12px; padding: 20px; border: 1px solid rgba(255,255,255,0.03);">
-                                    <h4 style="margin: 0 0 12px 0; font-size: 0.8rem; color: var(--text-secondary); border-left: 2px solid var(--accent-yellow); padding-left: 6px;">Keyword Analysis Cloud</h4>
+                                    <h4 data-i18n="keywordCloudTitle" style="margin: 0 0 12px 0; font-size: 0.8rem; color: var(--text-secondary); border-left: 2px solid var(--accent-yellow); padding-left: 6px;">Keyword Analysis Cloud</h4>
                                     <div id="quote-category-cloud" style="display: flex; flex-wrap: wrap; gap: 6px; padding: 10px; background: rgba(255,255,255,0.02); border-radius: 8px; min-height: 250px; align-content: center; width: 100%;"></div>
                                 </div>
                                 
                                 <!-- Right: Quotes List Scrollbox -->
                                 <div style="display: flex; flex-direction: column; background: rgba(255,255,255,0.01); border-radius: 12px; padding: 20px; border: 1px solid rgba(255,255,255,0.03);">
-                                    <h4 style="margin: 0 0 12px 0; font-size: 0.8rem; color: var(--text-secondary); border-left: 2px solid var(--accent-yellow); padding-left: 6px;">Agent Pain Points: Verbatim Quotes</h4>
+                                    <h4 data-i18n="verbatimQuotesTitle" style="margin: 0 0 12px 0; font-size: 0.8rem; color: var(--text-secondary); border-left: 2px solid var(--accent-yellow); padding-left: 6px;">Agent Pain Points: Verbatim Quotes</h4>
                                     <div id="quote-category-list" style="max-height: 250px; overflow-y: auto; background: rgba(255,255,255,0.01); border-radius: 8px; border: 1px solid rgba(255,255,255,0.03); padding: 12px; display: flex; flex-direction: column; gap: 10px;">
                                         <!-- Content Injected -->
                                     </div>
@@ -2060,7 +2079,7 @@
                             
                             <!-- Bottom: Opportunities Section -->
                             <div style="display: flex; flex-direction: column; background: rgba(255,255,255,0.01); border-radius: 12px; padding: 20px; border: 1px solid rgba(241, 196, 15, 0.15); width: 100%; box-sizing: border-box;">
-                                <h4 style="margin: 0 0 12px 0; font-size: 0.8rem; color: var(--text-secondary); border-left: 2px solid var(--accent-yellow); padding-left: 6px;">Business & Marketing Tool Opportunities</h4>
+                                <h4 data-i18n="businessOppTitle" style="margin: 0 0 12px 0; font-size: 0.8rem; color: var(--text-secondary); border-left: 2px solid var(--accent-yellow); padding-left: 6px;">Business & Marketing Tool Opportunities</h4>
                                 <div id="quote-category-opportunities" style="font-size: 0.76rem; color: var(--text-muted); line-height: 1.6; padding: 4px 0 0 0;">
                                     <!-- Actionable opportunities injected dynamically -->
                                 </div>
@@ -2084,25 +2103,25 @@
             
             <div class="modal-scores-grid">
                 <div class="modal-score-item">
-                    <h5>System Utility Perception (SUP)</h5>
+                    <h5 data-i18n="sup">System Utility Perception (SUP)</h5>
                     <p id="modal-score-sup">0.0 <small>/ 5.0</small></p>
                 </div>
                 <div class="modal-score-item">
-                    <h5>Workaround Propensity (WP)</h5>
+                    <h5 data-i18n="wp">Workaround Propensity (WP)</h5>
                     <p id="modal-score-wp">0.0 <small>/ 5.0</small></p>
                 </div>
                 <div class="modal-score-item">
-                    <h5>Abandonment Rate (AR)</h5>
+                    <h5 data-i18n="ar">Abandonment Rate (AR)</h5>
                     <p id="modal-score-ar">0.0 <small>/ 5.0</small></p>
                 </div>
                 <div class="modal-score-item">
-                    <h5>Peer Reliance (PR)</h5>
+                    <h5 data-i18n="pr">Peer Reliance (PR)</h5>
                     <p id="modal-score-pr">0.0 <small>/ 5.0</small></p>
                 </div>
             </div>
             
             <div>
-                <h4 style="font-size: 0.85rem; color: #fff; margin-bottom: 6px;">Clustering Classification Basis</h4>
+                <h4 data-i18n="clusteringBasis" style="font-size: 0.85rem; color: #fff; margin-bottom: 6px;">Clustering Classification Basis</h4>
                 <p style="font-size: 0.76rem; color: var(--text-secondary); line-height: 1.5;" id="modal-classification-reason">
                     This agent's survey feature vector is closest to the Explorer centroid, showing a high level of peer reliance in daily operations.
                 </p>
@@ -2111,6 +2130,289 @@
     </div>
 
     <script>
+
+        // ==================== I18N SYSTEM ====================
+        let currentLang = 'en';
+
+        const TRANSLATIONS = {
+            en: {
+                portalTitle: "Agent Persona & Sales Journey Analytics Platform",
+                portalSubtitle: "Upload survey data to dynamically discover agent behaviour clusters, pain points, and system optimisation directions at each sales stage — cluster count and character are data-driven, not predefined",
+                uploadCSV: "Upload Survey CSV",
+                downloadPersona: "Download This Persona's Data",
+                questionnaireTemplate: "Modular Questionnaire Template",
+                navPersonas: "Persona Dashboard",
+                navJourneys: "Journey Map",
+                navAnalytics: "Analytics & DB",
+                journeySwipeHint: "Swipe horizontally to explore all 6 sales journey stages & emotional curve",
+                emotionalCurveTitle: "Emotional Journey Curve",
+                highSat: "High Satisfaction",
+                medSat: "Medium Satisfaction",
+                sigPain: "Significant Pain Points",
+                clusterDiscoveryTitle: "AI Data-Driven Cluster Discovery",
+                clusterDiscoveryDesc: "This section uses the K-means algorithm to group similar agents based on multi-dimensional skill and satisfaction ratings from the survey data—without pre-applying tenure groups or predefined qualitative archetype definitions. It helps explore the similarities and differences between data-driven clusters and research-defined personas.",
+                numClusters: "Number of Clusters (K)",
+                runClustering: "Run AI Clustering",
+                runningClustering: "Running K-means algorithm......",
+                clusterCompleted: "Completed! Ran K-means clustering on {n} records with K={k}. Group tabs on the Persona Dashboard and Journeys page have been successfully updated to show all {k} clusters!",
+                insufficientData: "⚠️ Insufficient data points for stable clustering (Currently {n} records, suggest at least {min} records, or reduce K).",
+                expDistTitle: "Agent Experience Distribution",
+                skillsImpactTitle: "Impact of Skills on Sales Performance (by Experience)",
+                dailyWorkAvgTitle: "Daily Task Allocation (Overall Average)",
+                coreConflictsCloudTitle: "Core Conflicts (Keyword Analysis)",
+                coreNeedsCloudTitle: "Core Needs (Keyword Analysis)",
+                mainPainsCloudTitle: "Main Pain Points (Keyword Analysis)",
+                painPointsToolOppTitle: "Agent Pain Points & Tool Opportunities",
+                catSales: "Sales Pitch Communication",
+                catRelations: "Customer Relationship Management",
+                catTools: "Digital Tool Usage",
+                catKnowledge: "Insurance Knowledge",
+                catOther: "Device/System Familiarity",
+                keywordCloudTitle: "Keyword Analysis Cloud",
+                verbatimQuotesTitle: "Agent Pain Points: Verbatim Quotes",
+                businessOppTitle: "Business & Marketing Tool Opportunities",
+                sup: "System Utility Perception (SUP)",
+                wp: "Workaround Propensity (WP)",
+                ar: "Abandonment Rate (AR)",
+                pr: "Peer Reliance (PR)",
+                clusteringBasis: "Clustering Classification Basis",
+                demographicProfile: "Demographic Profile",
+                sampleSize: "Sample Size: {n} responses",
+                expand: "Expand ▽",
+                collapse: "Collapse △",
+                primaryLocation: "Primary Service Location (%)",
+                respondentPosition: "Respondent Position/Title (#)",
+                ageDist: "Age Range Distribution (%)",
+                clientScale: "Scale of Customers Served (%)",
+                noData: "No Data",
+                titlePrefix: "Title:",
+                enterPersonaName: "Enter persona name...",
+                enterPersonaDesc: "Enter persona description...",
+                save: "Save",
+                saveDesc: "Save Description",
+                age: "Age",
+                experience: "Insurance Experience",
+                clientsServed: "Number of Clients Served",
+                systemFamiliarity: "Agent System/Tool Familiarity:",
+                skillImpact: "Skill Impact on Performance",
+                skillDevice: "Device/System Familiarity",
+                skillKnowledge: "Insurance Knowledge",
+                skillPitch: "Sales Pitch Communication",
+                skillRelations: "Customer Relationship Management",
+                skillTools: "Digital Tool Usage",
+                dailyWork: "Daily Work Content",
+                coreConflicts: "Core Conflicts (Keyword Analysis)",
+                coreNeeds: "Core Needs (Keyword Analysis)",
+                mainPains: "Main Pain Points (Keyword Analysis)",
+                salesJourney: "Sales Journey",
+                physicalDigitalLocation: "Physical/Digital Location",
+                touchpoints: "Touchpoints / Tools / Collaborators",
+                painPoints: "Pain Points",
+                noLocation: "No specific location",
+                noTools: "No tools / systems",
+                dailyToolsTop5: "| Daily Tools (Top 5)",
+                changePhoto: "Change Photo",
+                enterQuote: "Enter quote...",
+                agentMotto: "Agent Motto",
+                coreConflictsSimple: "Core Conflicts",
+                coreNeedsSimple: "Core Needs",
+                executionStyle: "Execution Style:",
+                avgSatisfaction: "Avg Satisfaction",
+                all: "All",
+                cluster: "Cluster",
+                outliersNoise: "Outliers & Noise",
+                unclassified: "Unclassified",
+                unknownTenure: "Unknown Tenure",
+                salesAgent: "Sales Agent",
+                noVerbatims: "No verbatims"
+            },
+            zh: {
+                portalTitle: "保險業務員客群畫像與銷售旅程分析平台",
+                portalSubtitle: "上傳問卷數據以動態探索各銷售階段業務員行為集群、痛點與系統優化方向——分群數量與特徵均由數據驅動，非預先定義",
+                uploadCSV: "上傳問卷 CSV",
+                downloadPersona: "下載此客群畫像數據",
+                questionnaireTemplate: "模組化問卷範本",
+                navPersonas: "客群畫像看板",
+                navJourneys: "銷售旅程圖",
+                navAnalytics: "數據分析與資料庫",
+                journeySwipeHint: "可左右滑動以探索全部 6 大銷售旅程階段與情緒曲線",
+                emotionalCurveTitle: "銷售旅程情緒曲線",
+                highSat: "高度滿意",
+                medSat: "中度滿意",
+                sigPain: "顯著痛點區間",
+                clusterDiscoveryTitle: "AI 數據驅動集群探索 (K-means)",
+                clusterDiscoveryDesc: "本區塊採用 K-means 分群演算法，基於問卷中的多維度技能與各階段滿意度評分，自動將相似的業務員歸類——不預先依年資或既定角色定型。有助於探索客觀數據分群與質性研究客群畫像間的異同。",
+                numClusters: "分群數量 (K)",
+                runClustering: "執行 AI 分群",
+                runningClustering: "正在執行 K-means 分群演算法......",
+                clusterCompleted: "完成！已對 {n} 筆問卷數據執行 K={k} 的 K-means 分群。客群畫像看板與旅程圖之分群標籤已成功更新為 {k} 群！",
+                insufficientData: "⚠️ 數據量不足以進行穩定分群 (目前 {n} 筆，建議至少 {min} 筆以上再執行，或降低 K 值)。",
+                expDistTitle: "業務員年資分佈",
+                skillsImpactTitle: "各年資組別技能對業務績效之影響",
+                dailyWorkAvgTitle: "每日工作任務佔比 (整體平均)",
+                coreConflictsCloudTitle: "核心矛盾與阻礙 (關鍵字分析)",
+                coreNeedsCloudTitle: "核心期望需求 (關鍵字分析)",
+                mainPainsCloudTitle: "主要痛點挑戰 (關鍵字分析)",
+                painPointsToolOppTitle: "業務員痛點分析與工具切入機會",
+                catSales: "話術銷售溝通",
+                catRelations: "客戶關係經營",
+                catTools: "數位工具操作",
+                catKnowledge: "專業保險知識",
+                catOther: "裝置系統熟稔度",
+                keywordCloudTitle: "關鍵字分析文字雲",
+                verbatimQuotesTitle: "業務員痛點原音摘要 (Verbatim Quotes)",
+                businessOppTitle: "商務與行銷工具拓展契機",
+                sup: "系統效用感知 (SUP)",
+                wp: "權宜替代傾向 (WP)",
+                ar: "系統抗拒放棄率 (AR)",
+                pr: "同儕依賴度 (PR)",
+                clusteringBasis: "分群歸類判定依據",
+                demographicProfile: "人口統計特徵",
+                sampleSize: "樣本數：{n} 份問卷",
+                expand: "展開 ▽",
+                collapse: "收合 △",
+                primaryLocation: "主要服務地區 (%)",
+                respondentPosition: "職級分佈 (#)",
+                ageDist: "年齡區間分佈 (%)",
+                clientScale: "服務客戶規模 (%)",
+                noData: "暫無數據",
+                titlePrefix: "職稱：",
+                enterPersonaName: "輸入客群畫像名稱...",
+                enterPersonaDesc: "輸入客群特徵描述...",
+                save: "儲存",
+                saveDesc: "儲存描述",
+                age: "年齡區間",
+                experience: "保險從業年資",
+                clientsServed: "服務客戶人數",
+                systemFamiliarity: "業務員系統工具熟稔度：",
+                skillImpact: "技能對績效之影響程度",
+                skillDevice: "裝置系統操作熟悉度",
+                skillKnowledge: "專業保險產品條款知識",
+                skillPitch: "銷售訪談溝通話術能力",
+                skillRelations: "客戶關係經營維護能力",
+                skillTools: "數位輔助工具應用能力",
+                dailyWork: "每日工作內容佔比",
+                coreConflicts: "核心矛盾與阻礙 (關鍵字分析)",
+                coreNeeds: "核心期望需求 (關鍵字分析)",
+                mainPains: "主要痛點挑戰 (關鍵字分析)",
+                salesJourney: "銷售歷程階段",
+                physicalDigitalLocation: "實體 / 數位場域",
+                touchpoints: "接觸點 / 工具 / 協同對象",
+                painPoints: "遭遇痛點與卡點",
+                noLocation: "無特定場域",
+                noTools: "無特定工具系統",
+                dailyToolsTop5: "| 每日常用工具 (前 5 名)",
+                changePhoto: "更換照片",
+                enterQuote: "輸入代表性語錄...",
+                agentMotto: "業務員心聲與座右銘",
+                coreConflictsSimple: "核心矛盾與阻礙",
+                coreNeedsSimple: "核心期望需求",
+                executionStyle: "執行風格：",
+                avgSatisfaction: "平均滿意度",
+                all: "全部",
+                cluster: "分群",
+                outliersNoise: "離群值與極端樣本",
+                unclassified: "未分群",
+                unknownTenure: "年資不詳",
+                salesAgent: "業務代表",
+                noVerbatims: "暫無原音引言"
+            }
+        };
+
+        const JOURNEY_STAGE_TITLES = {
+            en: [
+                "Scheduling & Client Relations",
+                "Signing/Policy",
+                "Insurance Submission",
+                "Post-Sales Service",
+                "Administrative & Team Support",
+                "Training & Learning"
+            ],
+            zh: [
+                "排程與客戶關係維護",
+                "保單銷售與說明",
+                "核保與送件進案",
+                "售後保全與理賠服務",
+                "行政與團隊支援工作",
+                "專業知識學習與培育"
+            ]
+        };
+
+        function t(key, params = {}) {
+            const dict = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+            let str = dict[key] || (TRANSLATIONS.en[key] || key);
+            for (const [k, v] of Object.entries(params)) {
+                str = str.replace(new RegExp(`\\{${k}\\}`, 'g'), v);
+            }
+            return str;
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'zh' : 'en';
+            try { localStorage.setItem('portal_lang', currentLang); } catch (e) {}
+            applyLanguage(currentLang);
+        }
+
+        function applyLanguage(lang) {
+            currentLang = lang;
+            const enLabel = document.getElementById('lang-en-label');
+            const zhLabel = document.getElementById('lang-zh-label');
+            if (enLabel && zhLabel) {
+                if (currentLang === 'zh') {
+                    zhLabel.style.background = 'var(--accent-yellow)';
+                    zhLabel.style.color = '#1a1d20';
+                    enLabel.style.background = 'transparent';
+                    enLabel.style.color = 'var(--text-secondary)';
+                } else {
+                    enLabel.style.background = 'var(--accent-yellow)';
+                    enLabel.style.color = '#1a1d20';
+                    zhLabel.style.background = 'transparent';
+                    zhLabel.style.color = 'var(--text-secondary)';
+                }
+            }
+            
+            // Update all elements with data-i18n attribute
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (key && TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key]) {
+                    el.innerHTML = TRANSLATIONS[currentLang][key];
+                }
+            });
+
+            // Automatically switch dataset between English and Traditional Chinese (if user has not manually uploaded a custom file)
+            if (!window.userUploadedCustomFile) {
+                if (currentLang === 'zh' && typeof PRE_LOADED_DATA_ZH !== 'undefined' && PRE_LOADED_DATA_ZH.length > 0) {
+                    parsedData = PRE_LOADED_DATA_ZH;
+                    assignDynamicArchetypes(parsedData);
+                    runClusterDiscovery();
+                } else if (currentLang === 'en' && typeof PRE_LOADED_DATA !== 'undefined' && PRE_LOADED_DATA.length > 0) {
+                    parsedData = PRE_LOADED_DATA;
+                    assignDynamicArchetypes(parsedData);
+                    runClusterDiscovery();
+                }
+            }
+
+            // Re-render UI views
+            renderArchetypeTabs();
+            renderSubFilters();
+            renderDemographics();
+            
+            if (activeSection === 'personas') {
+                renderPersonaView();
+            } else if (activeSection === 'journeys') {
+                renderJourneyView();
+            } else if (activeSection === 'analytics') {
+                renderAnalyticsView();
+            }
+        }
+
+        function openQuestionnaireTemplate() {
+            const file = currentLang === 'zh'
+                ? '保險業務員數位工作風格與人物誌問卷.pdf'
+                : 'Modular_Questionnaire_Template.pdf';
+            window.open(encodeURI(file), '_blank');
+        }
+
         // Set Chart.js global text colour to white
         if (typeof Chart !== 'undefined') {
             Chart.defaults.color = '#ffffff';
@@ -2334,7 +2636,7 @@
                 avatar: "👨‍💻",
                 role: "Under 3 yrs experience / Fast Adapter / New Agent Training",
                 photo: "assets/chen_digital.jpg",
-                desc: "Includes new agents with under 1 year and 1-3 years of experience. This group is in the critical period of building a client base and adapting to company systems -- open to new tools, but with low tolerance for operational friction.",
+                desc: '',
                 age: "22-38 yrs",
                 exp: "\u2264 3 yrs",
                 customers: "Under 30",
@@ -2375,7 +2677,7 @@
                 avatar: "👩‍💼",
                 role: "3-10 yrs experience / Steady Growth / Digital Blend",
                 photo: "assets/lin_jin_bu.jpg",
-                desc: "Includes agents with 3-5 years and 5-10 years of experience. This group has already built up a solid client base and blends digital tools with traditional visits, focused on improving efficiency and streamlining workflow.",
+                desc: '',
                 age: "45-60 yrs",
                 exp: "3-10 yrs",
                 customers: "300+",
@@ -2416,7 +2718,7 @@
                 avatar: "🧑‍💻",
                 role: "10-20 yrs experience / Core Professional / Efficiency-Driven",
                 photo: "assets/wang_shou_jiu.jpg",
-                desc: "Includes agents with 10-15 years and 15-20 years of experience. This group forms the branch's core backbone, with deep expertise and a stable client base, and demands high system stability and fast data lookup.",
+                desc: '',
                 age: "25-35 yrs",
                 exp: "10-20 yrs",
                 customers: "100-150",
@@ -2457,7 +2759,7 @@
                 avatar: "👴",
                 role: "20-30 yrs experience / Senior Leader / Trust-Based Legacy",
                 photo: "assets/hao_ren_han.jpg",
-                desc: "Includes agents with 20-25 years and 25-30 years of experience. This group are senior sales leaders who rely heavily on personal trust and word-of-mouth, feel frequent system changes more acutely, and need a stable, predictable way of working.",
+                desc: '',
                 age: "55-65 yrs",
                 exp: "20-30 yrs",
                 customers: "500+",
@@ -2498,7 +2800,7 @@
                 avatar: "🎒",
                 role: "30+ yrs experience / Elite Advisor / Lifetime Legacy",
                 photo: "assets/li_xie_gang.jpg",
-                desc: "Includes elite insurance advisors with 30+ years of experience. Has a deep, broad lifetime client base; daily work centers on high-level relationship maintenance and legacy planning, and prefers an extremely simple, intuitive system entry point or delegated support.",
+                desc: '',
                 age: "25-45 yrs",
                 exp: "30+ yrs",
                 customers: "20-50",
@@ -2539,7 +2841,7 @@
                 avatar: "👥",
                 role: "All Experience Groups / Combined Analysis",
                 photo: "assets/all_agents.jpg",
-                desc: "Shows the average and combined analysis across all 250 survey respondents. Helps decision-makers understand the overall pain points and preference distribution across all agents' digital system usage from a macro view.",
+                desc: '',
                 age: "22-65 yrs",
                 exp: "All experience ranges",
                 customers: "Wide range",
@@ -2586,7 +2888,7 @@
                     name: 'Outliers & Noise',
                     avatar: '🕵️',
                     role: 'Atypical / Isolated Profiles',
-                    desc: 'Respondents whose survey profiles or skill dimensions are statistically sparse or unique compared to the mainstream cohorts. They do not conform to any of the 5 mainstream archetypes.',
+                    desc: '',
                     age: '-', exp: '-', customers: '-',
                     skills: { device: 50, knowledge: 50, salesPitch: 50, customerRelations: 50, digitalTools: 50 },
                     work: [20, 20, 20, 20, 20],
@@ -2631,7 +2933,7 @@
                 photo: assignedPhoto,
                 color: profile.color,
                 role: featureText,
-                desc: `A data-driven group of ${profile.count} respondents, distinguished mainly by: ${featureText}. Generated directly from this run's clustering results -- not a pre-written persona.`,
+                desc: '',
                 age: profile.age || '-', 
                 exp: profile.exp || '-', 
                 customers: profile.customers || '-',
@@ -2650,7 +2952,7 @@
             };
         }
 
-        const TASK_ACTIONS_MAP = [
+        const TASK_ACTIONS_MAP_EN = [
             // Task 1
             [
                 "Client List Development",
@@ -2688,7 +2990,47 @@
             ]
         ];
 
-        const JOURNEY_STAGE_INFO = [
+        const TASK_ACTIONS_MAP_ZH = [
+            // 任務一：排程與客戶關係
+            [
+                "客戶名單整理與開拓",
+                "客戶聯絡與紀錄／客戶保單健檢",
+                "發掘銷售機會與初步接觸"
+            ],
+            // 任務二：保單銷售
+            [
+                "保險需求引導與缺口分析（協助客戶建立保險觀念）",
+                "查詢客戶現有保單狀況與保障檢視"
+            ],
+            // 任務三：核保與送件
+            [
+                "建議書製作、試算與核對",
+                "執行線上要保與送件進案",
+                "處理核保照會、審核照會通知與保單簽收回條"
+            ],
+            // 任務四：保單服務
+            [
+                "客戶資料管理與更新",
+                "查詢客戶保單狀態（如客戶因外界促銷、人生階段變化主動諮詢保障）",
+                "協助理賠申請與保全契約變更"
+            ],
+            // 任務五：分處行政與支援
+            [
+                "查找業務支援與輔銷文件",
+                "查找增員資料／對象評估、測驗與面談",
+                "團隊早會、輔導與績效管理"
+            ],
+            // 任務六：培訓與學習
+            [
+                "參與教育培訓課程",
+                "線上數位學習資源（如 ABC 學院）",
+                "觀摩資深前輩銷售話術與訪談方式"
+            ]
+        ];
+
+        const TASK_ACTIONS_MAP = TASK_ACTIONS_MAP_EN;
+
+        const JOURNEY_STAGE_INFO_EN = [
             {
                 title: "Scheduling & Client Relationships",
                 explorer: { actions: "Uses phone notes and LINE to categorise and track a list, plans daily visits", tools: "Phone notes, LINE, personal calendar" },
@@ -2736,14 +3078,73 @@
             },
             {
                 title: "Training & Learning",
-                explorer: { actions: "Studies compliance courses Online (frequently gets logged out), observes how senior colleagues present", tools: "Nan Shan e-Academy, Online compliance videos, in-person branch classroom" },
-                expert: { actions: "Attends the in-person branch morning meeting, leaves the Online e-Academy muted in the background to rack up hours", tools: "In-person morning meeting, e-Academy web version" },
-                optimizer: { actions: "Downloads policy-term PDFs Online independently, watches videos at 2x speed to finish quickly", tools: "Digital policy-term library, video speed-up software, Nan Shan e-Academy" },
+                explorer: { actions: "Studies compliance courses Online (frequently gets logged out), observes how senior colleagues present", tools: "ABC Academy, Online compliance videos, in-person branch classroom" },
+                expert: { actions: "Attends the in-person branch morning meeting, leaves the Online ABC Academy muted in the background to rack up hours", tools: "In-person morning meeting, ABC Academy web version" },
+                optimizer: { actions: "Downloads policy-term PDFs Online independently, watches videos at 2x speed to finish quickly", tools: "Digital policy-term library, video speed-up software, ABC Academy" },
                 skeptic: { actions: "Only listens to the in-person branch meeting instructor, refuses to use the computer learning system", tools: "In-person meeting sessions, physical training handouts" },
-                parttimer: { actions: "Listens to training audio in the background via Bluetooth earbuds while commuting or exercising", tools: "Mobile e-Academy app, Bluetooth earbuds, Online sessions" },
-                all: { actions: "Completes Online e-Academy learning and in-person morning-meeting training", tools: "Nan Shan e-Academy, in-person morning meetings, video playback" }
+                parttimer: { actions: "Listens to training audio in the background via Bluetooth earbuds while commuting or exercising", tools: "Mobile ABC Academy app, Bluetooth earbuds, Online sessions" },
+                all: { actions: "Completes Online ABC Academy learning and in-person morning-meeting training", tools: "ABC Academy, in-person morning meetings, video playback" }
             }
         ];
+
+        const JOURNEY_STAGE_INFO_ZH = [
+            {
+                title: "排程與客戶關係維護",
+                explorer: { actions: "使用手機備忘錄與 LINE 分類追蹤名單，安排每日拜訪行程", tools: "手機備忘錄、LINE、個人行事曆" },
+                expert: { actions: "使用紙本名單與實體桌曆，致電熟客維繫長期信任關係", tools: "家用電話、實體筆記本、紙本桌曆" },
+                optimizer: { actions: "使用數位 CRM 工具篩選名單，設定自動化問候排程與追蹤", tools: "Notion CRM、Google 表格、排程系統" },
+                skeptic: { actions: "依賴實體名片盒與電話簿，堅持以手寫紙本記錄拜訪時程", tools: "家用電話、實體名片盒、紙本手帳" },
+                parttimer: { actions: "通勤時快速瀏覽手機通訊錄，透過 LINE 簡訊維繫潛在客戶關係", tools: "手機備忘錄、LINE 聊天室、個人通訊錄" },
+                all: { actions: "彙整各年資層級之客戶名單與拜訪時程規劃", tools: "紙本桌曆、LINE、Google 行事曆與數位 CRM" }
+            },
+            {
+                title: "保單銷售與說明",
+                explorer: { actions: "向客戶展示紙本保險摺頁，遇到複雜問題常需回通訊處或請教資深前輩", tools: "手機網頁瀏覽、紙本摺頁、請教資深同事" },
+                expert: { actions: "攜帶整疊商品說明書與費率對照表，當面進行詳細口頭條款解說", tools: "實體商品手冊、大字版講義、桌上型計算機" },
+                optimizer: { actions: "現場開啟 iPad 建議書系統即時試算保費並進行保障缺口規劃", tools: "iPad Pro、建議書試算系統、動態簡報頁面" },
+                skeptic: { actions: "與客戶泡茶敘舊，手持紙本 DM 以原子筆圈劃說明保險條款重點", tools: "實體保險單張、原子筆、手算費率" },
+                parttimer: { actions: "下班搭捷運時用手機開啟保障試算網頁，向客戶展示簡化圖表", tools: "手機瀏覽器、簡易保單對照網頁" },
+                all: { actions: "透過紙本摺頁或平板電腦向客戶展示保費試算與保單條款比較", tools: "紙本摺頁、試算網頁、平板建議書系統" }
+            },
+            {
+                title: "核保與送件進案",
+                explorer: { actions: "線上輸入要保書，需請主管前輩覆核，常因必填欄位防呆阻擋而耗時", tools: "建議書系統、投保通 App、分處櫃檯" },
+                expert: { actions: "引導客戶親筆簽署紙本要保文件，再交由行政助理代為鍵入系統", tools: "紙本要保書、個人鋼筆、行政助理支援" },
+                optimizer: { actions: "線上引導客戶平板簽署，透過 OTP 簡訊或生物辨識即時驗身送件", tools: "線上投保系統、FaceID/指紋驗證、投保通" },
+                skeptic: { actions: "堅持客戶親簽紙本，親自將紙本合約送交分處櫃檯辦理審核", tools: "實體紙本合約、分處服務櫃檯" },
+                parttimer: { actions: "聚會時讓客戶在平板上簽署，或傳送遠距投保簡訊連結完成程序", tools: "遠距電子簽章、投保通簡訊連結" },
+                all: { actions: "填寫紙本要保書或使用線上電子投保系統完成身分驗證與送件", tools: "要保書、線上投保、助理代鍵入" }
+            },
+            {
+                title: "售後保全與理賠服務",
+                explorer: { actions: "查詢客戶保單現況，協辦基本理賠申請與基本契約內容變更", tools: "業務員服務系統、建議書系統、親洽櫃檯諮詢" },
+                expert: { actions: "致電內勤專員，手寫填寫紙本契約變更申請書後遞交送件", tools: "辦公室座機、紙本申請書、內勤行政專員" },
+                optimizer: { actions: "透過服務系統 API 即時查驗客戶保單狀態並線上送出契約變更", tools: "服務系統 App、CRM 管理平台" },
+                skeptic: { actions: "手寫填寫理賠與契約變更單，親送分處並多次致電追蹤辦理進度", tools: "實體申請單據、電話追蹤、臨櫃親自辦理" },
+                parttimer: { actions: "利用通勤零碎時間以行動服務系統 App 快速查看進度通知與更新", tools: "行動服務系統、契約變更查詢介面" },
+                all: { actions: "協助保戶處理理賠申請及各項保單契約內容變更作業", tools: "辦公室電話、服務系統 App、分處臨櫃" }
+            },
+            {
+                title: "行政與團隊支援工作",
+                explorer: { actions: "查閱行銷輔銷與增員相關檔案，參與分處早會活動與例行公務", tools: "輔銷素材庫、AP 系統、分處公用電腦" },
+                expert: { actions: "填寫紙本表單，由助理代為鍵入行政公文與組織增員名冊", tools: "紙本表單、行政助理、實體公文收件盒" },
+                optimizer: { actions: "運用雲端硬碟查閱業務輔銷文宣，使用 AP 系統高速完成紀錄鍵入", tools: "AP 系統、雲端硬碟、內部數位行銷庫" },
+                skeptic: { actions: "參加實體早會並手寫筆記，依賴通訊處實體公佈欄查閱公文公告", tools: "紙本公文、分處實體公佈欄、手寫會議筆記" },
+                parttimer: { actions: "空檔時以手機查看 AP 系統通知，拍照快速上傳增員或業務表單", tools: "行動 AP 系統、拍照上傳功能" },
+                all: { actions: "查閱行銷與增員檔案，並登錄通訊處共用之行政與早會公告", tools: "內部 AP 系統、實體公佈欄、分處行政表單" }
+            },
+            {
+                title: "專業知識學習與培育",
+                explorer: { actions: "線上研讀法遵與商品課程（常遇逾時登出），實體觀摩前輩銷售話術", tools: "ABC 數位學院、線上法遵影音、分處實體教室" },
+                expert: { actions: "參加分處實體早會培訓，將線上數位學院影音靜音背景播放累計時數", tools: "實體早會訓練、數位學院網頁版" },
+                optimizer: { actions: "自主下載商品條款 PDF 研讀，以雙倍速播放教學影片快速完成時數", tools: "數位條款資料庫、倍速播放軟體、ABC 數位學院" },
+                skeptic: { actions: "僅專注聆聽通訊處實體講師面授，排斥使用電腦線上學習系統", tools: "實體早會授課、紙本培訓講義" },
+                parttimer: { actions: "通勤或運動時以藍牙耳機於背景聆聽培訓音訊，充分利用碎片時間", tools: "行動學院 App、藍牙耳機、線上教學單元" },
+                all: { actions: "完成線上數位學院自學課程與通訊處實體早會專業培訓", tools: "ABC 數位學院、實體晨會培訓、線上影音課程" }
+            }
+        ];
+
+        const JOURNEY_STAGE_INFO = JOURNEY_STAGE_INFO_EN;
 
         // Detailed Matrix Data containing 8 dimensions across 5 stages for 5 personas
         const DETAILED_JOURNEY_MATRIX = {
@@ -3113,9 +3514,9 @@
             { key: 'Journey_4_Rating',           label: 'Task 4 Satisfaction' },
             { key: 'Journey_5_Rating',           label: 'Task 5 Satisfaction' },
             { key: 'Journey_6_Rating',           label: 'Task 6 Satisfaction' },
-            { key: '_wp100',                     label: 'Wellbeing (WP)' },
-            { key: '_ar100',                     label: 'Adoption (AR)' },
-            { key: '_pr100',                     label: 'Productivity (PR)' }
+            { key: '_wp100',                     label: 'Workaround Propensity (WP)' },
+            { key: '_ar100',                     label: 'Abandonment Rate (AR)' },
+            { key: '_pr100',                     label: 'Peer Reliance (PR)' }
         ];
 
         const ARCHETYPE_LABELS = { explorer: 'Explorer', expert: 'Expert', optimizer: 'Optimizer', skeptic: 'Skeptic', parttimer: 'Part-timer' };
@@ -3304,24 +3705,17 @@
             return best;
         }
 
-        // ==================== PHASE 1: DYNAMIC (DATA-DRIVEN) PRIMARY CLASSIFICATION ====================
-        // Replaces classifyRespondent() -- which sorted agents by hardcoded tenure ranges
-        // (classifyByExperience) or role-label keywords (classifyByLabels) -- as the function
-        // that decides an agent's archetype. classifyRespondent/classifyByExperience/
-        // classifyByLabels above are no longer called anywhere; they're left defined, unused,
-        // in case anything downstream still references them, but assignDynamicArchetypes()
-        // below is now the only path that sets agent.archetype.
+        // ==================== DYNAMIC (DATA-DRIVEN) CLUSTERING SYSTEM ====================
+        // Clusters agents dynamically via unsupervised K-means over standardized 14-dimensional
+        // feature vectors (skills + stage satisfaction + SUP/WP/AR/PR). An initial DBSCAN stage
+        // isolates statistical outliers into a dedicated noise cohort.
         //
-        // The existing 5-tab UI (explorer/expert/optimizer/skeptic/parttimer) is intentionally
-        // left in place for this phase, so agents are still bucketed into exactly 5 slots --
-        // but WHICH agents land in which slot is now decided by real K-means clustering on
-        // their SUP/WP/AR/PR (+ skill) vectors, not by tenure or role labels. A full UI rework
-        // to a data-driven, variable cluster count is a separate follow-up phase.
+        // The cluster count K is fully user-adjustable (K=2..8) via the AI Clustering slider.
+        // Dynamic cluster tabs (C1..CK) update responsively with auto-extracted distinguishing
+        // features, mode demographics, and radar profiles.
         //
-        // This function also runs a silhouette-optimized AUTO-K search (K=2..8) purely as a
-        // diagnostic preview of how many groups the data actually supports -- logged to the
-        // console and stored on window.__autoDiscoveredClusters -- so a future phase can
-        // replace the fixed 5-tab UI without redoing this classification work.
+        // In addition, autoDiscoverK() runs a silhouette-score evaluation across K=2..8 to
+        // diagnose the mathematically optimal cluster count, stored in window.__autoDiscoveredClusters.
 
         function silhouetteScoreLocal(data, assignments) {
             const n = data.length;
@@ -3364,18 +3758,18 @@
         // it used to represent.
         const ARCHETYPE_SLOT_ORDER = ['explorer', 'expert', 'optimizer', 'skeptic', 'parttimer'];
 
-        function runDBSCAN(weightedPoints, eps, minPts) {
-            const n = weightedPoints.length;
-            const dims = weightedPoints[0].length;
+        function runDBSCAN(points, eps, minPts) {
+            const n = points.length;
+            const dims = points[0].length;
             const labels = new Int32Array(n).fill(-2); // -2: unvisited, -1: noise
             let clusterId = 0;
             const inQueue = new Uint8Array(n);
 
             function getNeighbors(i) {
                 const neighbors = [];
-                const ptA = weightedPoints[i];
+                const ptA = points[i];
                 for (let j = 0; j < n; j++) {
-                    const ptB = weightedPoints[j];
+                    const ptB = points[j];
                     let sum = 0;
                     for (let d = 0; d < dims; d++) {
                         const diff = ptA[d] - ptB[d];
@@ -3446,12 +3840,8 @@
 
             const vectors = list.map(extractClusterVector);
             const { standardized, means, stds } = standardizeMatrix(vectors);
-            
-            // Apply custom feature weights AFTER standardization to ensure differentiation
-            const weights = [2.0, 2.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0];
-            const weighted = standardized.map(row => row.map((v, j) => v * weights[j]));
 
-            // DBSCAN Outlier Pre-filtering on unweighted standardized coordinates to prevent scaling anomalies
+            // DBSCAN Outlier Pre-filtering on standardized coordinates to isolate sparse noise
             const eps = 3.0;
             const minPts = Math.max(5, Math.floor(list.length * 0.008)); // ~0.8% of the data size
             const dbscanLabels = runDBSCAN(standardized, eps, minPts);
@@ -3484,6 +3874,15 @@
                 labels = new Array(inliers.length).fill(0);
                 centroids = [new Array(vectors[0].length).fill(0)];
             } else {
+                // Wire in autoDiscoverK: compute and store silhouette-optimal K diagnostic
+                if (inlierStandardized.length >= 6) {
+                    const autoK = autoDiscoverK(inlierStandardized, 2, 8);
+                    window.__autoDiscoveredClusters = autoK;
+                    if (autoK) {
+                        console.info(`[Dynamic Classification] Silhouette-optimal K=${autoK.k} (score: ${autoK.score.toFixed(3)})`);
+                    }
+                }
+
                 const result = kmeansBestOf(inlierStandardized, k, 25);
                 labels = result.assignments;
                 centroids = result.centroids;
@@ -3604,15 +4003,6 @@
 
             // 3. Build clusters from profiles for the Analytics discovery view
             const rawMatrix = parsedData.map(extractClusterVector);
-            const { standardized, stds } = standardizeMatrix(rawMatrix);
-            
-            // Apply the same weights to standardized matrix so centroids align
-            const weights = [2.0, 2.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0];
-            for (let i = 0; i < standardized.length; i++) {
-                for (let j = 0; j < standardized[i].length; j++) {
-                    standardized[i][j] *= weights[j];
-                }
-            }
 
             const clusters = profiles.map((p, idx) => {
                 const members = parsedData.filter(m => m.archetype === p.key);
@@ -3918,11 +4308,11 @@
                     <div onclick="toggleDemographicsCollapse()" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; user-select:none;">
                         <h3 style="margin:0; font-size:0.85rem; font-weight:600; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
                             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--colour-${activePersona});"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                            Demographic Profile
+                            ${t('demographicProfile')}
                         </h3>
                         <div style="display:flex; align-items:center; gap:10px;">
-                            <span style="font-size:0.68rem; color:var(--text-muted);">Sample Size: ${total}  responses</span>
-                            <span id="demographics-toggle-icon" style="font-size:0.68rem; font-weight:bold; color:var(--colour-${activePersona}); padding:2px 8px; background:rgba(255,255,255,0.04); border-radius:4px; transition: all 0.2s;">${demographicsCollapsed ? 'Expand ▽' : 'Collapse △'}</span>
+                            <span style="font-size:0.68rem; color:var(--text-muted);">${t('sampleSize', {n: total})}</span>
+                            <span id="demographics-toggle-icon" style="font-size:0.68rem; font-weight:bold; color:var(--colour-${activePersona}); padding:2px 8px; background:rgba(255,255,255,0.04); border-radius:4px; transition: all 0.2s;">${demographicsCollapsed ? t('expand') : t('collapse')}</span>
                         </div>
                     </div>
                 `;
@@ -3931,9 +4321,9 @@
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:6px;">
                         <h3 style="margin:0; font-size:0.85rem; font-weight:600; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
                             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--colour-${activePersona});"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                            Demographic Profile
+                            ${t('demographicProfile')}
                         </h3>
-                        <span style="font-size:0.68rem; color:var(--text-muted);">Sample Size: ${total}  responses</span>
+                        <span style="font-size:0.68rem; color:var(--text-muted);">${t('sampleSize', {n: total})}</span>
                     </div>
                 `;
             }
@@ -3943,25 +4333,25 @@
                 <div id="demographics-collapse-content" style="display: ${(isPersonaView && demographicsCollapsed) ? 'none' : 'grid'}; grid-template-columns: repeat(4, 1fr); gap:12px; width:100%; margin-top: ${isPersonaView ? '12px' : '0'}; border-top: ${isPersonaView ? '1px solid rgba(255,255,255,0.08)' : 'none'}; padding-top: ${isPersonaView ? '12px' : '0'};">
                     <!-- 1. Location -->
                     <div style="padding:8px; border-radius:6px; background:rgba(255,255,255,0.01); border:1px solid rgba(255,255,255,0.03);">
-                        <h4 style="margin:0 0 8px 0; font-size:0.7rem; color:var(--text-primary); font-weight:500;">Primary Service Location (%)</h4>
+                        <h4 style="margin:0 0 8px 0; font-size:0.7rem; color:var(--text-primary); font-weight:500;">${t('primaryLocation')}</h4>
                         <div>${locHTML}</div>
                     </div>
                     
                     <!-- 2. Position -->
                     <div style="padding:8px; border-radius:6px; background:rgba(255,255,255,0.01); border:1px solid rgba(255,255,255,0.03);">
-                        <h4 style="margin:0 0 8px 0; font-size:0.7rem; color:var(--text-primary); font-weight:500;">Respondent Position/Title (#)</h4>
+                        <h4 style="margin:0 0 8px 0; font-size:0.7rem; color:var(--text-primary); font-weight:500;">${t('respondentPosition')}</h4>
                         <div style="display:flex; flex-direction:column; gap:4px;">${positionHTML}</div>
                     </div>
                     
                     <!-- 3. Age Distribution -->
                     <div style="padding:8px; border-radius:6px; background:rgba(255,255,255,0.01); border:1px solid rgba(255,255,255,0.03);">
-                        <h4 style="margin:0 0 8px 0; font-size:0.7rem; color:var(--text-primary); font-weight:500;">Age Range Distribution (%)</h4>
+                        <h4 style="margin:0 0 8px 0; font-size:0.7rem; color:var(--text-primary); font-weight:500;">${t('ageDist')}</h4>
                         <div>${ageHTML}</div>
                     </div>
                     
                     <!-- 4. Client Scale -->
                     <div style="padding:8px; border-radius:6px; background:rgba(255,255,255,0.01); border:1px solid rgba(255,255,255,0.03);">
-                        <h4 style="margin:0 0 8px 0; font-size:0.7rem; color:var(--text-primary); font-weight:500;">Scale of Customers Served (%)</h4>
+                        <h4 style="margin:0 0 8px 0; font-size:0.7rem; color:var(--text-primary); font-weight:500;">${t('clientScale')}</h4>
                         <div>${clientHTML}</div>
                     </div>
                 </div>
@@ -4009,7 +4399,7 @@
                     exp: "1-3 yrs",
                     clients: "Under 30",
                     badges: "New Agent,Well-Trained,Idealistic,Proactive Builder,Curious,Insurance Newcomer",
-                    desc: "A new Nan Shan Life agent, either fresh out of university or a mid-career switcher, actively building a client base. Curious about the new environment but wary of hassle -- willing to use digital tools, but high system friction causes them to give up or work around it.",
+                    desc: '',
                     journey: [
                         { title: "Finding Leads", actions: ["Goes through phone contacts", "Sorts friends in the notes app", "Picks out an interested-sounding list"], context: ["Phone notes", "LINE chat", "Contacts"], pains: ["List data is messy", "Slow to find info"], rating: 3 },
                         { title: "Contacting Clients", actions: ["Makes a LINE voice call", "Sends a friendly card", "Sets up a weekend meeting"], context: ["LINE call", "Personal calendar app", "Friend group"], pains: ["Read but no reply", "Scheduling conflicts"], rating: 4 },
@@ -4038,7 +4428,7 @@
                     exp: "5-10 yrs",
                     clients: "300+",
                     badges: "Senior High-Performer,Trust First,Relationship Maintenance,Locally Rooted,Paper-Based,Seasoned Star",
-                    desc: "A seasoned agent with years in the industry and an extremely large, stable client base. Used to working in person -- digital operations are a high-friction, low-incentive obstacle for her, and she relies heavily on an assistant or in-person counter service.",
+                    desc: '',
                     journey: [
                         { title: "Maintaining Long-Time Clients", actions: ["Flips open her loose-leaf card book", "Hand-writes greeting cards", "Calls to visit on the landline"], context: ["Loose-leaf card book", "Home landline", "Physical cards"], pains: ["List is bulky", "No one answers the phone"], rating: 4 },
                         { title: "Scheduling a Meeting", actions: ["Notes the time on a paper desk calendar", "Calls to confirm a time", "Arranges to meet at the client's home"], context: ["Paper desk calendar", "Handwritten notes", "Personal phone book"], pains: ["No real-time sync", "Forgets the notebook"], rating: 4 },
@@ -4068,7 +4458,7 @@
                     exp: "10-15 yrs",
                     clients: "80-150",
                     badges: "Tech Enthusiast,Efficiency First,Paperless Advocate,Automation First,Digital Pioneer",
-                    desc: "An insurance agent with strong tech literacy and an efficiency mindset. Skilled at using external tools for time management and client tagging, most sensitive to the official system's limitations and disconnectedness, actively seeking process automation and seamless integration.",
+                    desc: '',
                     journey: [
                         { title: "Building the Lead List", actions: ["Records leads in Notion CRM", "Auto-tags client attributes", "Filters the list via API"], context: ["Notion CRM", "iPad Pro", "custom automation"], pains: ["Too many official restrictions", "No API integration"], rating: 4 },
                         { title: "Scheduling", actions: ["Sends a Calendly booking link", "Auto-syncs to Google Calendar", "Confirms the two-way schedule"], context: ["Calendly", "Google Calendar", "personal calendar"], pains: ["Manually copying between two calendars", "Overly complex security verification"], rating: 3 },
@@ -4097,7 +4487,7 @@
                     exp: "20-25 yrs",
                     clients: "150+",
                     badges: "Change-Resistant,Traditional Methods,Highly Cautious,Paper-Based Signing,Compliance First",
-                    desc: "An older-generation agent deeply skeptical of digital tools. Places extreme importance on data privacy and the legal weight of a physical contract, believes in-person communication and a physical stamp are irreplaceable, and strongly resists the push toward paperless processes.",
+                    desc: '',
                     journey: [
                         { title: "Keeping the List Private", actions: ["Hand-writes entries in a notebook", "Puts it back in the branch drawer", "Cross-checks the paper list"], context: ["Handwritten notebook", "Paper card book", "Safe"], pains: ["Risk of losing the card book", "Handwriting is physically tiring"], rating: 4 },
                         { title: "Arranging a Call", actions: ["Calls to arrange a meeting", "Notes the time in his notebook", "Prepares a product flyer"], context: ["Home landline", "Paper notebook", "Product flyer"], pains: ["Can't find the notebook", "No SMS notification"], rating: 4 },
@@ -4126,7 +4516,7 @@
                     exp: "30+ yrs",
                     clients: "Under 20",
                     badges: "Slash Career,Mobile Office,Time-Compressed,Flexible Hours,Juggling Two Jobs",
-                    desc: "A part-time partner running an insurance practice in the fragments of time outside their day job. Highly reliant on the phone for mobile work, most concerned with smooth, efficient operation and remote-work timing. System fragmentation and frequent timeout logouts are a major obstacle for them.",
+                    desc: '',
                     journey: [
                         { title: "Fragmented Client Notes", actions: ["Jots notes on the phone on the subway", "Tags things in LINE chat", "Temporarily saves to cloud storage"], context: ["Phone notes", "LINE chat", "Subway commute"], pains: ["Frequent forced logout", "Mobile page breaks layout"], rating: 3 },
                         { title: "Lunch-Break Scheduling", actions: ["Sends a booking time link", "Confirms it avoids a day-job meeting", "One-click auto-reply"], context: ["Personal calendar app", "Phone contacts", "Office break room"], pains: ["Not enough time", "Forgets to reply"], rating: 4 },
@@ -4576,7 +4966,7 @@
             const tasks = [];
             const stopWords = new Set(['the', 'a', 'an', 'and', 'or', 'but', 'for', 'to', 'in', 'on', 'at', 'by', 'with', 'from', 'of', 'is', 'are', 'was', 'were', 'be', 'been', 'being']);
             
-            const taskTitles = [
+            const taskTitles = (typeof JOURNEY_STAGE_TITLES !== 'undefined' && JOURNEY_STAGE_TITLES[currentLang]) ? JOURNEY_STAGE_TITLES[currentLang] : [
                 "Scheduling & Client Relations",
                 "Signing/Policy",
                 "Insurance Submission",
@@ -4660,10 +5050,11 @@
                 else if (avgRating >= 1.5) emoji = "🙁"; // 2 = 🙁
                 else emoji = "😩"; // 1 = 😩
                 
+                const actionsMap = (currentLang === 'zh' && typeof TASK_ACTIONS_MAP_ZH !== 'undefined') ? TASK_ACTIONS_MAP_ZH : (typeof TASK_ACTIONS_MAP_EN !== 'undefined' ? TASK_ACTIONS_MAP_EN : TASK_ACTIONS_MAP);
                 tasks.push({
                     taskNumber: idx,
                     title: titleMode,
-                    actions: TASK_ACTIONS_MAP[idx - 1] || [],
+                    actions: (actionsMap && actionsMap[idx - 1]) ? actionsMap[idx - 1] : (TASK_ACTIONS_MAP[idx - 1] || []),
                     contexts: topLocs, // mapped to locations
                     tools: topTools, // mapped to tools
                     pains: topPains,
@@ -4675,7 +5066,7 @@
         }
 
         // Process file upload// Task code mapping
-        const TASK_CODE_MAPPING = {
+        const TASK_CODE_MAPPING_EN = {
             'a': 'Scheduling & Visiting',
             'b': 'Prospecting / Development',
             'c': 'Signing Policies',
@@ -4687,6 +5078,21 @@
             'i': 'Recruiting',
             'j': 'Other'
         };
+
+        const TASK_CODE_MAPPING_ZH = {
+            'a': '排程與拜訪',
+            'b': '開拓與客源開發',
+            'c': '保單要保與簽署',
+            'd': '售後保全服務',
+            'e': '專業知識提升',
+            'f': '行政庶務處理',
+            'g': '系統操作與優化',
+            'h': '團隊早會活動',
+            'i': '增員與輔導',
+            'j': '其他工作'
+        };
+
+        const TASK_CODE_MAPPING = TASK_CODE_MAPPING_EN;
 
         function parseImpactValue(val) {
             if (val === undefined || val === null) return 50;
@@ -4762,83 +5168,140 @@
             return count > 0 ? (sum / count) : 3.0;
         }
 
+        // Workaround Propensity (WP): Aggregated indexing of multi-select counts in Q13 (reasons for personal tools),
+        // Q14 (personal apps and paper calendar), and Q23 (workarounds used).
+        // Delimiter /[;；,，]+/ avoids splitting multi-word English terms.
         function parseWP(row) {
-            let q13Val = row.Q13_ReasonsPersonalTools || row.Q13 || "";
+            const q13Val = row.Q13_personal_tool_reasons || row['Q13_使用個人工具的原因'] || row.Q13_ReasonsPersonalTools || row.Q13 || "";
             let q13Count = 0;
             if (q13Val) {
-                const items = String(q13Val).split(/[;；,, ]+/).map(x => x.trim()).filter(Boolean);
+                const items = String(q13Val).split(/[;；,，]+/).map(x => x.trim()).filter(Boolean);
                 items.forEach(item => {
-                    if (!item.includes("rarely use personal tools") && !item.includes("我很少使用個persontool")) {
+                    const lower = item.toLowerCase();
+                    if (!lower.includes("rarely use") && !lower.includes("很少使用") && !lower.includes("很少")) {
                         q13Count++;
                     }
                 });
             }
-            let q14Val = row.Q14_CalendarMethod || row.Q14 || "";
+
+            const q14Val = row.Q14_scheduling_methods || row['Q14_行程規劃方式'] || row.Q14_CalendarMethod || row.Q14 || "";
             let q14Count = 0;
             if (q14Val) {
-                const items = String(q14Val).toLowerCase();
-                if (items.includes("personal apps") || items.includes("個person軟體") || items.includes("app")) q14Count++;
-                if (items.includes("paper calendar") || items.includes("紙本Calendar") || items.includes("筆記本")) q14Count++;
+                const lower = String(q14Val).toLowerCase();
+                if (lower.includes("personal app") || lower.includes("app") || lower.includes("notion") || lower.includes("個人軟體") || lower.includes("手機備忘錄") || lower.includes("行事曆 app")) q14Count++;
+                if (lower.includes("paper") || lower.includes("calendar") || lower.includes("notebook") || lower.includes("紙本") || lower.includes("桌曆") || lower.includes("筆記本")) q14Count++;
             }
-            let q23Val = row.Q23_PersonalTools || row.Q23 || "";
+
+            const q23Val = row.Q23_personal_tools_used || row['Q23_常用個人工具／替代做法'] || row.Q23_PersonalTools || row.Q23 || "";
             let q23Count = 0;
             if (q23Val) {
-                const items = String(q23Val).split(/[;；,, ]+/).map(x => x.trim()).filter(Boolean);
+                const items = String(q23Val).split(/[;；,，]+/).map(x => x.trim()).filter(Boolean);
                 q23Count = items.length;
             }
+
             const totalCount = q13Count + q14Count + q23Count;
             return Math.min(5.0, 1.0 + totalCount * 0.5);
         }
 
+        // Abandonment Rate (AR): Evaluated via keyword/semantic tracking of system dropouts, process aborts,
+        // and manual fallbacks across all 6 journey tasks.
+        // Documented Dropout Keywords:
+        // - English: "by hand", "converting pdf", "re-entering", "re-enter", "twice", "rejected",
+        //            "re-upload", "re-uploading", "password reset", "chasing a colleague", "logging back in",
+        //            "system error", "give up", "abandon", "manual"
+        // - Chinese: "手動", "手寫", "重複輸入", "重填", "退件", "重新上傳", "重設密碼", "密碼",
+        //            "重新登入", "強制登出", "被登出", "系統錯誤", "錯誤", "放棄"
         function parseAR(row) {
-            let painCount = 0;
-            const tasks = [1, 2, 3, 4, 5, 6];
-            const subactions = ['A', 'B', 'C'];
-            tasks.forEach(t => {
-                subactions.forEach(sa => {
-                    const field = `Task${t}_${sa}_PainPoint`;
-                    const val = row[field];
-                    if (val) {
-                        const lower = String(val).toLowerCase();
-                        if (lower !== "" && !lower.includes("no significant pain point") && !lower.includes("無特別Pain Points") && !lower.includes("無特別")) {
-                            painCount++;
+            const stepTaskNames = ["Scheduling", "PolicySales", "Underwriting", "PolicyServicing", "BranchAdmin", "Training"];
+            const dropoutKeywords = [
+                "by hand", "converting pdf", "re-entering", "re-enter", "twice",
+                "rejected", "re-upload", "re-uploading", "password reset", "chasing a colleague",
+                "logging back in", "system error", "give up", "giving up", "abandon", "manual",
+                "手動", "手寫", "重複輸入", "重填", "退件", "重新上傳",
+                "重設密碼", "密碼", "重新登入", "強制登出", "被登出",
+                "系統錯誤", "錯誤", "放棄"
+            ];
+
+            let dropoutTasks = 0;
+            for (let step = 1; step <= 6; step++) {
+                const tName = stepTaskNames[step - 1];
+                let val = row[`Task${step}_${tName}_pain_point`] ||
+                          row[`Task${step}_${tName}_痛點`] ||
+                          row[`Task${step}_pain_point`] ||
+                          row[`Task${step}_pain`] ||
+                          row[`Task${step}_A_PainPoint`];
+
+                if (!val) {
+                    for (const k in row) {
+                        const kLower = k.toLowerCase();
+                        if (kLower.includes(`task${step}`) && (kLower.includes('pain') || k.includes('痛點'))) {
+                            val = row[k];
+                            break;
                         }
                     }
-                });
-            });
-            return Math.min(5.0, 1.0 + painCount * 0.5);
+                }
+
+                if (val) {
+                    const lower = String(val).toLowerCase();
+                    if (dropoutKeywords.some(kw => lower.includes(kw))) {
+                        dropoutTasks++;
+                    }
+                }
+            }
+            // Linear scaling across 6 tasks to [1.0 - 5.0] range, rounded to 1 decimal place
+            return Math.round((1.0 + (dropoutTasks / 6.0) * 4.0) * 10) / 10;
         }
 
+        // Peer Reliance (PR): Detects reliance on colleagues, assistants, or mentors across all 6 journey tasks
+        // and personal tools (Q23).
         function parsePR(row) {
+            const stepTaskNames = ["Scheduling", "PolicySales", "Underwriting", "PolicyServicing", "BranchAdmin", "Training"];
+            const peerKeywords = [
+                "senior colleague", "資深同事", "administrative assistant", "行政助理",
+                "peer support", "同仁協助", "同儕支援", "同事", "主管", "前輩"
+            ];
+
             let peerCount = 0;
-            const tasks = [1, 2, 3, 4, 5, 6];
-            const subactions = ['A', 'B', 'C'];
-            tasks.forEach(t => {
-                subactions.forEach(sa => {
-                    const field = `Task${t}_${sa}_ToolsPeople`;
-                    const val = row[field];
-                    if (val) {
-                        const lower = String(val).toLowerCase();
-                        if (lower.includes("senior colleague") || lower.includes("資深同事") ||
-                            lower.includes("administrative assistant") || lower.includes("行政助理") ||
-                            lower.includes("peer support") || lower.includes("同仁協助")) {
-                            peerCount++;
+            for (let step = 1; step <= 6; step++) {
+                const tName = stepTaskNames[step - 1];
+                let val = row[`Task${step}_${tName}_tools_or_people`] ||
+                          row[`Task${step}_${tName}_協助工具或人員`] ||
+                          row[`Task${step}_tools_or_people`] ||
+                          row[`Task${step}_tools`] ||
+                          row[`Task${step}_A_ToolsPeople`];
+
+                if (!val) {
+                    for (const k in row) {
+                        const kLower = k.toLowerCase();
+                        if (kLower.includes(`task${step}`) && (kLower.includes('tool') || kLower.includes('people') || k.includes('協助') || k.includes('人員'))) {
+                            val = row[k];
+                            break;
                         }
                     }
-                });
-            });
-            let q23Val = row.Q23_PersonalTools || row.Q23 || "";
+                }
+
+                if (val) {
+                    const lower = String(val).toLowerCase();
+                    if (peerKeywords.some(kw => lower.includes(kw))) {
+                        peerCount++;
+                    }
+                }
+            }
+
+            const q23Val = row.Q23_personal_tools_used || row['Q23_常用個人工具／替代做法'] || row.Q23_PersonalTools || row.Q23 || "";
             if (q23Val) {
                 const lower = String(q23Val).toLowerCase();
-                if (lower.includes("administrative assistant") || lower.includes("行政助理")) {
+                if (peerKeywords.some(kw => lower.includes(kw))) {
                     peerCount++;
                 }
             }
+
             return Math.min(5.0, 1.0 + peerCount * 0.5);
         }
 
         // Process file upload
         function processCSV(file) {
+            window.userUploadedCustomFile = true;
             Papa.parse(file, {
                 header: true,
                 dynamicTyping: true,
@@ -4855,7 +5318,7 @@
                         }
 
                         // Extract Agent Name (handle aliases)
-                        const agentName = row.AgentName || row['受訪者編號'] || row.Name || row.RespondentID || row.respondent_id || row.Respondent_ID || row.respondentId;
+                        const agentName = row.AgentName || row['受訪者編號'] || row.Name || row.RespondentID || row.respondent_id || row.respondent_id_受訪者編號 || row.Respondent_ID || row.respondentId;
                         if (!agentName) return;
 
                         // Check if this is the old database format with QM/BF scales
@@ -4891,7 +5354,7 @@
                             pr = parsePR(row);
                         }
 
-                        const rawArchetype = row.persona_archetype || row.researchArchetype || row.ResearchArchetype || null;
+                        const rawArchetype = row.persona_archetype || row.persona_archetype_人物誌類型 || row.researchArchetype || row.ResearchArchetype || null;
 
                         const agentObj = {
                             name: agentName,
@@ -4903,25 +5366,25 @@
 
                         // Map standard aliases
                         const mappings = {
-                            Age: ['Age', 'Age_Range', 'AgeRange', 'Q1_AgeRange', 'Age', 'Age區間', 'Q1_Age區間', 'Q1_Age', '對應問卷第1題', '對應問卷第 1 題', 'Q1_age_range'],
-                            Service_Location: ['Service_Location', 'ServiceRegion', 'Q2_ServiceRegion', 'Q2_service地區', 'service地區', '對應問卷第2題', '對應問卷第 2 題', 'Q2_region'],
-                            Branch_Office: ['Branch_Office', 'BranchOffice', 'Q3_BranchOffice', 'Q3_Office Branch', 'Office Branch', '對應問卷第3題', '對應問卷第 3 題', 'Q3_branch'],
-                            Position: ['Position', 'Q4_Position', 'Title', '職稱', 'Title／職稱', 'Q4_Title職稱', '對應問卷第4題', '對應問卷第 4 題', 'Q4_job_rank'],
-                            Experience: ['Experience', 'Experience_Range', 'ExperienceRange', 'Q5_YearsExperience', 'Tenure', 'Tenure區間', 'Q5_Tenure區間', 'Q5_Tenure', '對應問卷第5題', '對應問卷第 5 題', '保險sales經驗', 'Q5_years_experience'],
-                            Clients: ['Clients', 'Scale_Customers', 'Scale of Customers', 'ScaleofCustomers', 'Q6_CustomersServed', 'client規模', 'Q6_client數量區間', 'Q6_client規模', 'client數量', '對應問卷第6題', '對應問卷第 6 題', 'Q6_customers_served'],
-                            Skill_Agent_Familiarity: ['Skill_Agent_Familiarity', 'Q8_SystemFamiliarity', 'Agent System/Tool Familiarity', 'Q8_tool_familiarity_pct'],
-                            Skill_Device_Familiarity: ['Skill_Device_Familiarity', 'Q11_SystemPortalSpeedReliability', 'Device/System Familiarity', 'Q11_speed_reliability_impact_1to5'],
-                            Skill_Device: ['Skill_Device', 'SkillDevice', 'Device_Familiarity', 'Device Familiarity', 'Q8_SystemFamiliarity', 'Q7_tool熟稔度(%)', 'Q7_裝置system熟稔度(%)', 'Device/System Familiarity', '裝置熟稔度', '對應問卷第7題', '對應問卷第 7 題', 'Q8_tool_familiarity_pct'],
-                            Skill_Knowledge: ['Skill_Knowledge', 'SkillKnowledge', 'Knowledge', 'Q12_InsuranceKnowledge', 'Q8_保險knowledge影響(%)', 'Q8_Insurance Knowledge(%)', 'Insurance Knowledge', '保險knowledge', '對應問卷第8題_保險knowledge', 'Q12_insurance_knowledge_impact_1to5'],
-                            Skill_Sales: ['Skill_Sales', 'SkillSales', 'Sales', 'performance影響度', 'performance貢獻', '對應問卷第8題_performance貢獻', 'Q7_performance_rank'],
-                            Skill_Sales_Pitch: ['Skill_Sales_Pitch', 'SkillSalesPitch', 'Q12_SalesPitchCommunication', 'Q8_salespitch影響(%)', 'Q8_Sales Pitch Communication(%)', 'Sales Pitch Communication', 'Q12_sales_pitch_impact_1to5'],
-                            Skill_Customer_Relations: ['Skill_Customer_Relations', 'SkillCustomerRelations', 'Q12_CustomerRelationshipManagement', 'Q8_clientrelationship影響(%)', 'Q8_Customer Relationship Management(%)', 'Customer Relationship Management', 'Q12_crm_impact_1to5'],
-                            Skill_Digital_Tools: ['Skill_Digital_Tools', 'SkillDigitalTools', 'Q12_CustomerService', 'Q8_digitaltool影響(%)', 'Q8_Digital Tool Usage(%)', 'Digital Tool Usage', 'Q12_customer_service_impact_1to5', 'Q11_digital_tool_usage_impact_1to5'],
-                            Tasks_Text: ['Tasks_Text', 'Daily_Tasks', 'Daily Tasks', '日常工作', '對應問卷第12題', '對應問卷第 12 題', 'Daily Work Content', 'Q20_work_item_allocation'],
-                            Conflict: ['Conflict', 'Barriers', 'Contradictions', 'Q21_GapDescription', 'Q9_落差矛盾說明', 'Q13_Core Conflicts障礙', 'Core Conflicts', '對應問卷第13題', '對應問卷第 13 題', '矛盾', '障礙', 'Q21_gap_or_contradiction'],
-                            PersonalTools: ['PersonalTools', 'Personalised_Tools', 'Personalised Tools', 'Q23_PersonalTools', 'Common Tools', '個person化tool', '對應問卷第14題', '對應問卷第 14 題', 'Q23_personal_tools_used'],
-                            Needs: ['Needs', 'Core_Needs', 'Core Needs', 'Q24_CoreNeeds', 'Core Needs', '對應問卷第15題', '對應問卷第 15 題', '需求', 'Q24_core_needs'],
-                            Quote: ['Quote', 'Quote_Text', 'Verbatim', 'Q25_Motto', 'Q12_代表性一句話', 'Q16_原聲引述', '感受', '原聲引述', '對應問卷第16題', '對應問卷第 16 題', 'Q25_motto'],
+                            Age: ['Age', 'Age_Range', 'AgeRange', 'Q1_AgeRange', 'Age', 'Age區間', 'Q1_Age區間', 'Q1_Age', '對應問卷第1題', '對應問卷第 1 題', 'Q1_age_range', 'Q1_年齡區間'],
+                            Service_Location: ['Service_Location', 'ServiceRegion', 'Q2_ServiceRegion', 'Q2_service地區', 'service地區', '對應問卷第2題', '對應問卷第 2 題', 'Q2_region', 'Q2_服務區域'],
+                            Branch_Office: ['Branch_Office', 'BranchOffice', 'Q3_BranchOffice', 'Q3_Office Branch', 'Office Branch', '對應問卷第3題', '對應問卷第 3 題', 'Q3_branch', 'Q3_通訊處（分處）'],
+                            Position: ['Position', 'Q4_Position', 'Title', '職稱', 'Title／職稱', 'Q4_Title職稱', '對應問卷第4題', '對應問卷第 4 題', 'Q4_job_rank', 'Q4_職級'],
+                            Experience: ['Experience', 'Experience_Range', 'ExperienceRange', 'Q5_YearsExperience', 'Tenure', 'Tenure區間', 'Q5_Tenure區間', 'Q5_Tenure', '對應問卷第5題', '對應問卷第 5 題', '保險sales經驗', 'Q5_years_experience', 'Q5_保險銷售年資'],
+                            Clients: ['Clients', 'Scale_Customers', 'Scale of Customers', 'ScaleofCustomers', 'Q6_CustomersServed', 'client規模', 'Q6_client數量區間', 'Q6_client規模', 'client數量', '對應問卷第6題', '對應問卷第 6 題', 'Q6_customers_served', 'Q6_累計服務客戶數'],
+                            Skill_Agent_Familiarity: ['Skill_Agent_Familiarity', 'Q8_SystemFamiliarity', 'Agent System/Tool Familiarity', 'Q8_tool_familiarity_pct', 'Q8_工具熟悉度（%）'],
+                            Skill_Device_Familiarity: ['Skill_Device_Familiarity', 'Q11_SystemPortalSpeedReliability', 'Device/System Familiarity', 'Q11_speed_reliability_impact_1to5', 'Q11_系統速度與穩定度影響（1–5）'],
+                            Skill_Device: ['Skill_Device', 'SkillDevice', 'Device_Familiarity', 'Device Familiarity', 'Q8_SystemFamiliarity', 'Q7_tool熟稔度(%)', 'Q7_裝置system熟稔度(%)', 'Device/System Familiarity', '裝置熟稔度', '對應問卷第7題', '對應問卷第 7 題', 'Q8_tool_familiarity_pct', 'Q8_工具熟悉度（%）'],
+                            Skill_Knowledge: ['Skill_Knowledge', 'SkillKnowledge', 'Knowledge', 'Q12_InsuranceKnowledge', 'Q8_保險knowledge影響(%)', 'Q8_Insurance Knowledge(%)', 'Insurance Knowledge', '保險knowledge', '對應問卷第8題_保險knowledge', 'Q12_insurance_knowledge_impact_1to5', 'Q12_保險知識影響（1–5）'],
+                            Skill_Sales: ['Skill_Sales', 'SkillSales', 'Sales', 'performance影響度', 'performance貢獻', '對應問卷第8題_performance貢獻', 'Q7_performance_rank', 'Q7_近12個月業績排名'],
+                            Skill_Sales_Pitch: ['Skill_Sales_Pitch', 'SkillSalesPitch', 'Q12_SalesPitchCommunication', 'Q8_salespitch影響(%)', 'Q8_Sales Pitch Communication(%)', 'Sales Pitch Communication', 'Q12_sales_pitch_impact_1to5', 'Q12_銷售話術與溝通影響（1–5）'],
+                            Skill_Customer_Relations: ['Skill_Customer_Relations', 'SkillCustomerRelations', 'Q12_CustomerRelationshipManagement', 'Q8_clientrelationship影響(%)', 'Q8_Customer Relationship Management(%)', 'Customer Relationship Management', 'Q12_crm_impact_1to5', 'Q12_客戶關係管理影響（1–5）'],
+                            Skill_Digital_Tools: ['Skill_Digital_Tools', 'SkillDigitalTools', 'Q12_CustomerService', 'Q8_digitaltool影響(%)', 'Q8_Digital Tool Usage(%)', 'Digital Tool Usage', 'Q12_customer_service_impact_1to5', 'Q11_digital_tool_usage_impact_1to5', 'Q11_數位工具使用影響（1–5）'],
+                            Tasks_Text: ['Tasks_Text', 'Daily_Tasks', 'Daily Tasks', '日常工作', '對應問卷第12題', '對應問卷第 12 題', 'Daily Work Content', 'Q20_work_item_allocation', 'Q20_工作項目時間分配（代碼:百分比）'],
+                            Conflict: ['Conflict', 'Barriers', 'Contradictions', 'Q21_GapDescription', 'Q9_落差矛盾說明', 'Q13_Core Conflicts障礙', 'Core Conflicts', '對應問卷第13題', '對應問卷第 13 題', '矛盾', '障礙', 'Q21_gap_or_contradiction', 'Q21_目標與實際的落差或矛盾'],
+                            PersonalTools: ['PersonalTools', 'Personalised_Tools', 'Personalised Tools', 'Q23_PersonalTools', 'Common Tools', '個person化tool', '對應問卷第14題', '對應問卷第 14 題', 'Q23_personal_tools_used', 'Q23_常用個人工具／替代做法'],
+                            Needs: ['Needs', 'Core_Needs', 'Core Needs', 'Q24_CoreNeeds', 'Core Needs', '對應問卷第15題', '對應問卷第 15 題', '需求', 'Q24_core_needs', 'Q24_核心需求'],
+                            Quote: ['Quote', 'Quote_Text', 'Verbatim', 'Q25_Motto', 'Q12_代表性一句話', 'Q16_原聲引述', '感受', '原聲引述', '對應問卷第16題', '對應問卷第 16 題', 'Q25_motto', 'Q25_座右銘'],
                             Pains: ['Pains', 'Pain_Points', 'PainPoints', 'Main Pain Points', 'Pain Points', '對應問卷第18題所有Pain Points'],
                             Role_Badges: ['Role_Badges', 'RoleBadges', 'Badges', '自我形象標籤', '對應問卷第9_10_11題']
                         };
@@ -4955,7 +5418,8 @@
                         // Map role badges from Q17_Tag1, Q18_Tag2, Q19_Tag3, or new self-tags
                         const rawTags = [
                             row.Q17_Tag1, row.Q18_Tag2, row.Q19_Tag3,
-                            row.Q17_self_tag_1, row.Q18_self_tag_2, row.Q19_self_tag_3
+                            row.Q17_self_tag_1, row.Q18_self_tag_2, row.Q19_self_tag_3,
+                            row['Q17_自我標籤1'], row['Q18_自我標籤2'], row['Q19_自我標籤3']
                         ].filter(Boolean);
                         if (rawTags.length > 0) {
                             agentObj.Role_Badges = rawTags.join(';');
@@ -4967,7 +5431,8 @@
                             const code = row[`Q20_Item${t}_Code`];
                             let pctVal = row[`Q20_Item${t}_Pct`];
                             if (code && pctVal !== undefined && pctVal !== null) {
-                                const humanName = TASK_CODE_MAPPING[String(code).toLowerCase().trim()] || code;
+                                const taskMap = (currentLang === 'zh' ? TASK_CODE_MAPPING_ZH : TASK_CODE_MAPPING_EN);
+                                const humanName = taskMap[String(code).toLowerCase().trim()] || code;
                                 let pct = parseFloat(String(pctVal).replace('%', ''));
                                 if (!isNaN(pct)) {
                                     taskPairs.push(`${humanName}:${pct}`);
@@ -4993,8 +5458,16 @@
                         for (let step = 1; step <= 6; step++) {
                             const tName = stepTaskNames[step - 1];
 
-                            // Extract Locations
-                            const locVal = row[`Task${step}_${tName}_location`] || "";
+                            // Extract Locations (support both English and zh-TW headers)
+                            let locVal = row[`Task${step}_${tName}_location`] || row[`Task${step}_${tName}_執行地點`] || "";
+                            if (!locVal) {
+                                for (const k in row) {
+                                    if (k.toLowerCase().startsWith(`task${step}`) && (k.includes('location') || k.includes('執行地點') || k.includes('地點'))) {
+                                        locVal = row[k];
+                                        break;
+                                    }
+                                }
+                            }
                             const locs = [
                                 row[`Task${step}_A_Location`], 
                                 row[`Task${step}_B_Location`], 
@@ -5003,8 +5476,16 @@
                             ].filter(Boolean);
                             if (locs.length > 0) agentObj[`Journey_${step}_Locations`] = locs.join('; ');
 
-                            // Extract Tools
-                            const toolVal = row[`Task${step}_${tName}_tools_or_people`] || "";
+                            // Extract Tools (support both English and zh-TW headers)
+                            let toolVal = row[`Task${step}_${tName}_tools_or_people`] || row[`Task${step}_${tName}_協助工具或人員`] || "";
+                            if (!toolVal) {
+                                for (const k in row) {
+                                    if (k.toLowerCase().startsWith(`task${step}`) && (k.includes('tool') || k.includes('people') || k.includes('協助') || k.includes('人員'))) {
+                                        toolVal = row[k];
+                                        break;
+                                    }
+                                }
+                            }
                             const tools = [
                                 row[`Task${step}_A_ToolsPeople`], 
                                 row[`Task${step}_B_ToolsPeople`], 
@@ -5013,8 +5494,16 @@
                             ].filter(Boolean);
                             if (tools.length > 0) agentObj[`Journey_${step}_Tools`] = tools.join('; ');
 
-                            // Extract Pains
-                            const painVal = row[`Task${step}_${tName}_pain_point`] || "";
+                            // Extract Pains (support both English and zh-TW headers)
+                            let painVal = row[`Task${step}_${tName}_pain_point`] || row[`Task${step}_${tName}_痛點`] || "";
+                            if (!painVal) {
+                                for (const k in row) {
+                                    if (k.toLowerCase().startsWith(`task${step}`) && (k.includes('pain') || k.includes('痛點'))) {
+                                        painVal = row[k];
+                                        break;
+                                    }
+                                }
+                            }
                             const pain1 = row[`Task${step}_A_PainPoint`];
                             const pain2 = row[`Task${step}_B_PainPoint`];
                             const pain3 = row[`Task${step}_C_PainPoint`];
@@ -5294,19 +5783,20 @@
             
             // Join all pain strings for word scanning
             const combinedPains = stepPains.map(p => p.toLowerCase()).join(' ');
+            const isZh = (currentLang === 'zh');
             
             const ruleMappings = [
-                { keywords: ['notification', 'alert', 'miss'], suggestion: "Implement real-time push notifications on mobile and a centralized notification center so important alerts are never missed." },
-                { keywords: ['re-enter', 'multiple systems'], suggestion: "Establish a single customer database (SSO) and auto-fill mechanism to prevent duplicate data entry across platforms." },
-                { keywords: ['mobile version', 'not user-friendly', 'mobile browser'], suggestion: "Redesign the mobile app interface with responsive layouts, simplified navigation, and touch-optimized controls." },
-                { keywords: ['approval', 'too long', 'underwriting'], suggestion: "Streamline and automate the underwriting approval workflow with real-time status alerts and fast-track checks." },
-                { keywords: ['too many steps', 'simple task', 'clicks'], suggestion: "Optimize the user flow by reducing clicks, merging related screens, and adding quick-action buttons on the homepage." },
-                { keywords: ['intuitive', 'tech-savvy', 'older'], suggestion: "Create a simplified, high-contrast interface mode with guided tooltips and walkthrough wizards for senior colleagues." },
-                { keywords: ['historical', 'quickly', 'records'], suggestion: "Introduce global search with fuzzy logic and chronological filters to instantly retrieve historical policy or client records." },
-                { keywords: ['offline', 'remote'], suggestion: "Build a robust offline data sync feature, allowing agents to input proposals and retrieve saved details without an internet connection." },
-                { keywords: ['search filter', 'locate', 'filters'], suggestion: "Expand search filters to include tag queries, customer value tiers, and geographical filters for high-efficiency listing." },
-                { keywords: ['slow', 'peak', 'response'], suggestion: "Optimize database query performance, leverage local caching, and upgrade backend server capacity to reduce page load latency." },
-                { keywords: ['no significant'], suggestion: "Regularly monitor feedback and look for incremental UX polishing opportunities." }
+                { keywords: ['notification', 'alert', 'miss', '通知', '提醒', '漏掉', '錯過'], suggestion: isZh ? "建立行動裝置即時推播通知與集中式通知中心，確保關鍵通知與照會不漏接。" : "Implement real-time push notifications on mobile and a centralized notification center so important alerts are never missed." },
+                { keywords: ['re-enter', 'multiple systems', '重複', '多個系統', '重新鍵入', '重複輸入'], suggestion: isZh ? "建立單一客戶數據中心（SSO）與自動帶入機制，避免跨平台重複鍵入客戶資料。" : "Establish a single customer database (SSO) and auto-fill mechanism to prevent duplicate data entry across platforms." },
+                { keywords: ['mobile version', 'not user-friendly', 'mobile browser', '手機版', '行動版', '難用', '不易操作'], suggestion: isZh ? "重新設計行動 App 介面，優化響應式排版、簡化導航流程並強化觸控體驗。" : "Redesign the mobile app interface with responsive layouts, simplified navigation, and touch-optimized controls." },
+                { keywords: ['approval', 'too long', 'underwriting', '審核', '太久', '核保', '照會', '進案'], suggestion: isZh ? "精簡並自動化核保審查流程，提供即時狀態進度通知與快速審查綠色通道。" : "Streamline and automate the underwriting approval workflow with real-time status alerts and fast-track checks." },
+                { keywords: ['too many steps', 'simple task', 'clicks', '步驟太多', '繁瑣', '點擊', '流程過長'], suggestion: isZh ? "優化操作流程，精簡點擊步驟、整合關聯畫面，並於首頁增設快捷功能按鈕。" : "Optimize the user flow by reducing clicks, merging related screens, and adding quick-action buttons on the homepage." },
+                { keywords: ['intuitive', 'tech-savvy', 'older', '直覺', '長輩', '資深', '複雜', '不會用'], suggestion: isZh ? "提供大字體高對比度簡潔介面模式，並加入操作引導精靈協助資深業務員上手。" : "Create a simplified, high-contrast interface mode with guided tooltips and walkthrough wizards for senior colleagues." },
+                { keywords: ['historical', 'quickly', 'records', '歷史', '快速', '紀錄', '查找', '查不到'], suggestion: isZh ? "導入全域模糊搜尋與時序篩選功能，秒級檢索保單歷程與客戶歷史紀錄。" : "Introduce global search with fuzzy logic and chronological filters to instantly retrieve historical policy or client records." },
+                { keywords: ['offline', 'remote', '離線', '遠距', '斷線', '沒網路'], suggestion: isZh ? "開發完善的離線暫存與自動同步功能，支援無網路環境下製作建議書與檢閱資料。" : "Build a robust offline data sync feature, allowing agents to input proposals and retrieve saved details without an internet connection." },
+                { keywords: ['search filter', 'locate', 'filters', '篩選', '搜尋', '定位', '標籤'], suggestion: isZh ? "擴充搜尋篩選維度，納入客群標籤、保戶價值分層與地理位置，大幅提升檢索效率。" : "Expand search filters to include tag queries, customer value tiers, and geographical filters for high-efficiency listing." },
+                { keywords: ['slow', 'peak', 'response', '慢', '卡頓', '轉圈', '延遲', '高峰'], suggestion: isZh ? "優化資料庫查詢效能、導入前端快取機制，升級後端伺服器頻寬以降低尖峰時段延遲。" : "Optimize database query performance, leverage local caching, and upgrade backend server capacity to reduce page load latency." },
+                { keywords: ['no significant', '無特別'], suggestion: isZh ? "持續定期追蹤業務同仁使用反饋，進行微幅體驗優化。" : "Regularly monitor feedback and look for incremental UX polishing opportunities." }
             ];
 
             for (const rule of ruleMappings) {
@@ -5353,18 +5843,18 @@
                     <div class="j-overview-info" style="padding-top: 0; margin-top: 0; display: flex; flex-direction: column; justify-content: flex-start; align-self: start;">
                         <h4 style="display: flex; align-items: center; gap: 8px; margin: 0 0 8px 0; padding: 0; line-height: 1.2;">
                             ${p.name}
-                            <span style="font-size: 0.72rem; font-weight: normal; color: var(--accent-yellow); border: 1px solid var(--accent-yellow); padding: 1px 6px; border-radius: 4px; vertical-align: middle;">Title: ${calculatedPosition}</span>
+                            <span style="font-size: 0.72rem; font-weight: normal; color: var(--accent-yellow); border: 1px solid var(--accent-yellow); padding: 1px 6px; border-radius: 4px; vertical-align: middle;">${t('titlePrefix')} ${calculatedPosition}</span>
                         </h4>
                         <div style="display: flex; gap: 6px; flex-wrap: wrap;">
                             ${p.role.split('/').map(t => `<span style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); padding: 2px 8px; border-radius: 4px; font-size: 0.72rem; color: var(--text-secondary);">${t.trim()}</span>`).join('')}
                         </div>
                     </div>
                     <div class="j-overview-block" style="padding-top: 0; margin-top: 0; align-self: start;">
-                        <strong style="margin-top: 0; line-height: 1.2;">Core Conflicts</strong>
+                        <strong style="margin-top: 0; line-height: 1.2;">${t('coreConflictsSimple')}</strong>
                         ${topBarriers}
                     </div>
                     <div class="j-overview-block" style="padding-top: 0; margin-top: 0; align-self: start;">
-                        <strong style="margin-top: 0; line-height: 1.2;">Core Needs</strong>
+                        <strong style="margin-top: 0; line-height: 1.2;">${t('coreNeedsSimple')}</strong>
                         ${topNeeds}
                     </div>
                 `;
@@ -5396,7 +5886,8 @@
                     const step = calculatedJourneySteps[i] || { title: "Task", contexts: [], tools: [], pains: [] };
                     
                     // Fetch qualitative actions from JOURNEY_STAGE_INFO
-                    const stageInfo = JOURNEY_STAGE_INFO[i];
+                    const stageInfoList = (currentLang === 'zh' && typeof JOURNEY_STAGE_INFO_ZH !== 'undefined') ? JOURNEY_STAGE_INFO_ZH : (typeof JOURNEY_STAGE_INFO_EN !== 'undefined' ? JOURNEY_STAGE_INFO_EN : JOURNEY_STAGE_INFO);
+                    const stageInfo = stageInfoList[i] || JOURNEY_STAGE_INFO[i];
                     const activeArchetypeData = stageInfo[dominantArchetype] || stageInfo["all"];
                     const actionsText = activeArchetypeData.actions;
                     
@@ -5410,19 +5901,19 @@
                             ${actionsListHTML}
                         </div>
                         <div style="font-size: 0.68rem; font-style: italic; color: var(--text-muted); text-align: left; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.06); width: 100%;">
-                            <strong>Execution Style:</strong> "${actionsText}"
+                            <strong>${t('executionStyle')}</strong> "${actionsText}"
                         </div>
                     `;
                     
                     const stepLocationsHTML = step.contexts && step.contexts.length > 0 ? 
                         `<div style="display:flex; flex-wrap:wrap; gap:3px; margin-top:4px;">
                             ${step.contexts.map(loc => `<span style="background:rgba(46,204,113,0.08); border:1px solid rgba(46,204,113,0.2); color:#2ecc71; padding:1px 5px; border-radius:3px; font-size:0.7rem;">${loc}</span>`).join('')}
-                         </div>` : `<span style="font-size:0.72rem; color:var(--text-muted);">No specific location</span>`;
+                         </div>` : `<span style="font-size:0.72rem; color:var(--text-muted);">${t('noLocation')}</span>`;
 
                     const stepToolsHTML = step.tools && step.tools.length > 0 ? 
                         `<div style="display:flex; flex-wrap:wrap; gap:3px; margin-top:4px;">
                             ${step.tools.map(ctx => `<span style="background:rgba(64,150,255,0.08); border:1px solid rgba(64,150,255,0.2); color:#4096ff; padding:1px 5px; border-radius:3px; font-size:0.7rem;">${ctx}</span>`).join('')}
-                         </div>` : `<span style="font-size:0.72rem; color:var(--text-muted);">No tools / systems</span>`;
+                         </div>` : `<span style="font-size:0.72rem; color:var(--text-muted);">${t('noTools')}</span>`;
 
                     headersHTML += `
                         <div class="j-matrix-header" style="border-bottom: 2.5px solid var(--colour-${activePersona})">
@@ -5438,14 +5929,14 @@
                     
                     locationsHTML += `
                         <div class="j-cell-card location-card" style="height: 100%; display: flex; flex-direction: column; justify-content: flex-start;">
-                            <strong>Physical/Digital Location</strong>
+                            <strong>${t('physicalDigitalLocation')}</strong>
                             ${stepLocationsHTML}
                         </div>
                     `;
                     
                     toolsHTML += `
                         <div class="j-cell-card tool-card" style="height: 100%; display: flex; flex-direction: column; justify-content: flex-start;">
-                            <strong>Touchpoints / Tools / Collaborators</strong>
+                            <strong>${t('touchpoints')}</strong>
                             ${stepToolsHTML}
                         </div>
                     `;
@@ -5466,11 +5957,11 @@
                     const painsHTML = step.pains.length > 0 ? 
                         `<div style="display:flex; flex-wrap:wrap; gap:3px; margin-top:4px; justify-content:flex-start;">
                             ${step.pains.map(pn => `<span style="background:rgba(255,77,79,0.08); border:1px solid rgba(255,77,79,0.2); color:#ff4d4f; padding:1px 5px; border-radius:3px; font-size:0.7rem; display:inline-block; word-break:break-all;">${pn}</span>`).join('')}
-                         </div>` : "No specific pain points";
+                         </div>` : (currentLang === 'zh' ? "無特定痛點" : "No specific pain points");
                          
                     footHTML += `
                         <div class="j-footer-card pain-row">
-                            <h5>⚠️ Pain Points</h5>
+                            <h5>⚠️ ${t('painPoints')}</h5>
                             ${painsHTML}
                         </div>
                     `;
@@ -5480,12 +5971,12 @@
                 for (let i = 0; i < 6; i++) {
                     const step = calculatedJourneySteps[i] || { pains: [] };
                     const opps = p.opportunities || [];
-                    const defaultOpp = opps[i] ? opps[i] : (opps[i-1] ? opps[i-1] : "Optimize system links and workflows");
+                    const defaultOpp = opps[i] ? opps[i] : (opps[i-1] ? opps[i-1] : (currentLang === 'zh' ? "優化系統連結與作業流程" : "Optimize system links and workflows"));
                     const oppText = generateDynamicOpportunity(step.pains, defaultOpp);
                     const cleanOppText = oppText.replace(/<strong>Suggestions:<\/strong>/g, '');
                     bulbHTML += `
                         <div class="j-footer-card opp-row">
-                            <h5>💡 Optimisation Opportunity</h5>
+                            <h5>💡 ${currentLang === 'zh' ? "系統優化機會" : "Optimisation Opportunity"}</h5>
                             <div style="font-size:0.72rem; line-height:1.4; color:var(--text-secondary);">${cleanOppText}</div>
                         </div>
                     `;
@@ -5582,7 +6073,7 @@
                 
                 // Read from manualOverrides if the user renamed the cluster
                 const override = manualOverrides[p.key];
-                const displayName = (override && override.name) ? override.name : `Cluster ${idx + 1}`;
+                const displayName = (override && override.name) ? override.name : `${t('cluster')} ${idx + 1}`;
                 const displayDesc = `${p.label} (n=${p.count})`;
                 
                 const borderStyle = isActive ? `border-color: ${p.color};` : 'border-color: rgba(255,255,255,0.08);';
@@ -5837,7 +6328,9 @@
             let workData = p.work;
             // Generic fallback labels, used only when there's no real per-cluster task data
             // to compute from (topTasks below overrides this whenever real data exists).
-            let workLabels = ['Building Expertise', 'Maintaining Prospect List', 'Client Visits', 'Post-Sale Servicing', 'Internal Admin'];
+            let workLabels = (currentLang === 'zh')
+                ? ['專業知識提升', '開拓與客源開發', '客戶拜訪', '售後保全服務', '分處行政庶務']
+                : ['Building Expertise', 'Maintaining Prospect List', 'Client Visits', 'Post-Sale Servicing', 'Internal Admin'];
 
             if (topTasks.length > 0) {
                 workData = topTasks.map(t => t.val);
@@ -5946,9 +6439,9 @@
                     <div class="p-profile-section">
                         <div class="p-profile-meta" style="width: 100%;">
                             <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box;">
-                                <input type="text" id="edit-name" value="${p.name}" oninput="showSaveButton('name')" placeholder="Enter persona name..." style="background: transparent; border: none; border-bottom: 1px dashed rgba(255,255,255,0.2); color: #fff; font-size: 1.5rem; font-weight: 700; flex-grow: 1; min-width: 0; outline: none; margin-bottom: 6px; font-family: inherit; margin-right: 12px;">
-                                <span style="font-size: 0.9rem; color: ${p.color || '#8b5cf6'}; border: 1px solid ${p.color || '#8b5cf6'}; padding: 2px 8px; border-radius: 4px; white-space: nowrap; flex-shrink: 0;">Title: ${calculatedPosition}</span>
-                                <button id="save-btn-name" onclick="saveManuallyEnteredValues()" style="display: none; padding: 4px 10px; font-size: 10pt; background: #28a745; border: 1px solid #28a745; color: #fff; border-radius: 4px; cursor: pointer; white-space: nowrap; font-weight: 600;">Save</button>
+                                <input type="text" id="edit-name" value="${p.name}" oninput="showSaveButton('name')" placeholder="${t('enterPersonaName')}" style="background: transparent; border: none; border-bottom: 1px dashed rgba(255,255,255,0.2); color: #fff; font-size: 1.5rem; font-weight: 700; flex-grow: 1; min-width: 0; outline: none; margin-bottom: 6px; font-family: inherit; margin-right: 12px;">
+                                <span style="font-size: 0.9rem; color: ${p.color || '#8b5cf6'}; border: 1px solid ${p.color || '#8b5cf6'}; padding: 2px 8px; border-radius: 4px; white-space: nowrap; flex-shrink: 0;">${t('titlePrefix')} ${calculatedPosition}</span>
+                                <button id="save-btn-name" onclick="saveManuallyEnteredValues()" style="display: none; padding: 4px 10px; font-size: 10pt; background: #28a745; border: 1px solid #28a745; color: #fff; border-radius: 4px; cursor: pointer; white-space: nowrap; font-weight: 600;">${t('save')}</button>
                             </div>
                             <div class="tags-row">
                                 ${calculatedLabels.map(t => `<span class="p-tag" style="background-color: ${p.color || '#8b5cf6'};">${t}</span>`).join('')}
@@ -5957,26 +6450,25 @@
                     </div>
                     
                     <div style="margin-top: 0.2rem; width: 100%;">
-                        <textarea id="edit-desc" oninput="showSaveButton('desc')" placeholder="Enter persona description..." style="width: 100%; height: 180px; background: transparent; border: 1px dashed rgba(255,255,255,0.15); color: var(--text-secondary); font-size: 0.72rem; line-height: 1.5; padding: 8px; border-radius: 6px; resize: none; outline: none; box-sizing: border-box; font-family: inherit; font-weight: 400;">${p.desc || ''}</textarea>
-                        <button id="save-btn-desc" onclick="saveManuallyEnteredValues()" style="display: none; margin-top: 4px; padding: 2px 8px; font-size: 9pt; background: #28a745; border: 1px solid #28a745; color: #fff; border-radius: 4px; cursor: pointer; float: right; font-weight: 600;">Save Description</button>
+                        <textarea id="edit-desc" oninput="showSaveButton('desc')" placeholder="${t('enterPersonaDesc')}" style="width: 100%; height: 180px; background: transparent; border: 1px dashed rgba(255,255,255,0.15); color: var(--text-secondary); font-size: 0.72rem; line-height: 1.5; padding: 8px; border-radius: 6px; resize: none; outline: none; box-sizing: border-box; font-family: inherit; font-weight: 400;">${p.desc || ''}</textarea>
+                        <button id="save-btn-desc" onclick="saveManuallyEnteredValues()" style="display: none; margin-top: 4px; padding: 2px 8px; font-size: 9pt; background: #28a745; border: 1px solid #28a745; color: #fff; border-radius: 4px; cursor: pointer; float: right; font-weight: 600;">${t('saveDesc')}</button>
                         <div style="clear: both;"></div>
                     </div>
-                    
                     
                     <div class="p-stats-grid">
                         <div class="p-stat-box">
                             <svg class="p-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                            <span class="lbl">Age</span>
+                            <span class="lbl">${t('age')}</span>
                             <span class="val">${calculatedAge}</span>
                         </div>
                         <div class="p-stat-box">
                             <svg class="p-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
-                            <span class="lbl">Insurance Experience</span>
+                            <span class="lbl">${t('experience')}</span>
                             <span class="val">${String(calculatedExp).split(' / ')[0]}</span>
                         </div>
                         <div class="p-stat-box">
                             <svg class="p-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                            <span class="lbl">Number of Clients Served</span>
+                            <span class="lbl">${t('clientsServed')}</span>
                             <span class="val">${calculatedCustomers}</span>
                         </div>
                     </div>
@@ -5984,44 +6476,44 @@
                     <div class="p-tool-familiarity-box" style="margin-top: 0.6rem; margin-bottom: 0.6rem; padding: 10px; background: rgba(255, 255, 255, 0.01); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 8px; display: flex; align-items: center; justify-content: space-between; font-size: 13pt !important; border-bottom: 1px solid var(--panel-border); padding-bottom: 12px;">
                         <span style="color: var(--text-secondary); display: flex; align-items: center; gap: 6px;">
                             <svg class="p-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px; color: var(--accent-yellow); margin-bottom: 0;"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
-                            Agent System/Tool Familiarity:
+                            ${t('systemFamiliarity')}
                         </span>
                         <strong style="color: var(--accent-yellow); font-size: 13pt !important;">${p.skills.device}%</strong>
                     </div>
 
                     <div class="p-skills-work-row">
                         <div class="p-skills-col">
-                            <h4 class="p-sec-title">Skill Impact on Performance</h4>
+                            <h4 class="p-sec-title">${t('skillImpact')}</h4>
                             <div class="p-skill-item">
-                                <span class="lbl">Device/System Familiarity</span>
+                                <span class="lbl">${t('skillDevice')}</span>
                                 <div class="p-bar-container">
                                     <div class="p-bar-bg"><div class="p-bar-fill" id="bar-device" style="background-color: var(--colour-${activePersona})"></div></div>
                                     <span class="p-bar-val" style="color: var(--colour-${activePersona})">${p.skills.device}%</span>
                                 </div>
                             </div>
                             <div class="p-skill-item">
-                                <span class="lbl">Insurance Knowledge</span>
+                                <span class="lbl">${t('skillKnowledge')}</span>
                                 <div class="p-bar-container">
                                     <div class="p-bar-bg"><div class="p-bar-fill" id="bar-knowledge" style="background-color: var(--colour-${activePersona})"></div></div>
                                     <span class="p-bar-val" style="color: var(--colour-${activePersona})">${p.skills.knowledge}%</span>
                                 </div>
                             </div>
                             <div class="p-skill-item">
-                                <span class="lbl">Sales Pitch Communication</span>
+                                <span class="lbl">${t('skillPitch')}</span>
                                 <div class="p-bar-container">
                                     <div class="p-bar-bg"><div class="p-bar-fill" id="bar-sales-pitch" style="background-color: var(--colour-${activePersona})"></div></div>
                                     <span class="p-bar-val" style="color: var(--colour-${activePersona})">${p.skills.salesPitch}%</span>
                                 </div>
                             </div>
                             <div class="p-skill-item">
-                                <span class="lbl">Customer Relationship Management</span>
+                                <span class="lbl">${t('skillRelations')}</span>
                                 <div class="p-bar-container">
                                     <div class="p-bar-bg"><div class="p-bar-fill" id="bar-customer-relations" style="background-color: var(--colour-${activePersona})"></div></div>
                                     <span class="p-bar-val" style="color: var(--colour-${activePersona})">${p.skills.customerRelations}%</span>
                                 </div>
                             </div>
                             <div class="p-skill-item">
-                                <span class="lbl">Digital Tool Usage</span>
+                                <span class="lbl">${t('skillTools')}</span>
                                 <div class="p-bar-container">
                                     <div class="p-bar-bg"><div class="p-bar-fill" id="bar-digital-tools" style="background-color: var(--colour-${activePersona})"></div></div>
                                     <span class="p-bar-val" style="color: var(--colour-${activePersona})">${p.skills.digitalTools}%</span>
@@ -6029,7 +6521,7 @@
                             </div>
                         </div>
                         <div class="p-donut-col">
-                            <h4 class="p-sec-title">Daily Work Content</h4>
+                            <h4 class="p-sec-title">${t('dailyWork')}</h4>
                             <div class="p-donut-chart-wrapper" style="height: 150px; margin-top: 8px;">
                                 <canvas id="personaDonutCanvas"></canvas>
                             </div>
@@ -6039,15 +6531,15 @@
 
                     <div class="p-needs-pains">
                         <div class="p-lbl-block p-contradiction">
-                            <strong>Core Conflicts (Keyword Analysis)</strong>
+                            <strong>${t('coreConflicts')}</strong>
                             <div id="barriers-word-cloud" style="margin-top:6px; display:grid; grid-template-columns: 1fr; gap:6px;"></div>
                         </div>
                         <div class="p-lbl-block p-needs">
-                            <strong>Core Needs (Keyword Analysis)</strong>
+                            <strong>${t('coreNeeds')}</strong>
                             <div id="needs-word-cloud" style="margin-top:6px; display:grid; grid-template-columns: 1fr; gap:6px;"></div>
                         </div>
                         <div class="p-lbl-block p-pains">
-                            <strong>Main Pain Points (Keyword Analysis)</strong>
+                            <strong>${t('mainPains')}</strong>
                             <div id="pains-word-cloud" style="margin-top:6px; display:grid; grid-template-columns: 1fr; gap:6px;"></div>
                         </div>
                     </div>
@@ -6055,7 +6547,7 @@
 
                 <!-- Column 2: Sales Journey Timeline -->
                 <div class="glass-panel p-timeline-card">
-                    <h3>Sales Journey</h3>
+                    <h3>${t('salesJourney')}</h3>
                     
                     <div class="p-timeline">
                         ${calculatedJourneySteps.map((step, idx) => `
@@ -6064,29 +6556,29 @@
                                 <div class="p-step-content" style="width: 100%;">
                                     <div style="display:flex; justify-content:space-between; align-items:center; margin: 0px !important; margin-bottom:0px !important; padding: 0px !important; line-height: 1.1;">
                                         <h5 class="p-timeline-title" style="margin:0px !important; padding:0px !important; font-weight:600; color:var(--text-primary); line-height:1.1;">${step.title}</h5>
-                                        <span style="font-size:1.9rem; cursor:help; line-height:1.1;" title="平均Satisfaction: ${step.avgRating}/5.0">${step.emoji}</span>
+                                        <span style="font-size:1.9rem; cursor:help; line-height:1.1;" title="${t('avgSatisfaction')}: ${step.avgRating}/5.0">${step.emoji}</span>
                                     </div><ul class="p-timeline-action-list" style="margin: 0px !important; margin-top: 0px !important; padding: 0px !important; padding-left: 12px !important; color: var(--text-secondary); line-height: 1.4; font-weight: 400; font-size: 0.75rem; list-style-type: disc !important; margin-bottom: 6px !important;">${step.actions.map(act => `<li style="margin: 0px !important; padding: 0px !important; margin-bottom: 2px !important;">${act}</li>`).join('')}</ul>
 
                                     <!-- Physical/Digital Location -->
                                     <div style="margin-bottom: 6px;">
-                                        <span class="p-timeline-label" style="color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:2px;">Physical/Digital Location</span>
+                                        <span class="p-timeline-label" style="color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:2px;">${t('physicalDigitalLocation')}</span>
                                         <div style="display:flex; flex-wrap:wrap; gap:3px;">
-                                            ${step.contexts && step.contexts.length > 0 ? step.contexts.map(ctx => `<span class="p-timeline-tag" style="background:rgba(46,204,113,0.08); border:1px solid rgba(46,204,113,0.2); color:#2ecc71; padding:1px 5px; border-radius:3px;">${ctx}</span>`).join('') : '<span style="font-size:0.72rem; color:var(--text-muted);">No specific location</span>'}
+                                            ${step.contexts && step.contexts.length > 0 ? step.contexts.map(ctx => `<span class="p-timeline-tag" style="background:rgba(46,204,113,0.08); border:1px solid rgba(46,204,113,0.2); color:#2ecc71; padding:1px 5px; border-radius:3px;">${ctx}</span>`).join('') : `<span style="font-size:0.72rem; color:var(--text-muted);">${t('noLocation')}</span>`}
                                         </div>
                                     </div>
                                     
                                     <!-- Touchpoints / Tools / Collaborators -->
                                     <div style="margin-bottom: 6px;">
-                                        <span class="p-timeline-label" style="color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:2px;">Touchpoints / Tools / Collaborators</span>
+                                        <span class="p-timeline-label" style="color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:2px;">${t('touchpoints')}</span>
                                         <div style="display:flex; flex-wrap:wrap; gap:3px;">
-                                            ${step.tools && step.tools.length > 0 ? step.tools.map(ctx => `<span class="p-timeline-tag" style="background:rgba(64,150,255,0.08); border:1px solid rgba(64,150,255,0.2); color:#4096ff; padding:1px 5px; border-radius:3px;">${ctx}</span>`).join('') : '<span style="font-size:0.72rem; color:var(--text-muted);">No tools / systems</span>'}
+                                            ${step.tools && step.tools.length > 0 ? step.tools.map(ctx => `<span class="p-timeline-tag" style="background:rgba(64,150,255,0.08); border:1px solid rgba(64,150,255,0.2); color:#4096ff; padding:1px 5px; border-radius:3px;">${ctx}</span>`).join('') : `<span style="font-size:0.72rem; color:var(--text-muted);">${t('noTools')}</span>`}
                                         </div>
                                     </div>
 
                                     <!-- Pains -->
                                     ${step.pains.length > 0 ? `
                                     <div>
-                                        <span class="p-timeline-label" style="color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:2px;">Pain Points</span>
+                                        <span class="p-timeline-label" style="color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:2px;">${t('painPoints')}</span>
                                         <div style="display:flex; flex-wrap:wrap; gap:3px;">
                                             ${step.pains.map(pn => `<span class="p-timeline-pain-tag" style="background:rgba(255,77,79,0.08); border:1px solid rgba(255,77,79,0.2); color:#ff4d4f; padding:1px 5px; border-radius:3px;">${pn}</span>`).join('')}
                                         </div>
@@ -6098,7 +6590,7 @@
                     </div>
 
                     <div class="p-tools-box">
-                        <h5>| Daily Tools (Top 5)</h5>
+                        <h5>${t('dailyToolsTop5')}</h5>
                         <ul>
                             ${calculatedTools.map(t => `<li>${t}</li>`).join('')}
                         </ul>
@@ -6113,7 +6605,7 @@
                         <div class="portrait-upload-overlay" style="position: absolute; top: 10px; right: 10px; z-index: 10;">
                             <label for="photo-file-input" style="background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.4); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 0.68rem; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: background 0.2s;">
                                 <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-                                Change Photo
+                                ${t('changePhoto')}
                             </label>
                             <input type="file" id="photo-file-input" accept="image/*" style="display: none;" onchange="handlePhotoUpload(event)">
                         </div>
@@ -6121,14 +6613,14 @@
                         <img class="p-portrait-img" src="${p.photo}" onerror="this.src='data:image/svg+xml;charset=utf-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><rect width=%22100%22 height=%22100%22 fill=%22%232c3e50%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2220%22 fill=%22%23fff%22>${p.name}</text></svg>'" alt="${p.name}">
                         
                         <div class="p-quote-overlay" style="padding: 8px 12px; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; bottom: 8%; left: 10px; right: 10px; display: flex; flex-direction: column; gap: 4px;">
-                            <textarea id="edit-quote" oninput="showSaveButton('quote')" placeholder="Enter quote..." style="background: transparent; border: none; border-bottom: 1px dashed rgba(255,255,255,0.3); color: #fff; font-size: 0.85rem; font-weight: 700; width: 100%; height: 52px; resize: none; outline: none; padding: 4px; font-family: inherit; line-height: 1.4; text-align: left; box-sizing: border-box;">${p.quote}</textarea>
-                            <button id="save-btn-quote" onclick="saveManuallyEnteredValues()" style="display: none; align-self: flex-end; padding: 2px 8px; font-size: 9pt; background: #28a745; border: 1px solid #28a745; color: #fff; border-radius: 4px; cursor: pointer; font-weight: 600; margin-top: 2px;">Save</button>
+                            <textarea id="edit-quote" oninput="showSaveButton('quote')" placeholder="${t('enterQuote')}" style="background: transparent; border: none; border-bottom: 1px dashed rgba(255,255,255,0.3); color: #fff; font-size: 0.85rem; font-weight: 700; width: 100%; height: 52px; resize: none; outline: none; padding: 4px; font-family: inherit; line-height: 1.4; text-align: left; box-sizing: border-box;">${p.quote}</textarea>
+                            <button id="save-btn-quote" onclick="saveManuallyEnteredValues()" style="display: none; align-self: flex-end; padding: 2px 8px; font-size: 9pt; background: #28a745; border: 1px solid #28a745; color: #fff; border-radius: 4px; cursor: pointer; font-weight: 600; margin-top: 2px;">${t('save')}</button>
                         </div>
                     </div>
 
                     <!-- Verbatim Quotes Card -->
                     <div class="glass-panel p-verbatim-card" style="flex-grow: 1;">
-                        <h3>Agent Motto</h3>
+                        <h3>${t('agentMotto')}</h3>
                         <div class="p-verbatim-list">
                             ${verbatimHTML}
                         </div>
@@ -6175,7 +6667,9 @@
 
             // Generic fallback labels -- customLabels (computed from real cluster data)
             // is passed in and used whenever it's available.
-            const defaultLabels = ['Building Expertise', 'Maintaining Prospect List', 'Client Visits', 'Post-Sale Servicing', 'Internal Admin'];
+            const defaultLabels = (currentLang === 'zh')
+                ? ['專業知識提升', '開拓與客源開發', '客戶拜訪', '售後保全服務', '分處行政庶務']
+                : ['Building Expertise', 'Maintaining Prospect List', 'Client Visits', 'Post-Sale Servicing', 'Internal Admin'];
 
             const labels = customLabels || defaultLabels;
 
@@ -7127,8 +7621,8 @@
             document.getElementById('modal-score-ar').innerHTML = `${isNaN(arVal) ? '0.00' : arVal.toFixed(2)} <small>/ 5.0</small>`;
             document.getElementById('modal-score-pr').innerHTML = `${isNaN(prVal) ? '0.00' : prVal.toFixed(2)} <small>/ 5.0</small>`;
 
-            // Classification reason is now generated from this cluster's actual computed
-            // distinguishing features (from K-means + Silhouette-based auto-K selection),
+            // Classification reason is generated from this cluster's actual computed
+            // distinguishing features (from K-means clustering and dynamic cluster profiling),
             // not from a tenure-range lookup. Age/tenure/position are never the reason an
             // agent lands in a cluster -- only descriptive facts about who else is in it.
             let reason;
@@ -7150,16 +7644,24 @@
 
         // Initialize App
         window.addEventListener('load', () => {
+            // Default to English version on fresh load
+            try { localStorage.removeItem('portal_lang'); } catch (e) {}
+            currentLang = 'en';
             if (typeof PRE_LOADED_DATA !== 'undefined' && PRE_LOADED_DATA.length > 0) {
                 parsedData = PRE_LOADED_DATA;
-                assignDynamicArchetypes(parsedData);
-                renderArchetypeTabs();
-                runClusterDiscovery();
+            } else if (typeof PRE_LOADED_DATA_ZH !== 'undefined' && PRE_LOADED_DATA_ZH.length > 0) {
+                parsedData = PRE_LOADED_DATA_ZH;
             } else {
                 loadDefaultMockData();
             }
+            if (parsedData && parsedData.length > 0) {
+                assignDynamicArchetypes(parsedData);
+                renderArchetypeTabs();
+                runClusterDiscovery();
+            }
             updateAgentDropdown();
             renderAll();
+            applyLanguage('en');
         });
     </script>
 </body>
