@@ -2479,3 +2479,5 @@
 
 #main-nav .rail-divider-top { margin: 0 6px 8px 6px; }
 #main-nav .rail-footer-group .nav-tab-btn { flex-shrink: 0; }
+
+.dont-show-option { display: none !important; }

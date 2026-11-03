@@ -9654,11 +9654,7 @@ window.activeSection = activeSection;
                 setTimeout(function () { gate.style.display = 'none'; }, 300);
             }
             document.body.style.overflow = '';
-            if (window.__skipLandingVideo) {
-                if (typeof switchMainSection === 'function') switchMainSection('personas');
-            } else {
-                openCommercialModal(true);
-            }
+            openCommercialModal(true);
         };
 
         // Auto-launch commercial video IMMEDIATELY on landing, then load data concurrently while video plays
@@ -9677,7 +9673,7 @@ window.activeSection = activeSection;
                 dontShow = (localStorage.getItem('quan_persona_dont_show_video') === 'true');
             } catch (e) {}
 
-            window.__skipLandingVideo = dontShow;
+            try { localStorage.removeItem('quan_persona_dont_show_video'); } catch (e) {}
             showLangGate();
             setTimeout(initPlatformData, 50);
         }
