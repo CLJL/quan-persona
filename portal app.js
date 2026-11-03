@@ -9422,6 +9422,8 @@ window.activeSection = activeSection;
         }
 
         function playCommercialWithSound(e) {
+            const _m = document.getElementById('commercial-video-modal');
+            if (!_m || !_m.classList.contains('active')) { if (e && e.stopPropagation) e.stopPropagation(); return; }
             if (e) {
                 e.stopPropagation();
                 e.preventDefault();
@@ -9442,6 +9444,11 @@ window.activeSection = activeSection;
         }
         window.playCommercialWithSound = playCommercialWithSound;
         window.unmuteCommercialVideo = playCommercialWithSound;
+
+        function removeCommercialStartListeners() {
+            const s = window.__commercialStart;
+            if (s) { s.evts.forEach(function (n) { window.removeEventListener(n, s.fn, true); }); window.__commercialStart = null; }
+        }
 
         function openCommercialModal(isLanding = false) {
             if (isLanding && commercialHasOpened) return;
@@ -9493,12 +9500,14 @@ window.activeSection = activeSection;
 
                         // Clicking anywhere on the video or modal starts playing with sound on from 0:00
                         const evts = ['click', 'pointerdown', 'keydown', 'touchstart'];
+                        removeCommercialStartListeners();
                         const startOnUserClick = function (ev) {
                             if (ev && ev.target && ev.target.closest && ev.target.closest('#btn-close-commercial-modal')) return;
                             if (ev && ev.type === 'keydown' && ev.key === 'Escape') return;
-                            evts.forEach(function (n) { window.removeEventListener(n, startOnUserClick, true); });
+                            removeCommercialStartListeners();
                             playCommercialWithSound(ev);
                         };
+                        window.__commercialStart = { fn: startOnUserClick, evts: evts };
                         evts.forEach(function (n) { window.addEventListener(n, startOnUserClick, true); });
                     });
                 }
@@ -9508,6 +9517,7 @@ window.activeSection = activeSection;
         function closeCommercialModal(immediate = false) {
             commercialHasOpened = true;
             hidePlayBtn();
+            removeCommercialStartListeners();
             const modal = document.getElementById('commercial-video-modal');
             const player = document.getElementById('commercial-video-player');
             const footer = document.getElementById('commercial-footer-actions');
@@ -9515,6 +9525,7 @@ window.activeSection = activeSection;
             modal.classList.remove('active');
             if (player) {
                 player.pause();
+                try { player.muted = true; } catch (e) {}
             }
             if (immediate) {
                 modal.style.display = 'none';
@@ -9643,7 +9654,11 @@ window.activeSection = activeSection;
                 setTimeout(function () { gate.style.display = 'none'; }, 300);
             }
             document.body.style.overflow = '';
-            openCommercialModal(true);
+            if (window.__skipLandingVideo) {
+                if (typeof switchMainSection === 'function') switchMainSection('personas');
+            } else {
+                openCommercialModal(true);
+            }
         };
 
         // Auto-launch commercial video IMMEDIATELY on landing, then load data concurrently while video plays
@@ -9662,12 +9677,9 @@ window.activeSection = activeSection;
                 dontShow = (localStorage.getItem('quan_persona_dont_show_video') === 'true');
             } catch (e) {}
 
-            if (!dontShow) {
-                showLangGate();
-                setTimeout(initPlatformData, 50);
-            } else {
-                initPlatformData();
-            }
+            window.__skipLandingVideo = dontShow;
+            showLangGate();
+            setTimeout(initPlatformData, 50);
         }
 
         if (document.readyState === 'loading') {
@@ -9765,7 +9777,8 @@ window.activeSection = activeSection;
         document.addEventListener('keydown', e => {
             if (e.key === 'Escape') {
                 setDrawer(false);
-                if (typeof closeCommercialModal === 'function') closeCommercialModal();
+                const _cm = document.getElementById('commercial-video-modal');
+                if (_cm && _cm.classList.contains('active') && typeof closeCommercialModal === 'function') closeCommercialModal();
             }
         });
         const mq = window.matchMedia('(max-width: 900px)');
