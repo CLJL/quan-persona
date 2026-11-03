@@ -1,5 +1,5 @@
 // V.2 Dynamic Multi-Domain Journey Schemas
-// Decouples domain-specific definitions from the core clustering and visualization engine
+// Decouples domain-specific definitions from the core clustering and visualisation engine
 
 const JOURNEY_SCHEMAS = {
     agent: {
@@ -142,7 +142,7 @@ const JOURNEY_SCHEMAS = {
                         locationsZh: ['辦公室', '客戶所在的任何地點', '電話', '住家', '通勤途中', '社群或興趣團體', '其他'],
                         tools: ['LINE', 'Agent Pro', 'Agent Portal', 'Service System', 'Contacts', 'Peer support', 'Friends & Family', 'Senior colleague', 'Administrative Assistant', 'Client referral', 'Orphan policies', 'Other'],
                         toolsZh: ['LINE', 'Agent Pro', 'Agent Portal', 'Service System', 'Contacts', '同儕支援', '親朋好友', '資深主管', '行政助理', '客戶轉介', '孤兒保單', '其他'],
-                        painPoints: ['Unclear customer coverage gaps', 'Lack of personalized proposal templates', 'High cost of acquiring new leads', 'Other'],
+                        painPoints: ['Unclear customer coverage gaps', 'Lack of personalised proposal templates', 'High cost of acquiring new leads', 'Other'],
                         painPointsZh: ['客戶現有保障缺口不明確', '缺乏個人化建議書範本', '開發新客時間成本過高', '其他']
                     }
                 ],
@@ -286,7 +286,7 @@ const JOURNEY_SCHEMAS = {
                         nameZh: "行動 B：查詢客戶保單狀態（例如：客戶因外部行銷話術、生活事件主動詢問保障）",
                         locations: ['Office', 'Online', 'Phone', 'Client\'s location', 'Other'],
                         locationsZh: ['辦公室', '線上', '電話', '客戶所在地點', '其他'],
-                        tools: ['Customer Service System', 'Agent App', 'Call center hotline', 'Other'],
+                        tools: ['Customer Service System', 'Agent App', 'Call centre hotline', 'Other'],
                         toolsZh: ['客戶服務系統', '業務員 App', '客服中心專線', '其他'],
                         painPoints: ['Restricted query permissions', 'Slow system response during peak hours', 'Other'],
                         painPointsZh: ['查詢權限受限需多重授權', '尖峰時段系統回應緩慢', '其他']
@@ -307,7 +307,7 @@ const JOURNEY_SCHEMAS = {
                     expert: { actions: "Personally visits clients with physical alteration forms and delivers claims compensation cheques", tools: "Paper alteration forms, branch visit, company vehicle" },
                     optimizer: { actions: "Submits alteration requests online via agent e-portal, receives instant system acknowledgement", tools: "Agent e-portal, tablet scanner, PDF signing" },
                     skeptic: { actions: "Collects paper documents from clients, fills out forms by hand, submits at the branch counter", tools: "Physical forms, branch service desk, personal stamp" },
-                    parttimer: { actions: "Sends forms via email or LINE for clients to print and mail directly to the customer center", tools: "LINE PDF sharing, email, mail service" },
+                    parttimer: { actions: "Sends forms via email or LINE for clients to print and mail directly to the customer centre", tools: "LINE PDF sharing, email, mail service" },
                     all: { actions: "Assists clients with policy changes, claims paperwork, and ongoing contract maintenance", tools: "Agent e-portal, branch counter, LINE" }
                 }
             },
@@ -361,7 +361,7 @@ const JOURNEY_SCHEMAS = {
                 qualitative: {
                     explorer: { actions: "Attends morning meetings remotely or checks meeting notes on phone", tools: "LINE group, mobile meeting link" },
                     expert: { actions: "Arrives early at the branch office, participates actively in desk discussions and mentors junior agents", tools: "Branch desk, whiteboard, physical binders" },
-                    optimizer: { actions: "Tracks personal and team KPIs on digital dashboard, minimizes physical admin attendance", tools: "Tableau/Excel dashboard, commission app" },
+                    optimizer: { actions: "Tracks personal and team KPIs on digital dashboard, minimises physical admin attendance", tools: "Tableau/Excel dashboard, commission app" },
                     skeptic: { actions: "Prefers branch bulletin boards and printed commission statements", tools: "Printed pay slips, notice boards" },
                     parttimer: { actions: "Attends weekly catchups irregularly, relies on group summaries", tools: "LINE group, colleagues' updates" },
                     all: { actions: "Coordinates administrative, commission, and managerial routines within the branch", tools: "Branch meetings, ERP portal" }
@@ -534,7 +534,7 @@ const JOURNEY_SCHEMAS = {
         coreNeeds: [
             "Fast login / FaceID & Fingerprint login", "Simplified system interface operations",
             "Single portal system integration", "Open API / custom integration features",
-            "Fuzzy keyword search", "Mobile App experience optimization",
+            "Fuzzy keyword search", "Mobile App experience optimisation",
             "Automated list classification / tagging", "Offline cache support",
             "One-click automatic quotation generation", "Retain counter/paper processing options",
             "Extend online signature validity duration", "Assistant account delegation permissions",
@@ -554,7 +554,7 @@ const JOURNEY_SCHEMAS = {
         archetypes: {
             explorer: { name: 'Digital Trailblazer (Alex Chen)', nameZh: '數位先鋒 (Alex Chen)' },
             expert: { name: 'Senior Expert (Uncle David)', nameZh: '資深專家 (Uncle David)' },
-            optimizer: { name: 'Efficiency Optimizer (Sarah Lin)', nameZh: '效率實踐家 (Sarah Lin)' },
+            optimizer: { name: 'Efficiency Optimiser (Sarah Lin)', nameZh: '效率實踐家 (Sarah Lin)' },
             skeptic: { name: 'Traditional Relationship Seeker (Brother Lin)', nameZh: '傳統守護者 (Brother Lin)' },
             parttimer: { name: 'Pragmatic Partner (Jessica Wu)', nameZh: '實務精算者 (Jessica Wu)' }
         },
@@ -971,7 +971,7 @@ const JOURNEY_SCHEMAS = {
                 "type": "single_select",
                 "prompt": "In your daily work, which journey do you focus on most and experience every day? (Single Select)",
                 "promptZh": "請問在日常工作中，您最著重並每日體會的是哪一個歷程？（單選）",
-                "options": ["Sales Journey", "Organizational Development Journey"],
+                "options": ["Sales Journey", "Organisational Development Journey"],
                 "optionsZh": [
                     "銷售歷程",
                     "組織發展歷程"
@@ -1054,7 +1054,7 @@ const JOURNEY_SCHEMAS = {
             stages: "Policyholder Journey Stages & Key Service Touchpoints",
             stagesZh: "保戶服務歷程階段與關鍵接觸點"
         },
-        intro: "Dear Policyholder, Hello! This questionnaire aims to understand your overall experience, digital self-service habits, and service touchpoint needs across your insurance journey—from product exploration and underwriting to policy management and claims. The questionnaire takes about 8–10 minutes to complete. All responses are analyzed dynamically using unsupervised machine learning to discover customer persona clusters and improve our digital insurance services. Thank you for your valuable feedback!",
+        intro: "Dear Policyholder, Hello! This questionnaire aims to understand your overall experience, digital self-service habits, and service touchpoint needs across your insurance journey—from product exploration and underwriting to policy management and claims. The questionnaire takes about 8–10 minutes to complete. All responses are analysed dynamically using unsupervised machine learning to discover customer persona clusters and improve our digital insurance services. Thank you for your valuable feedback!",
         introZh: "親愛的保戶您好！本問卷旨在了解您在保險體驗歷程中的日常互動習慣、數位工具使用偏好，以及在投保、保單管理與理賠各階段所遇到的需求與挑戰。問卷約需 8–10 分鐘完成。所有回覆將透過非監督式機器學習演算法進行動態分群分析，以優化保戶數位服務體驗與自助管道品質。感謝您的寶貴時間與協助！",
         journeyIntro: "Six core policyholder customer service stages are listed below. Please review each stage's touchpoints, service locations, tools, and friction points based on your actual experience as a policyholder.",
         journeyIntroZh: "以下列出零售保戶六大核心服務旅程階段。請依據您的實際投保與服務體驗，檢視各階段的服務接觸點、互動地點、輔助工具與主要痛點：",
@@ -1244,7 +1244,7 @@ const JOURNEY_SCHEMAS = {
                 title: 'Stage 3: Premium Payment & Account Setup',
                 titleZh: '階段 3：首期扣款與帳號開通',
                 actions: [
-                    "Action A: Authorizing recurring credit card / bank autopay",
+                    "Action A: Authorising recurring credit card / bank autopay",
                     "Action B: Receiving electronic policy certificate (e-Policy)",
                     "Action C: Setting up customer portal and mobile app login"
                 ],
@@ -1255,7 +1255,7 @@ const JOURNEY_SCHEMAS = {
                 ],
                 actionDetails: [
                     {
-                        name: "Action A: Authorizing recurring credit card / bank autopay",
+                        name: "Action A: Authorising recurring credit card / bank autopay",
                         nameZh: "行動 A：設定信用卡或銀行帳戶自動轉帳授權",
                         locations: ['Online', 'Mobile App', 'Bank', 'Other'],
                         locationsZh: ['線上', '行動 App', '銀行', '其他'],
@@ -1287,7 +1287,7 @@ const JOURNEY_SCHEMAS = {
                 ],
                 qualitative: {
                     ph_digital: { actions: "Binds Apple Pay or digital credit card for instant one-click recurring payment and downloads e-Policy PDF", tools: "Credit Card Gateway, Apple Pay, e-Policy PDF" },
-                    ph_relationship: { actions: "Hands signed bank autopay authorization slip to agent or pays via convenience store barcode", tools: "Direct Debit Setup, Convenience Store Barcode, Paper Certificate" },
+                    ph_relationship: { actions: "Hands signed bank autopay authorisation slip to agent or pays via convenience store barcode", tools: "Direct Debit Setup, Convenience Store Barcode, Paper Certificate" },
                     ph_skeptic: { actions: "Verifies billing breakdown, payment schedules, and surrender charge penalty tables", tools: "Bank Statement, Policy Contract, Payment Portal" },
                     ph_passive: { actions: "Sets up automatic debit and promptly archives policy documents into inbox folder", tools: "Credit Card Autopay, Email Archive" },
                     ph_frustrated: { actions: "Experiences payment gateway timeouts, unclear debit schedules, or delayed paper certificates", tools: "Failed Payment Gateway, Hotline" },
@@ -1437,9 +1437,9 @@ const JOURNEY_SCHEMAS = {
                         nameZh: "行動 B：評估家庭不同人生階段之保障缺口與加保需求",
                         locations: ['Home', 'Agent Meeting', 'Online', 'Other'],
                         locationsZh: ['家中', '與業務員會面', '線上', '其他'],
-                        tools: ['Family Coverage Gap Analyzer', 'Agent Recommendation', 'Online Product Catalog', 'Other'],
+                        tools: ['Family Coverage Gap Analyser', 'Agent Recommendation', 'Online Product Catalogue', 'Other'],
                         toolsZh: ['家庭保障缺口分析儀', '業務員建議書', '線上保險商品目錄', '其他'],
-                        painPoints: ['Lack of personalized coverage recommendation tailored to current life stage', 'Too many rider options causing confusion', 'Other'],
+                        painPoints: ['Lack of personalised coverage recommendation tailored to current life stage', 'Too many rider options causing confusion', 'Other'],
                         painPointsZh: ['缺乏針對人生新階段之精準缺口建議', '附約組合過多眼花撩亂', '其他']
                     },
                     {
@@ -1447,7 +1447,7 @@ const JOURNEY_SCHEMAS = {
                         nameZh: "行動 C：確認自動續保授權或線上完成續約手續",
                         locations: ['Online', 'Mobile', 'Bank', 'Other'],
                         locationsZh: ['線上', '手機', '銀行', '其他'],
-                        tools: ['One-Click Auto-Renewal Authorization', 'Credit Card Autopay', 'Customer Portal', 'Other'],
+                        tools: ['One-Click Auto-Renewal Authorisation', 'Credit Card Autopay', 'Customer Portal', 'Other'],
                         toolsZh: ['一鍵自動續約授權', '信用卡自動扣款', '保戶專區', '其他'],
                         painPoints: ['Auto-renewal failure due to expired card without early notice', 'Complicated surrender penalty', 'Other'],
                         painPointsZh: ['信用卡到期未提前提醒導致自動續約扣款失敗', '減額繳清或解約手續繁重', '其他']
@@ -1701,7 +1701,7 @@ const JOURNEY_SCHEMAS = {
         archetypes: {
             ph_digital: { name: 'Self-Service Digital Native (Emily Wang)', nameZh: '自主數位先鋒 (Emily Wang)' },
             ph_relationship: { name: 'Agent-Reliant Traditionalist (Uncle Ming)', nameZh: '專人依賴型保戶 (陳明德)' },
-            ph_skeptic: { name: 'Analytical Value Maximizer (David Lin)', nameZh: '精明條款分析者 (林志豪)' },
+            ph_skeptic: { name: 'Analytical Value Maximiser (David Lin)', nameZh: '精明條款分析者 (林志豪)' },
             ph_passive: { name: 'Passive Policyholder (Grace Chang)', nameZh: '佛系安定型保戶 (張家瑜)' },
             ph_frustrated: { name: 'Friction-Stalled Policyholder (Kevin Huang)', nameZh: '體驗受阻型保戶 (黃柏翰)' }
         }
@@ -1733,7 +1733,7 @@ const JOURNEY_SCHEMAS = {
             journey: "Hospital Patient Journey & Care Touchpoints",
             journeyZh: "病患就醫全程歷程與接觸點體驗"
         },
-        intro: "Dear Patient and Family Members, Hello! This survey aims to understand your healthcare experience, hospital facility interactions, and service needs—from appointment booking and physician consultation to diagnostic examinations, inpatient care, and post-discharge recovery. The survey takes about 8–10 minutes to complete. All responses are analyzed using unsupervised machine learning algorithms to identify care friction points and improve patient-centered hospital services. Thank you for your partnership!",
+        intro: "Dear Patient and Family Members, Hello! This survey aims to understand your healthcare experience, hospital facility interactions, and service needs—from appointment booking and physician consultation to diagnostic examinations, inpatient care, and post-discharge recovery. The survey takes about 8–10 minutes to complete. All responses are analysed using unsupervised machine learning algorithms to identify care friction points and improve patient-centred hospital services. Thank you for your partnership!",
         introZh: "親愛的病友與家屬您好！本問卷旨在了解您在醫療體系就醫過程中的真實體驗與感受，包括線上預約掛號、醫師診察溝通、檢驗檢查、病房照護乃至出院後續追蹤等各階段的滿意度與需求。問卷約需 8–10 分鐘完成。所有回覆將透過非監督式機器學習演算法進行整合分析，以作為優化以病患為中心之醫療照護品質與數位就醫流程的依據。感謝您的寶貴回饋與協助！",
         demographics: [
             { key: 'Age', label: 'Age Range', labelZh: '年齡區間', type: 'choice', options: 'Under 18, 18–35, 36–50, 51–65, 66+', optionsZh: '18歲以下, 18–35歲, 36–50歲, 51–65歲, 66歲以上' },
@@ -1791,7 +1791,7 @@ const JOURNEY_SCHEMAS = {
             "Doctor-Patient Dialogue Valuer", "Medication Safety Vigilant", "Preventive Medicine Advocate", "Acute Care Responder", "Clinic Wait-Time Sensitive",
             "Chronic Condition Long-Hauler", "Personal Vitals Tracker", "Medical Privacy Sensitive", "Multi-Prescription Cross-Checker", "Top Specialist Seeker",
             "Integrated Multi-Disciplinary Need", "High Self-Pay Acceptance", "Nursing Empathy Focused", "Telehealth Enthusiast", "Printed Brochure Preference",
-            "Expense Transparency Demander", "Transit Accessibility Priority", "Medical Center Loyalty", "Second Opinion Seeker", "Rehabilitation Resilient",
+            "Expense Transparency Demander", "Transit Accessibility Priority", "Medical Centre Loyalty", "Second Opinion Seeker", "Rehabilitation Resilient",
             "Nutritional Lifestyle Adherent", "Insurance Subsidy Vigilant", "Mobile Payment Fast-Track", "Post-Op Home Care Focused", "Minimal Friction Test Seeker"
         ],
         selfImageTagsZh: [
@@ -1839,7 +1839,7 @@ const JOURNEY_SCHEMAS = {
             "遠距醫療視訊診療平台", "醫院官方 LINE 服務號"
         ],
         personalTools: [
-            "LINE", "Digital Blood Pressure / Glucose Monitor", "Weekly Pill Organizer",
+            "LINE", "Digital Blood Pressure / Glucose Monitor", "Weekly Pill Organiser",
             "Apple Health / Google Fit", "Physical Prescription & Invoice Slips",
             "Medical Diary / Notebook", "Hospital Care Hotline", "Family Caregiver Group",
             "Health Smartwatch (Apple Watch, etc.)", "Patient Support Forums"
@@ -2575,7 +2575,7 @@ function seedGenericQuestionDefaults(schema) {
                 s.q18OptionsZh = ['行動地點容易標註', '可清楚比較時間配置，並前後翻閱對照', '空檔一目了然'];
                 s.q19Options = ['Extremely willing', 'Open to trying it', 'Depends on the situation', 'Do not want the system to access my calendar'];
                 s.q19OptionsZh = ['極度願意', '願意嘗試', '視情況而定', '不希望系統存取我的行事曆'];
-                s.q26Options = ['Sales Journey', 'Organizational Development Journey'];
+                s.q26Options = ['Sales Journey', 'Organisational Development Journey'];
                 s.q26OptionsZh = ['銷售歷程', '組織發展歷程'];
             }
             if (k === 'patient') {

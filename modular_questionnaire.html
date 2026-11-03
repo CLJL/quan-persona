@@ -3228,7 +3228,7 @@
                 ? (isZh ? (activeSchema.q26OptionsZh || ['', '']) : (activeSchema.q26Options || ['', '']))
                 : (isZh 
                     ? (activeSchema.q26OptionsZh || curSchemaDef.q26OptionsZh || ['銷售歷程（從陌生接觸到簽約與售後服務）', '組織發展歷程（增員、培育、帶領團隊）'])
-                    : (activeSchema.q26Options || curSchemaDef.q26Options || ['Sales Journey (From client acquisition to contract and post-sales)', 'Organizational Development Journey (Recruitment, training, leadership)']));
+                    : (activeSchema.q26Options || curSchemaDef.q26Options || ['Sales Journey (From client acquisition to contract and post-sales)', 'Organisational Development Journey (Recruitment, training, leadership)']));
             j26List.innerHTML += createModule1Card(26, q26Prompt, 'single', q26Opts, '', '', isZh ? '第 26 題題目（歷程地圖核心選擇）' : 'Question 26 Prompt (Core Journey Selection)', isZh, true);
 
             // Section 6: Journey Stages & Touchpoints
@@ -4098,7 +4098,7 @@
                 `;
 
                 // Q24
-                const needOpts = isZh ? (s.coreNeedsZh || s.coreNeeds || ['快速登入／Face ID 與指紋登入', '簡化系統介面操作', '單一入口系統整合', '開放 API／客製化整合功能', '模糊關鍵字搜尋', '優化行動 App 體驗', '名單自動分類／標籤', '離線快取支援', '一鍵自動產生報價', '保留櫃檯／紙本作業選項', '延長線上簽署的有效期限', '助理帳號委派權限', '便利的紙本列印／大字體介面', '縮短載入時間', '常見職業／商品的預設選項', '其他']) : (s.coreNeeds || ['Fast login / FaceID & Fingerprint login', 'Simplified system interface operations', 'Single portal system integration', 'Open API / custom integration features', 'Fuzzy keyword search', 'Mobile App experience optimization', 'Automated list classification / tagging', 'Offline cache support', 'One-click automatic quotation generation', 'Retain counter/paper processing options', 'Extend online signature validity duration', 'Assistant account delegation permissions', 'Convenient paper printing / large-font interface', 'Reduce loading times', 'Predefined options for common occupations/products', 'Other']);
+                const needOpts = isZh ? (s.coreNeedsZh || s.coreNeeds || ['快速登入／Face ID 與指紋登入', '簡化系統介面操作', '單一入口系統整合', '開放 API／客製化整合功能', '模糊關鍵字搜尋', '優化行動 App 體驗', '名單自動分類／標籤', '離線快取支援', '一鍵自動產生報價', '保留櫃檯／紙本作業選項', '延長線上簽署的有效期限', '助理帳號委派權限', '便利的紙本列印／大字體介面', '縮短載入時間', '常見職業／商品的預設選項', '其他']) : (s.coreNeeds || ['Fast login / FaceID & Fingerprint login', 'Simplified system interface operations', 'Single portal system integration', 'Open API / custom integration features', 'Fuzzy keyword search', 'Mobile App experience optimisation', 'Automated list classification / tagging', 'Offline cache support', 'One-click automatic quotation generation', 'Retain counter/paper processing options', 'Extend online signature validity duration', 'Assistant account delegation permissions', 'Convenient paper printing / large-font interface', 'Reduce loading times', 'Predefined options for common occupations/products', 'Other']);
                 html += `
                     <div class="doc-q-block">
                         <div class="doc-q-title">Q24. ${escapeHtml(isZh ? (s.q24PromptZh || '在繁忙的保險工作中，您最關鍵的核心需求／期待為何？（最多選 5 項）') : (s.q24Prompt || 'In your busy insurance work, what are your most critical core needs / expectations? (Select up to 5)'))}</div>
