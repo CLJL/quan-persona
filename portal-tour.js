@@ -39,7 +39,7 @@
             function build() {
                 if ($('tour-root')) return;
                 const d = document.createElement('div'); d.id = 'tour-root'; d.style.display = 'none';
-                d.innerHTML = '<div id="tour-shield"></div><div id="tour-spot"></div><div id="tour-card" role="dialog" aria-live="polite"><div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;"><span id="tour-step" style="font-size:var(--fs-small); color:var(--text-muted);"></span></div><h4 id="tour-title" style="margin:0 0 8px; color:#fff; font-size:var(--fs-title) !important;"></h4><div id="tour-body" style="font-size:var(--fs-body); line-height:1.55; color:var(--text-secondary);"></div><div style="display:flex; align-items:center; gap:8px; margin-top:10px;"><button type="button" class="btn btn-secondary" id="tour-skip" style="height:24px; padding:0 8px; font-size:0.75rem !important; border-radius:6px;"></button><span style="flex:1"></span><button type="button" class="btn btn-secondary" id="tour-back" style="height:24px; padding:0 9px; font-size:0.75rem !important; border-radius:6px;"></button><button type="button" class="btn btn-primary" id="tour-next" style="height:24px; padding:0 11px; font-size:0.75rem !important; border-radius:6px;"></button></div></div>';
+                d.innerHTML = '<div id="tour-shield"></div><div id="tour-spot"></div><div id="tour-card" role="dialog" aria-live="polite"><div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;"><span id="tour-step" style="font-size:1rem; color:var(--text-muted);"></span></div><h4 id="tour-title" style="margin:0 0 8px; color:#fff; font-size:1.375rem !important;"></h4><div id="tour-body" style="font-size:1.0625rem; line-height:1.55; color:var(--text-secondary);"></div><div style="display:flex; align-items:center; gap:8px; margin-top:10px;"><button type="button" class="btn btn-secondary" id="tour-skip" style="height:32px; padding:0 12px; font-size:0.875rem !important; border-radius:8px;"></button><span style="flex:1"></span><button type="button" class="btn btn-secondary" id="tour-back" style="height:32px; padding:0 14px; font-size:0.875rem !important; border-radius:8px;"></button><button type="button" class="btn btn-primary" id="tour-next" style="height:32px; padding:0 16px; font-size:0.875rem !important; border-radius:8px;"></button></div></div>';
                 document.body.appendChild(d);
                 $('tour-skip').onclick = end; $('tour-back').onclick = () => go(idx - 1, -1); $('tour-next').onclick = () => (idx >= STEPS.length - 1 ? end() : go(idx + 1, 1));
                 $('tour-shield').onclick = e => e.stopPropagation();
@@ -59,7 +59,7 @@
                     card.style.bottom = '16px';
                     card.style.left = '12px';
                     card.style.right = '12px';
-                    card.style.width = Math.min(520, vw - 24) + 'px';
+                    card.style.width = Math.min(600, vw - 24) + 'px';
                     card.style.maxWidth = 'calc(100vw - 24px)';
                     card.style.margin = '0 auto';
                     if (!shown(el)) {
@@ -75,8 +75,8 @@
                 }
 
                 card.style.margin = '';
-                card.style.maxWidth = Math.min(380, vw - 24) + 'px';
-                card.style.width = Math.min(380, vw - 24) + 'px';
+                card.style.maxWidth = Math.min(440, vw - 24) + 'px';
+                card.style.width = Math.min(440, vw - 24) + 'px';
                 const cH = card.offsetHeight;
                 if (!shown(el)) {
                     spot.style.display = 'none'; shield.style.background = 'rgba(0,0,0,0.72)';
