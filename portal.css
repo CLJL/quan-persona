@@ -2529,3 +2529,12 @@
 
 /* About Us: link buttons (Beta actions) look like the other buttons */
 #view-about .about-actions a.btn { text-decoration: none; color: #f8f9fa; font-size: 1.125rem; }
+
+/* About Us content text at 17px, same as the FAQ and Journey Map content (card titles 18px, section headings 20px, page heading 24px unchanged) */
+#view-about .about-wrap,
+#view-about .about-hero .about-lede,
+#view-about .about-card span,
+#view-about .who-card span,
+#view-about .about-table th,
+#view-about .about-table td,
+#view-about .about-privacy p { font-size: 1.0625rem; }
