@@ -9639,8 +9639,6 @@ window.activeSection = activeSection;
             void gate.offsetWidth;
             gate.classList.add('show');
             document.body.style.overflow = 'hidden';
-            const pre = gate.querySelector('.lang-gate-btn[data-lang="' + detectInitialLanguage() + '"]') || gate.querySelector('.lang-gate-btn');
-            if (pre) try { pre.focus({ preventScroll: true }); } catch (e) {}
         }
         window.chooseLandingLang = function (lang) {
             lang = (lang === 'zh') ? 'zh' : 'en';
@@ -9739,7 +9737,7 @@ window.activeSection = activeSection;
             if (!b || window.innerWidth <= 900 || nav.classList.contains('pinned') || nav.classList.contains('tour-open')) return;
             nav.classList.remove('quiet'); nav.classList.add('intro');
             clearTimeout(peekT);
-            peekT = setTimeout(() => { nav.classList.remove('intro'); nav.classList.add('quiet'); if (e.detail > 0 && document.activeElement && nav.contains(document.activeElement)) document.activeElement.blur(); }, 1300);
+            peekT = setTimeout(() => { nav.classList.remove('intro'); nav.classList.add('quiet'); if (e.detail > 0 && document.activeElement && nav.contains(document.activeElement)) document.activeElement.blur(); }, 1000);
         });
         nav.addEventListener('mouseleave', () => { if (!noHover) nav.classList.remove('quiet'); });
         const st = window.startTour;
@@ -9798,6 +9796,28 @@ window.activeSection = activeSection;
         });
         const mq = window.matchMedia('(max-width: 900px)');
         (mq.addEventListener ? mq.addEventListener.bind(mq, 'change') : mq.addListener.bind(mq))(() => { setDrawer(false); setBrandRole(); });
+    })();
+    (function () {
+        // Guided tour started from About / FAQ: when it closes, return to the same page and scroll position (not the top)
+        const prev = window.startTour;
+        if (typeof prev !== 'function') return;
+        let saved = null, watching = false;
+        window.startTour = function () {
+            const sec = (typeof activeSection !== 'undefined') ? activeSection : null;
+            saved = (sec === 'about' || sec === 'faq') ? { sec: sec, y: window.scrollY || window.pageYOffset || 0 } : null;
+            const r = prev.apply(this, arguments);
+            const root = document.getElementById('tour-root');
+            if (root && !watching) {
+                watching = true;
+                new MutationObserver(function () {
+                    if (!saved || root.style.display !== 'none') return;
+                    const s = saved; saved = null;
+                    try { if (typeof activeSection !== 'undefined' && activeSection !== s.sec) switchMainSection(s.sec); } catch (e) {}
+                    window.scrollTo(0, s.y); setTimeout(function () { window.scrollTo(0, s.y); }, 60);
+                }).observe(root, { attributes: true, attributeFilter: ['style'] });
+            }
+            return r;
+        };
     })();
     (function () {
         // FAQ / About pages: the top bar title reads "Frequently Asked Questions" / "About Us" (常見問題 / 關於我們); other pages keep their own title
