@@ -18,7 +18,7 @@
             --fs-display: 1.9rem;   /* big numbers */
         }
         /* Journey Map and Analytics pages are dense read-only reports: one step larger than the form pages */
-        #view-journeys, #view-analytics { --fs-caption: 0.875rem; --fs-small: 0.9375rem; --fs-body: 1rem; --fs-subtitle: 1.125rem; }
+        #view-journeys, #view-analytics, #view-about { --fs-caption: 0.875rem; --fs-small: 0.9375rem; --fs-body: 1rem; --fs-subtitle: 1.125rem; }
         button, input, select, textarea { font-family: inherit; font-size: var(--fs-body); }
 
         /* Local Offline Font Faces */
@@ -403,26 +403,26 @@
         /* ==================== VIEW D: ABOUT ==================== */
         html:not([data-lang="zh"]) .about-zh { display: none; }
         html[data-lang="zh"] .about-en { display: none; }
-        #view-about .about-wrap { max-width: 980px; margin: 0 auto; padding: 8px 4px 56px; color: #dfe3e8; line-height: 1.7; }
+        #view-about .about-wrap { max-width: 980px; margin: 0 auto; padding: 8px 4px 56px; color: #dfe3e8; line-height: 1.6; font-size: var(--fs-body); }
         #view-about .about-hero { padding: 28px 8px 8px; }
-        #view-about .about-hero h2 { font-size: 2.1rem; line-height: 1.25; margin: 0 0 12px; color: #fff; letter-spacing: .2px; }
-        #view-about .about-hero .about-lede { font-size: 1.05rem; color: var(--text-secondary); margin: 0 0 10px; max-width: 760px; }
-        #view-about .about-badge { display: inline-block; font-size: .78rem; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--accent-yellow); border: 1px solid rgba(245,197,24,.45); border-radius: 999px; padding: 3px 12px; margin-bottom: 14px; }
-        #view-about h3 { font-size: 1.25rem; margin: 34px 0 14px; color: #fff; padding-left: 12px; border-left: 3px solid var(--accent-yellow); }
+        #view-about .about-hero h2 { font-size: var(--fs-heading); line-height: 1.25; margin: 0 0 12px; color: #fff; letter-spacing: .2px; }
+        #view-about .about-hero .about-lede { font-size: var(--fs-subtitle); color: var(--text-secondary); margin: 0 0 10px; max-width: 760px; }
+        #view-about .about-badge { display: inline-block; font-size: var(--fs-caption); font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--accent-yellow); border: 1px solid rgba(245,197,24,.45); border-radius: 999px; padding: 3px 12px; margin-bottom: 14px; }
+        #view-about h3 { font-size: var(--fs-title); margin: 34px 0 14px; color: #fff; padding-left: 12px; border-left: 3px solid var(--accent-yellow); }
         #view-about .about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
         #view-about .about-card { background: rgba(30,34,42,.65); border: 1px solid var(--panel-border); border-radius: 12px; padding: 16px 18px; }
-        #view-about .about-card b { display: block; color: #fff; margin-bottom: 4px; }
-        #view-about .about-card span { color: var(--text-secondary); font-size: .95rem; }
+        #view-about .about-card b { display: block; color: #fff; margin-bottom: 4px; font-size: var(--fs-subtitle); }
+        #view-about .about-card span { color: var(--text-secondary); font-size: var(--fs-body); }
         #view-about .about-step { display: grid; grid-template-columns: 40px 1fr; gap: 14px; align-items: start; }
         #view-about .about-step .n { width: 34px; height: 34px; border-radius: 50%; background: rgba(245,197,24,.14); color: var(--accent-yellow); font-weight: 800; display: flex; align-items: center; justify-content: center; }
         #view-about table.about-table { width: 100%; border-collapse: collapse; background: rgba(30,34,42,.65); border: 1px solid var(--panel-border); border-radius: 12px; overflow: hidden; }
-        #view-about .about-table th, #view-about .about-table td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--panel-border); vertical-align: top; font-size: .95rem; }
+        #view-about .about-table th, #view-about .about-table td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--panel-border); vertical-align: top; font-size: var(--fs-body); }
         #view-about .about-table th { color: var(--accent-yellow); font-weight: 700; width: 220px; white-space: nowrap; }
         #view-about .about-table td { color: var(--text-secondary); }
         #view-about .about-privacy { background: rgba(30,34,42,.65); border: 1px solid var(--panel-border); border-left: 3px solid var(--accent-yellow); border-radius: 12px; padding: 18px 20px; color: var(--text-secondary); }
         #view-about .about-privacy p { margin: 0 0 10px; } #view-about .about-privacy p:last-child { margin: 0; }
         #view-about .about-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
-        @media (max-width: 720px) { #view-about .about-hero h2 { font-size: 1.6rem; } #view-about .about-table th { width: auto; white-space: normal; } }
+        @media (max-width: 720px) { #view-about .about-hero h2 { font-size: var(--fs-heading); } #view-about .about-table th { width: auto; white-space: normal; } }
 
 
         /* Landing language gate */
@@ -2489,7 +2489,12 @@
 #view-about .who-card .av .disc svg { width: 100%; height: 100%; display: block; }
 #view-about .who-card .av .bd { position: absolute; right: -6px; bottom: 2px; width: 42px; height: 42px; border-radius: 13px; background: #14121f; border: 2px solid var(--c); display: flex; align-items: center; justify-content: center; }
 #view-about .who-card .av .bd svg { width: 24px; height: 24px; stroke: var(--c); fill: none; stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; }
-#view-about .who-card b { display: block; font-size: 1.05rem; color: var(--c); margin-bottom: 8px; }
-#view-about .who-card span { display: block; font-size: var(--fs-small); line-height: 1.55; color: var(--text-secondary); }
+#view-about .who-card b { display: block; font-size: var(--fs-subtitle); color: var(--c); margin-bottom: 8px; }
+#view-about .who-card span { display: block; font-size: var(--fs-body); line-height: 1.55; color: var(--text-secondary); }
 @media (max-width: 1100px) { #view-about .who-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 560px) { #view-about .who-grid { grid-template-columns: 1fr; } }
+
+#lang-gate.is-loading .lang-gate-btn { opacity: 0.55; cursor: progress; }
+
+#view-faq .faq-a a.faq-link { color: var(--accent-yellow); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+#view-faq .faq-a a.faq-link:hover { filter: brightness(1.15); }

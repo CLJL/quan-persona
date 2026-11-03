@@ -907,6 +907,7 @@ window.activeSection = activeSection;
                     manualOverrides[key] = { name: '', desc: '', photo: '', quote: '' };
                 }
                 loadDefaultMockData();
+                if (typeof clearUploadedCsv === 'function') clearUploadedCsv();
                 updateAgentDropdown();
                 renderAll();
                 alert("Successfully restored default background survey data!");
@@ -9473,6 +9474,7 @@ window.activeSection = activeSection;
                 const currentSrc = player.currentSrc || player.src || '';
                 const expectedKeyword = isZh ? 'commercial_zh_' : 'commercial_1080p_web';
                 if (!currentSrc.includes(expectedKeyword)) {
+                    Array.prototype.slice.call(player.querySelectorAll('source')).forEach(function (s) { s.remove(); });
                     player.src = targetSrc;
                     if (typeof player.load === "function") player.load();
                 }
@@ -9625,6 +9627,8 @@ window.activeSection = activeSection;
             if (initialSection && ['personas', 'journeys', 'analytics'].includes(initialSection)) {
                 switchMainSection(initialSection);
             }
+            // Reload the last uploaded CSV saved in this browser (kept until a new CSV replaces it)
+            setTimeout(function () { if (typeof restoreSavedUploadedCsv === 'function') restoreSavedUploadedCsv(); }, 150);
         }
         window.initPlatformData = initPlatformData;
 
@@ -9678,6 +9682,7 @@ window.activeSection = activeSection;
             window.__skipLandingVideo = dontShow;
             showLangGate();
             setTimeout(initPlatformData, 50);
+            if (window.__pendingLang) { const pl = window.__pendingLang; window.__pendingLang = null; window.chooseLandingLang(pl); }
         }
 
         if (document.readyState === 'loading') {
@@ -9737,7 +9742,7 @@ window.activeSection = activeSection;
             if (!b || window.innerWidth <= 900 || nav.classList.contains('pinned') || nav.classList.contains('tour-open')) return;
             nav.classList.remove('quiet'); nav.classList.add('intro');
             clearTimeout(peekT);
-            peekT = setTimeout(() => { nav.classList.remove('intro'); nav.classList.add('quiet'); if (e.detail > 0 && document.activeElement && nav.contains(document.activeElement)) document.activeElement.blur(); }, 1000);
+            peekT = setTimeout(() => { nav.classList.remove('intro'); nav.classList.add('quiet'); if (e.detail > 0 && document.activeElement && nav.contains(document.activeElement)) document.activeElement.blur(); }, 700);
         });
         nav.addEventListener('mouseleave', () => { if (!noHover) nav.classList.remove('quiet'); });
         const st = window.startTour;
