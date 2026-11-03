@@ -9451,6 +9451,44 @@ window.activeSection = activeSection;
             if (s) { s.evts.forEach(function (n) { window.removeEventListener(n, s.fn, true); }); window.__commercialStart = null; }
         }
 
+        // Start downloading the intro video for a language while the language screen is still showing,
+        // so it is already buffered when the viewer chooses and playback can begin at 0:00.
+        function commercialSrcFor(lang) {
+            return (lang === 'zh') ? 'assets/quan-persona_commercial_zh_1080p_web.mp4' : 'assets/quan-persona_commercial_1080p_web.mp4';
+        }
+        function preloadCommercial(lang) {
+            const player = document.getElementById('commercial-video-player');
+            if (!player) return;
+            lang = (lang === 'zh') ? 'zh' : 'en';
+            if (player.getAttribute('data-lang') === lang) return;
+            Array.prototype.slice.call(player.querySelectorAll('source')).forEach(function (s) { s.remove(); });
+            player.setAttribute('data-lang', lang);
+            player.preload = 'auto';
+            player.src = commercialSrcFor(lang);
+            if (typeof player.load === 'function') player.load();
+        }
+        window.preloadCommercial = preloadCommercial;
+
+        function showCommercialLoading(player) {
+            const wrap = player && player.parentNode;
+            if (!wrap) return;
+            let sp = document.getElementById('commercial-loading');
+            if (!sp) {
+                sp = document.createElement('div');
+                sp.id = 'commercial-loading';
+                sp.setAttribute('aria-hidden', 'true');
+                sp.style.cssText = 'position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px 0 0 -27px;border:4px solid rgba(255,255,255,.25);border-top-color:#f5c518;border-radius:50%;pointer-events:none;z-index:3;animation:qpSpin .9s linear infinite';
+                if (!document.getElementById('qp-spin-style')) {
+                    const st = document.createElement('style'); st.id = 'qp-spin-style'; st.textContent = '@keyframes qpSpin{to{transform:rotate(360deg)}}';
+                    document.head.appendChild(st);
+                }
+                wrap.appendChild(sp);
+            }
+            sp.style.display = 'block';
+            const hide = function () { sp.style.display = 'none'; ['playing', 'pause', 'error', 'ended'].forEach(function (n) { player.removeEventListener(n, hide); }); };
+            ['playing', 'pause', 'error', 'ended'].forEach(function (n) { player.addEventListener(n, hide); });
+        }
+
         function openCommercialModal(isLanding = false) {
             if (isLanding && commercialHasOpened) return;
             commercialHasOpened = true;
@@ -9467,17 +9505,10 @@ window.activeSection = activeSection;
 
             if (player) {
                 const isZh = (typeof currentLang !== 'undefined' && currentLang === 'zh') || (typeof detectInitialLanguage === 'function' && detectInitialLanguage() === 'zh');
-                const targetSrc = isZh
-                    ? 'assets/quan-persona_commercial_zh_1080p_web.mp4#t=1.6'
-                    : 'assets/quan-persona_commercial_1080p_web.mp4#t=1.6';
-
-                const currentSrc = player.currentSrc || player.src || '';
-                const expectedKeyword = isZh ? 'commercial_zh_' : 'commercial_1080p_web';
-                if (!currentSrc.includes(expectedKeyword)) {
-                    Array.prototype.slice.call(player.querySelectorAll('source')).forEach(function (s) { s.remove(); });
-                    player.src = targetSrc;
-                    if (typeof player.load === "function") player.load();
-                }
+                const wantLang = isZh ? 'zh' : 'en';
+                // Normally already preloaded while the language screen was showing; otherwise start loading now.
+                if (player.getAttribute('data-lang') !== wantLang) preloadCommercial(wantLang);
+                showCommercialLoading(player);
 
                 player.currentTime = 0;
                 // Attempt unmuted playback with sound on
@@ -9681,6 +9712,13 @@ window.activeSection = activeSection;
 
             window.__skipLandingVideo = dontShow;
             showLangGate();
+            if (!dontShow) {
+                preloadCommercial(initLang === 'zh' ? 'zh' : 'en');
+                Array.prototype.slice.call(document.querySelectorAll('#lang-gate .lang-gate-btn')).forEach(function (b) {
+                    const l = b.getAttribute('data-lang');
+                    ['pointerenter', 'touchstart', 'focus'].forEach(function (n) { b.addEventListener(n, function () { preloadCommercial(l); }, { passive: true }); });
+                });
+            }
             setTimeout(initPlatformData, 50);
             if (window.__pendingLang) { const pl = window.__pendingLang; window.__pendingLang = null; window.chooseLandingLang(pl); }
         }
