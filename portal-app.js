@@ -9654,7 +9654,11 @@ window.activeSection = activeSection;
                 setTimeout(function () { gate.style.display = 'none'; }, 300);
             }
             document.body.style.overflow = '';
-            openCommercialModal(true);
+            if (window.__skipLandingVideo) {
+                if (typeof switchMainSection === 'function') switchMainSection('personas');
+            } else {
+                openCommercialModal(true);
+            }
         };
 
         // Auto-launch commercial video IMMEDIATELY on landing, then load data concurrently while video plays
@@ -9673,7 +9677,7 @@ window.activeSection = activeSection;
                 dontShow = (localStorage.getItem('quan_persona_dont_show_video') === 'true');
             } catch (e) {}
 
-            try { localStorage.removeItem('quan_persona_dont_show_video'); } catch (e) {}
+            window.__skipLandingVideo = dontShow;
             showLangGate();
             setTimeout(initPlatformData, 50);
         }
@@ -9729,16 +9733,13 @@ window.activeSection = activeSection;
             e.stopPropagation();
             nav.classList.contains('intro') ? railClose() : railOpen();
         });
+        // click / tap a function: show the names for a moment, then collapse again
         nav.addEventListener('click', e => {
             const b = e.target.closest && e.target.closest('.nav-tab-btn');
             if (!b || window.innerWidth <= 900 || nav.classList.contains('pinned') || nav.classList.contains('tour-open')) return;
-            peekT = setTimeout(railClose, 200);
-        });
-        document.addEventListener('click', e => {
-            if (window.innerWidth <= 900 || nav.classList.contains('pinned') || nav.classList.contains('tour-open')) return;
-            if (!nav.classList.contains('intro')) return;
-            if (nav.contains(e.target) || (brandEl && brandEl.contains(e.target))) return;
-            railClose();
+            nav.classList.remove('quiet'); nav.classList.add('intro');
+            clearTimeout(peekT);
+            peekT = setTimeout(() => { nav.classList.remove('intro'); nav.classList.add('quiet'); if (e.detail > 0 && document.activeElement && nav.contains(document.activeElement)) document.activeElement.blur(); }, 1300);
         });
         nav.addEventListener('mouseleave', () => { if (!noHover) nav.classList.remove('quiet'); });
         const st = window.startTour;
@@ -9797,6 +9798,30 @@ window.activeSection = activeSection;
         });
         const mq = window.matchMedia('(max-width: 900px)');
         (mq.addEventListener ? mq.addEventListener.bind(mq, 'change') : mq.addListener.bind(mq))(() => { setDrawer(false); setBrandRole(); });
+    })();
+    (function () {
+        // FAQ / About pages: the top bar title reads "Frequently Asked Questions" / "About Us" (常見問題 / 關於我們); other pages keep their own title
+        const el = document.querySelector('[data-i18n="portalTitle"]');
+        const pages = [
+            { v: document.getElementById('view-faq'), en: 'Frequently Asked Questions', zh: '常見問題' },
+            { v: document.getElementById('view-about'), en: 'About Us', zh: '關於我們' }
+        ].filter(p => p.v);
+        if (!el || !pages.length) return;
+        const all = []; pages.forEach(p => all.push(p.en, p.zh));
+        let normal = el.textContent, obs;
+        const isZh = () => (typeof currentLang !== 'undefined' && currentLang === 'zh');
+        function sync() {
+            const txt = el.textContent, isPageTitle = all.indexOf(txt) !== -1;
+            const cur = pages.find(p => p.v.classList.contains('active'));
+            if (cur) { if (!isPageTitle) normal = txt; const w = isZh() ? cur.zh : cur.en; if (txt !== w) el.textContent = w; }
+            else if (isPageTitle) el.textContent = normal;
+            else normal = txt;
+            if (obs) obs.takeRecords();
+        }
+        obs = new MutationObserver(sync);
+        obs.observe(el, { childList: true, characterData: true, subtree: true });
+        pages.forEach(p => obs.observe(p.v, { attributes: true, attributeFilter: ['class'] }));
+        sync();
     })();
     (function () {
         const wrap = document.getElementById('lang-menu-wrap'), btn = document.getElementById('lang-toggle-btn');
