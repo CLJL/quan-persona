@@ -448,12 +448,12 @@
         #view-faq .faq-list { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
         #view-faq .faq-item { background: rgba(30,34,42,.65); border: 1px solid var(--panel-border); border-radius: 12px; overflow: hidden; }
         #view-faq .faq-item[open] { border-color: rgba(245,197,24,.35); }
-        #view-faq .faq-item summary { cursor: pointer; list-style: none; padding: 15px 48px 15px 18px; font-weight: 700; color: #fff; position: relative; font-size: 1rem; line-height: 1.5; }
+        #view-faq .faq-item summary { cursor: pointer; list-style: none; padding: 15px 48px 15px 18px; font-weight: 700; color: #fff; position: relative; font-size: 1.0625rem; line-height: 1.5; }
         #view-faq .faq-item summary::-webkit-details-marker { display: none; }
         #view-faq .faq-item summary::after { content: "+"; position: absolute; right: 18px; top: 50%; transform: translateY(-50%); color: var(--accent-yellow); font-size: 1.4rem; font-weight: 400; }
         #view-faq .faq-item[open] summary::after { content: "\2212"; }
         #view-faq .faq-item summary:focus-visible { outline: 2px solid var(--accent-yellow); outline-offset: -2px; }
-        #view-faq .faq-a { padding: 0 18px 16px; color: var(--text-secondary); line-height: 1.75; font-size: .97rem; }
+        #view-faq .faq-a { padding: 0 18px 16px; color: var(--text-secondary); line-height: 1.75; font-size: 1.0625rem; }
 
         /* Dynamic Views Panels */
         .section-view {
@@ -2498,3 +2498,34 @@
 
 #view-faq .faq-a a.faq-link { color: var(--accent-yellow); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
 #view-faq .faq-a a.faq-link:hover { filter: brightness(1.15); }
+
+/* Journey Map content text: 17px (headings, stage headers and chart labels keep their own sizes) */
+#view-journeys .j-overview-info span,
+#view-journeys .j-overview-info p,
+#view-journeys .j-overview-block,
+#view-journeys .j-overview-block strong,
+#view-journeys .j-cell-card,
+#view-journeys .j-cell-card li,
+#view-journeys .j-cell-card span,
+#view-journeys .j-cell-card strong,
+#view-journeys .j-cell-card div,
+#view-journeys .j-footer-card div,
+#view-journeys .j-footer-card span,
+#view-journeys .j-footer-card strong { font-size: 1.0625rem !important; }
+
+/* About Us "How it works": the four steps laid out as a process flow (connected, left to right; top to bottom on narrow screens) */
+#view-about .about-flow { grid-template-columns: repeat(4, 1fr); gap: 36px; counter-reset: none; }
+#view-about .about-flow .about-step { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; position: relative; }
+#view-about .about-flow .about-step:not(:last-child)::before { content: ""; position: absolute; left: 100%; top: 33px; width: 36px; height: 2px; background: rgba(245,197,24,.55); }
+#view-about .about-flow .about-step:not(:last-child)::after { content: ""; position: absolute; left: calc(100% + 24px); top: 29px; width: 9px; height: 9px; border-top: 2px solid var(--accent-yellow); border-right: 2px solid var(--accent-yellow); transform: rotate(45deg); }
+@media (max-width: 900px) {
+  #view-about .about-flow { grid-template-columns: 1fr; gap: 36px; }
+  #view-about .about-flow .about-step:not(:last-child)::before { left: 34px; top: 100%; width: 2px; height: 36px; }
+  #view-about .about-flow .about-step:not(:last-child)::after { left: 30px; top: calc(100% + 24px); transform: rotate(135deg); }
+}
+
+/* About Us: Data privacy and Now in Beta shown as plain text (no boxed frame) */
+#view-about .about-privacy { background: none; border: 0; border-radius: 0; padding: 0; }
+
+/* About Us: link buttons (Beta actions) look like the other buttons */
+#view-about .about-actions a.btn { text-decoration: none; color: #f8f9fa; font-size: 1.125rem; }
