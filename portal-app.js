@@ -9599,7 +9599,9 @@ window.activeSection = activeSection;
                 switchMainSection('personas');
             }
             setTimeout(function () {
-                if (typeof startTour === 'function') {
+                if (typeof window.openStartHereAuto === 'function') {
+                    window.openStartHereAuto();
+                } else if (typeof startTour === 'function') {
                     startTour();
                 }
             }, 250);

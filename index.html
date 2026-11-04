@@ -178,16 +178,17 @@
     <link rel="manifest" href="site.webmanifest">
     <meta name="theme-color" content="#0E1016">
     <!-- Externalised Stylesheet -->
-    <link rel="stylesheet" href="portal.css?v=20261104l">
+    <link rel="stylesheet" href="portal.css?v=20261104m">
 
     <!-- Offline Core Libraries & Deferred Application Modules -->
     <script src="chart.min.js" defer></script>
-    <script src="journey_schemas_modular.js?v=20261104l" defer></script>
-    <script src="survey_data_2500.js?v=20261104l" defer></script>
-    <script src="portal_clustering.js?v=20261104l" defer></script>
-    <script src="portal-csv.js?v=20261104l" defer></script>
-    <script src="portal-tour.js?v=20261104l" defer></script>
-    <script src="portal-app.js?v=20261104l" defer></script>
+    <script src="journey_schemas_modular.js?v=20261104m" defer></script>
+    <script src="survey_data_2500.js?v=20261104m" defer></script>
+    <script src="portal_clustering.js?v=20261104m" defer></script>
+    <script src="portal-csv.js?v=20261104m" defer></script>
+    <script src="portal-tour.js?v=20261104m" defer></script>
+    <script src="portal-app.js?v=20261104m" defer></script>
+    <script src="portal-start.js?v=20261104m" defer></script>
 </head>
 <body>
     <noscript>
@@ -250,7 +251,7 @@
                         </button>
                     </div>
                 </div>
-                <button type="button" id="tour-btn" class="btn btn-secondary icon-btn" onclick="startTour()" aria-label="Guided tour">
+                <button type="button" id="tour-btn" class="btn btn-secondary icon-btn" onclick="openStartHere()" aria-label="Guided tour">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                         <polygon points="11.5 2.6 21 6.4 11.5 10.2 2 6.4"></polygon>
                         <line x1="20.4" y1="7.1" x2="20.4" y2="10.4"></line>
