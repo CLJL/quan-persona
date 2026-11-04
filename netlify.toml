@@ -32,8 +32,4 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
 
-# Fallback Routing
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+# Unknown URLs return a real 404 (see 404.html) instead of the home page with status 200

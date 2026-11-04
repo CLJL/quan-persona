@@ -481,6 +481,7 @@ window.activeSection = activeSection;
             currentLang = lang;
             const isZh = (currentLang === 'zh');
             document.documentElement.setAttribute('data-lang', isZh ? 'zh' : 'en');
+            document.documentElement.setAttribute('lang', isZh ? 'zh-Hant' : 'en');
 
             // Sanitize active schema if switching to English and polluted with Chinese
             if (!isZh && typeof getActiveJourneySchema === 'function') {
@@ -9472,6 +9473,9 @@ window.activeSection = activeSection;
             const player = document.getElementById('commercial-video-player');
             if (!player) return;
             lang = (lang === 'zh') ? 'zh' : 'en';
+            // Do not pre-download the ~19 MB video on Data Saver or a slow connection; it still loads when the viewer opens it
+            var _cn = navigator.connection;
+            if (_cn && (_cn.saveData || /^(slow-2g|2g|3g)$/.test(_cn.effectiveType || ''))) return;
             if (player.getAttribute('data-lang') === lang) return;
             Array.prototype.slice.call(player.querySelectorAll('source')).forEach(function (s) { s.remove(); });
             player.setAttribute('data-lang', lang);
