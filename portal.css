@@ -2542,3 +2542,6 @@
 /* About Us and FAQ pages: no cluster tabs (they must stay hidden on phones too, where the tabs bar is forced visible) */
 body:has(#view-about.active) .capsule-tabs-container,
 body:has(#view-faq.active) .capsule-tabs-container { display: none !important; }
+
+/* About Us / FAQ rail icons are solid-fill artwork, not stroke icons */
+#main-nav .nav-tab-btn svg.ic-fill { fill: currentColor; stroke: none; }
