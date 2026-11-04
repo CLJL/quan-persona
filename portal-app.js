@@ -69,7 +69,7 @@ window.activeSection = activeSection;
 
         const TRANSLATIONS = {
             en: {
-                portalTitle: "Agent Persona & Sales Journey Analytics Platform",
+                portalTitle: "Behaviour Segmentation & Persona Analytics",
                 customizeSchema: "Customise Schema",
                 schemaBuilderModalTitle: "Change Modular Questionnaire & Measurement Schema Designer",
                 schemaBuilderModalSubtitle: "Configure questions, competency scales, and journey stages. Saving immediately updates the analytics platform measurements.",
@@ -255,7 +255,7 @@ window.activeSection = activeSection;
                 commercialBadge: "COMMERCIAL"
             },
             zh: {
-                portalTitle: "保險業務員客群畫像與銷售旅程分析平台",
+                portalTitle: "行為分群與人物誌分析平台",
                 customizeSchema: "自訂問卷架構",
                 schemaBuilderModalTitle: "變更模組化問卷與量測架構設計",
                 schemaBuilderModalSubtitle: "設定問題、評估量表與歷程階段。儲存後立即更新整個分析平台之數據量測與分群分析。",
@@ -571,7 +571,7 @@ window.activeSection = activeSection;
                 const titleEl = document.querySelector('[data-i18n="portalTitle"]');
                 if (titleEl) {
                     if (schema.id === 'agent' || !schema.id) {
-                        titleEl.textContent = isZh ? t('portalTitle') : "Agent Persona & Sales Journey Analytics Platform";
+                        titleEl.textContent = isZh ? t('portalTitle') : "Behaviour Segmentation & Persona Analytics";
                     } else if (isZh) {
                         titleEl.textContent = `${schema.nameZh || schema.name} 分析平台 (V.2)`;
                     } else {
@@ -688,7 +688,7 @@ window.activeSection = activeSection;
             const titleEl = document.querySelector('[data-i18n="portalTitle"]');
             if (titleEl) {
                 if (schema.id === 'agent' || !schema.id) {
-                    titleEl.textContent = isZh ? t('portalTitle') : "Agent Persona & Sales Journey Analytics Platform";
+                    titleEl.textContent = isZh ? t('portalTitle') : "Behaviour Segmentation & Persona Analytics";
                 } else if (isZh) {
                     titleEl.textContent = `${schema.nameZh || schema.name} 分析平台 (V.2)`;
                 } else {
@@ -5597,7 +5597,7 @@ window.activeSection = activeSection;
             const titleEl = document.querySelector('[data-i18n="portalTitle"]');
             if (titleEl) {
                 if (schema.id === 'agent') {
-                    titleEl.textContent = isZh ? t('portalTitle') : "Agent Persona & Sales Journey Analytics Platform";
+                    titleEl.textContent = isZh ? t('portalTitle') : "Behaviour Segmentation & Persona Analytics";
                 } else {
                     const sName = isZh ? (schema.nameZh || schema.name) : (schema.name || schema.nameZh || 'Sales Journey');
                     titleEl.textContent = `${sName} ${isZh ? '分析平台 (V.2)' : 'Analytics Platform (V.2)'}`;
