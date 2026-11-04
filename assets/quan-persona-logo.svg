@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="512" height="512"><defs>
+<linearGradient id="a" gradientUnits="userSpaceOnUse" x1="10" y1="20" x2="60" y2="90"><stop offset="0" stop-color="#8f6bff"/><stop offset="1" stop-color="#5a3fd8"/></linearGradient>
+<linearGradient id="b" gradientUnits="userSpaceOnUse" x1="40" y1="10" x2="90" y2="60"><stop offset="0" stop-color="#4da3ff"/><stop offset="1" stop-color="#7a8cff"/></linearGradient>
+<linearGradient id="c" gradientUnits="userSpaceOnUse" x1="20" y1="90" x2="80" y2="60"><stop offset="0" stop-color="#4b2fc4"/><stop offset="1" stop-color="#6a52e8"/></linearGradient>
+<linearGradient id="d" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="100" y2="100"><stop offset="0" stop-color="#3fe0b0"/><stop offset="1" stop-color="#1fb987"/></linearGradient>
+<mask id="m"><polygon points="50.00,8.00 86.37,29.00 86.37,71.00 50.00,92.00 13.63,71.00 13.63,29.00" fill="#fff"/><polygon points="50.00,27.00 69.92,38.50 69.92,61.50 50.00,73.00 30.08,61.50 30.08,38.50" fill="#000"/><circle cx="80" cy="82" r="13" fill="#000"/></mask>
+<clipPath id="k"><polygon points="50.00,31.00 66.45,40.50 66.45,59.50 50.00,69.00 33.55,59.50 33.55,40.50"/></clipPath>
+</defs>
+<g mask="url(#m)">
+<polygon points="8,20 50,6 50,50 8,60" fill="url(#a)"/>
+<polygon points="50,6 92,20 92,60 50,50" fill="url(#b)"/>
+<polygon points="8,50 50,50 92,50 92,100 8,100" fill="url(#c)"/>
+<polygon points="8,20 8,60 50,100 8,100" fill="url(#a)" opacity=".55"/>
+</g>
+<g clip-path="url(#k)" fill="url(#d)"><circle cx="50" cy="42" r="8.5"/><ellipse cx="50" cy="72" rx="17" ry="15"/></g>
+<circle cx="80" cy="82" r="8" fill="url(#d)"/>
+</svg>
