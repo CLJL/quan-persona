@@ -618,10 +618,22 @@ window.activeSection = activeSection;
             }    };
 
             if (lang === 'zh' && currentJourneyDomain === 'agent' && (typeof PRE_LOADED_DATA_ZH === 'undefined' || !PRE_LOADED_DATA_ZH.length) && typeof window.loadScriptAsync === 'function') {
-                if (typeof showCsvLoading === 'function') {
+                // While the language screen or the intro video is showing, load the Chinese data quietly:
+                // the loading card must not cover them (it still shows when switching language inside the portal).
+                const _gate = document.getElementById('lang-gate'), _vid = document.getElementById('commercial-video-modal');
+                const quiet = !!((_gate && _gate.classList.contains('show')) || (_vid && _vid.classList.contains('active')));
+                if (!quiet && typeof showCsvLoading === 'function') {
                     showCsvLoading('載入中文資料庫...', '正在載入繁體中文問卷數據...');
                 }
-                window.loadScriptAsync('survey_data_zh_2500.js').then(() => {
+                // One shared download, so a second request while it is still loading waits for it.
+                window.__zhDataPromise = window.__zhDataPromise || new Promise(function (resolve, reject) {
+                    const sc = document.createElement('script');
+                    sc.src = 'survey_data_zh_2500.js';
+                    sc.onload = function () { resolve(); };
+                    sc.onerror = function () { window.__zhDataPromise = null; reject(new Error('Failed to load survey_data_zh_2500.js')); };
+                    document.head.appendChild(sc);
+                });
+                window.__zhDataPromise.then(() => {
                     if (typeof hideCsvLoading === 'function') hideCsvLoading();
                     doApplyLang();
                 }).catch(err => {
