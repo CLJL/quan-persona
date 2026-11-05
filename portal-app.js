@@ -1,8 +1,40 @@
 
-        // The sample-data file loads last (so it never holds up the language screen or the video); anything that needs it waits here
+        // Asynchronously load language-specific survey dataset on demand without blocking landing or video
+        function loadEnglishDataAsync() {
+            if (typeof PRE_LOADED_DATA !== 'undefined' && PRE_LOADED_DATA.length > 0) return Promise.resolve();
+            if (window.__enDataPromise) return window.__enDataPromise;
+            window.__enDataPromise = new Promise(function (resolve) {
+                const sc = document.createElement('script');
+                sc.src = 'survey_data_2500.js?v=20261105i';
+                sc.onload = function () { window.__enDataLoaded = true; resolve(); };
+                sc.onerror = function (e) { console.error('Failed to load EN survey data', e); resolve(); };
+                document.head.appendChild(sc);
+            });
+            return window.__enDataPromise;
+        }
+        window.loadEnglishDataAsync = loadEnglishDataAsync;
+
+        function loadChineseDataAsync() {
+            if (typeof PRE_LOADED_DATA_ZH !== 'undefined' && PRE_LOADED_DATA_ZH.length > 0) return Promise.resolve();
+            if (window.__zhDataPromise) return window.__zhDataPromise;
+            window.__zhDataPromise = new Promise(function (resolve) {
+                const sc = document.createElement('script');
+                sc.src = 'survey_data_zh_2500.js?v=20261105i';
+                sc.onload = function () { resolve(); };
+                sc.onerror = function (e) { console.error('Failed to load ZH survey data', e); resolve(); };
+                document.head.appendChild(sc);
+            });
+            return window.__zhDataPromise;
+        }
+        window.loadChineseDataAsync = loadChineseDataAsync;
+
         function whenDataReady(fn) {
-            if (typeof PRE_LOADED_DATA !== 'undefined' || !window.__enDataPending || window.__enDataLoaded) fn();
-            else window.__enDataPending.then(fn);
+            const isZh = (typeof currentLang !== 'undefined' && currentLang === 'zh') || (typeof detectInitialLanguage === 'function' && detectInitialLanguage() === 'zh');
+            const p = isZh ? loadChineseDataAsync() : loadEnglishDataAsync();
+            if (fn) {
+                p.then(fn);
+            }
+            return p;
         }
         window.whenDataReady = whenDataReady;
 
@@ -9650,20 +9682,14 @@ window.activeSection = activeSection;
             }
         })();
 
-        // Initialize Platform Data & Views in the background while video is playing
+        // Initialize Platform Data & Views on demand
         function initPlatformData() {
             if (window.__platformDataInitialized) return;
-            if (typeof PRE_LOADED_DATA === 'undefined' && window.__enDataPending && !window.__enDataLoaded) { window.__enDataPending.then(initPlatformData); return; }
-            if (typeof PRE_LOADED_DATA === 'undefined' && typeof PRE_LOADED_DATA_ZH === 'undefined' && document.readyState === 'loading') {
-                window.addEventListener('DOMContentLoaded', initPlatformData);
-                window.addEventListener('load', initPlatformData);
-                return;
-            }
             window.__platformDataInitialized = true;
 
             // Respect initial detected language or existing choice
             const initialDetected = detectInitialLanguage();
-            if (initialDetected === 'zh') {
+            if (initialDetected === 'zh' || currentLang === 'zh') {
                 currentLang = 'zh';
                 window.currentLang = 'zh';
             } else if (!currentLang) {
@@ -9671,7 +9697,11 @@ window.activeSection = activeSection;
             }
             if (typeof loadCustomSchemasFromStorage === 'function') loadCustomSchemasFromStorage();
             if (typeof updateClusterFeatures === 'function') updateClusterFeatures();
-            if (typeof PRE_LOADED_DATA !== 'undefined' && PRE_LOADED_DATA.length > 0) {
+
+            const isZh = (currentLang === 'zh');
+            if (isZh && typeof PRE_LOADED_DATA_ZH !== 'undefined' && PRE_LOADED_DATA_ZH.length > 0) {
+                parsedData = PRE_LOADED_DATA_ZH;
+            } else if (typeof PRE_LOADED_DATA !== 'undefined' && PRE_LOADED_DATA.length > 0) {
                 parsedData = PRE_LOADED_DATA;
             } else if (typeof PRE_LOADED_DATA_ZH !== 'undefined' && PRE_LOADED_DATA_ZH.length > 0) {
                 parsedData = PRE_LOADED_DATA_ZH;
@@ -9685,7 +9715,7 @@ window.activeSection = activeSection;
             }
             updateAgentDropdown();
             renderAll();
-            applyLanguage('en');
+            applyLanguage(currentLang || 'en');
             const urlParams = new URLSearchParams(window.location.search);
             const initialSection = urlParams.get('section');
             if (initialSection && ['personas', 'journeys', 'analytics'].includes(initialSection)) {
@@ -9718,22 +9748,31 @@ window.activeSection = activeSection;
                 setTimeout(function () { gate.style.display = 'none'; }, 300);
             }
             document.body.style.overflow = '';
-            // The video starts first; the data-dependent set-up follows as soon as the sample data is in (it loads while the video plays)
-            if (!window.__skipLandingVideo && !window.__qpCloseWanted) openCommercialModal(true);
-            const runSetup = function () {
-                if (typeof initPlatformData === 'function') initPlatformData();
-                currentLang = lang; window.currentLang = lang;
-                if (typeof applyLanguage === 'function') applyLanguage(lang);
-                if (window.__skipLandingVideo && typeof switchMainSection === 'function') switchMainSection('personas');
-                if (window.__qpCloseWanted) { window.__qpCloseWanted = false; closeCommercialModal(true); }
-            };
-            whenDataReady(function () {
-                const vp = document.getElementById('commercial-video-player');
-                if (window.__skipLandingVideo || window.__qpCloseWanted || !vp || !vp.paused) { setTimeout(runSetup, window.__skipLandingVideo || window.__qpCloseWanted ? 0 : 400); return; }
-                // let the video begin playing first; the set-up (which briefly keeps the page busy) follows
-                let ran = false; const go = function () { if (ran) return; ran = true; vp.removeEventListener('playing', go); runSetup(); };
-                vp.addEventListener('playing', go); setTimeout(go, 1500);
-            });
+
+            // Quietly fetch dataset in background via async script (network only, zero main-thread CPU)
+            whenDataReady(function () {});
+
+            let skip = false;
+            try { skip = (localStorage.getItem('quan_persona_dont_show_video') === 'true'); } catch (e) {}
+
+            if (!skip && !window.__qpCloseWanted) {
+                openCommercialModal(true);
+            } else {
+                // Video skipped: proceed directly to portal
+                whenDataReady(function () {
+                    if (typeof initPlatformData === 'function') initPlatformData();
+                    currentLang = lang; window.currentLang = lang;
+                    if (typeof applyLanguage === 'function') applyLanguage(lang);
+                    if (typeof switchMainSection === 'function') switchMainSection('personas');
+                    setTimeout(function () {
+                        if (typeof window.openStartHereAuto === 'function') {
+                            window.openStartHereAuto();
+                        } else if (typeof startTour === 'function') {
+                            startTour();
+                        }
+                    }, 250);
+                });
+            }
         };
 
         // Auto-launch commercial video IMMEDIATELY on landing, then load data concurrently while video plays
@@ -9742,9 +9781,6 @@ window.activeSection = activeSection;
             if (initLang === 'zh') {
                 currentLang = 'zh';
                 window.currentLang = 'zh';
-                if (typeof applyLanguage === 'function') {
-                    whenDataReady(function () { applyLanguage('zh'); });
-                }
             }
 
             let dontShow = false;
@@ -9754,17 +9790,17 @@ window.activeSection = activeSection;
 
             window.__skipLandingVideo = dontShow;
             showLangGate();
-            if (!dontShow) {
-                preloadCommercial(initLang === 'zh' ? 'zh' : 'en');
-                // The app scripts are in: now let the video buffer fully
-                try { const _vp = document.getElementById('commercial-video-player'); if (_vp && !(navigator.connection && navigator.connection.saveData)) _vp.preload = 'auto'; } catch (e) {}
-                Array.prototype.slice.call(document.querySelectorAll('#lang-gate .lang-gate-btn')).forEach(function (b) {
-                    const l = b.getAttribute('data-lang');
-                    ['pointerenter', 'touchstart', 'focus'].forEach(function (n) { b.addEventListener(n, function () { preloadCommercial(l); }, { passive: true }); });
-                });
+
+            Array.prototype.slice.call(document.querySelectorAll('#lang-gate .lang-gate-btn')).forEach(function (b) {
+                const l = b.getAttribute('data-lang');
+                ['pointerenter', 'touchstart', 'focus'].forEach(function (n) { b.addEventListener(n, function () { preloadCommercial(l); }, { passive: true }); });
+            });
+
+            if (window.__pendingLang) {
+                const pl = window.__pendingLang;
+                window.__pendingLang = null;
+                window.chooseLandingLang(pl);
             }
-            // The heavy set-up (clustering the sample data, ~3 s of CPU) no longer runs behind the language screen: it starts after a language is chosen
-            if (window.__pendingLang) { const pl = window.__pendingLang; window.__pendingLang = null; window.chooseLandingLang(pl); }
         }
 
         if (document.readyState === 'loading') {
@@ -9775,7 +9811,12 @@ window.activeSection = activeSection;
 
         window.addEventListener('load', () => {
             const g = document.getElementById('lang-gate');
-            if (!g || g.style.display === 'none') initPlatformData();   // while the language screen is up, the page stays idle so the buttons respond at once
+            const v = document.getElementById('commercial-video-modal');
+            const isGateVisible = g && (g.style.display !== 'none' && g.classList.contains('show'));
+            const isVideoActive = v && v.classList.contains('active');
+            if (!isGateVisible && !isVideoActive) {
+                whenDataReady(initPlatformData);
+            }
         });
     (function () {
         const wrap = document.getElementById('data-menu-wrap'), btn = document.getElementById('data-menu-btn');

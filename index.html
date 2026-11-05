@@ -181,9 +181,7 @@
     <!-- Externalised Stylesheet -->
     <link rel="stylesheet" href="portal.css?v=20261105i">
 
-    <!-- The ~4.6 MB sample-data file loads last, so it no longer holds up the app, the language screen or the intro video -->
-    <script>window.__enDataPending = new Promise(function (r) { window.__enDataDone = function () { window.__enDataLoaded = true; r(); }; });</script>
-    <!-- Offline Core Libraries & Deferred Application Modules -->
+    <!-- Offline Core Libraries & Deferred Application Modules (sample data loads asynchronously on demand) -->
     <script src="chart.min.js" defer></script>
     <script src="journey_schemas_modular.js?v=20261105i" defer></script>
     <script src="portal_clustering.js?v=20261105i" defer></script>
@@ -191,7 +189,6 @@
     <script src="portal-tour.js?v=20261105i" defer></script>
     <script src="portal-app.js?v=20261105i" defer></script>
     <script src="portal-start.js?v=20261105i" defer></script>
-    <script src="survey_data_2500.js?v=20261105i" defer onload="__enDataDone()" onerror="__enDataDone()"></script>
 </head>
 <body>
     <noscript>
@@ -997,7 +994,10 @@
             var skip = false; try { skip = localStorage.getItem('quan_persona_dont_show_video') === 'true'; } catch (e) {}
             // Before the app has loaded: close the language screen and start the video straight away; the app picks up the choice when it is ready
             if (!skip && window.__qpEarlyOpen && window.__qpEarlyOpen(lang)) return;
-            if (g) { g.classList.add('is-loading'); var bs = g.querySelectorAll('.lang-gate-btn'); for (var i = 0; i < bs.length; i++) bs[i].disabled = true; }
+            if (g && skip) {
+                g.classList.remove('show');
+                setTimeout(function () { g.style.display = 'none'; }, 300);
+            }
         };
     })();
     </script>
@@ -1031,16 +1031,13 @@
     </div>
 
     <script>
-    /* Landing speed: the intro video starts downloading as soon as the page is parsed (it no longer waits for the app scripts),
-       and a language click starts it immediately. Only the start of the file is fetched until the app scripts have loaded, so the video
-       never competes with them. Slow connections get a lighter 720p copy. */
+    /* Landing speed: the intro video starts buffering on language choice or hover,
+       preventing network competition with the application modules during initial page parse. */
     (function () {
-        var cn = navigator.connection || {};
-        function slow() { return !!(cn.saveData || /^(slow-2g|2g|3g)$/.test(cn.effectiveType || '') || (cn.downlink && cn.downlink < 3)); }
         window.__qpVideoSrc = function (lang) {
-            var z = (lang === 'zh');
-            if (slow()) return z ? 'assets/quan-persona-commercial-zh-720p-lite.mp4' : 'assets/quan-persona-commercial-720p-lite.mp4';
-            return z ? 'assets/quan-persona_commercial_zh_1080p_web.mp4' : 'assets/quan-persona_commercial_1080p_web.mp4';
+            return (lang === 'zh')
+                ? 'assets/quan-persona_commercial_zh_1080p_web.mp4'
+                : 'assets/quan-persona_commercial_1080p_web.mp4';
         };
         function guess() {
             try {
@@ -1054,7 +1051,7 @@
             lang = (lang === 'zh') ? 'zh' : 'en';
             if (p.getAttribute('data-lang') === lang) return p;
             Array.prototype.slice.call(p.querySelectorAll('source')).forEach(function (x) { x.remove(); });
-            p.setAttribute('data-lang', lang); p.preload = 'metadata'; p.src = window.__qpVideoSrc(lang); try { p.load(); } catch (e) {}
+            p.setAttribute('data-lang', lang); p.preload = 'auto'; p.src = window.__qpVideoSrc(lang); try { p.load(); } catch (e) {}
             return p;
         };
         function spin(p) {
@@ -1088,9 +1085,8 @@
             if (m) { m.classList.remove('active'); m.style.display = 'none'; }
             document.body.style.overflow = '';
         };
-        if (!cn.saveData) window.__qpSetVideo(guess());
         Array.prototype.slice.call(document.querySelectorAll('#lang-gate .lang-gate-btn')).forEach(function (b) {
-            ['pointerenter', 'touchstart', 'focus'].forEach(function (n) { b.addEventListener(n, function () { if (!cn.saveData && !window.__qpEarly) window.__qpSetVideo(b.getAttribute('data-lang')); }, { passive: true }); });
+            ['pointerenter', 'touchstart', 'focus'].forEach(function (n) { b.addEventListener(n, function () { if (!window.__qpEarly) window.__qpSetVideo(b.getAttribute('data-lang')); }, { passive: true }); });
         });
     })();
     </script>
