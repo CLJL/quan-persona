@@ -8,7 +8,7 @@
                   zh: { t: '您與平台如何攜手合作？', b: '統計、指標計算與演算法分群交由平台自動處理；您則專注於核心判斷——決定關鍵題目、探索最合適的分群數，並為每個人物誌賦予深刻洞察。' } },
                 { sel: '#btn-schema-builder', en: { t: 'What questions do you want to ask?', b: 'Tailor your questionnaire here to match your research goals. You can customise background demographics, rating dimensions, and customer journey stages at any time.' },
                   zh: { t: '您想向受訪者詢問哪些重點？', b: '在此依專案需求自訂題目、評分指標與服務歷程階段，打造最契合您研究目標的量測架構。' } },
-                { menu: true, sel: () => document.querySelector('[data-i18n="questionnaireTemplate"]')?.closest('button'), en: { t: 'Ready to collect field responses?', b: 'Once your schema is set, download your ready-to-use questionnaire module here to share directly with respondents or interviewees.' },
+                { sel: () => document.querySelector('[data-i18n="questionnaireTemplate"]')?.closest('button'), en: { t: 'Ready to collect field responses?', b: 'Once your schema is set, download your ready-to-use questionnaire module here to share directly with respondents or interviewees.' },
                   zh: { t: '準備好收集受訪者回饋了嗎？', b: '架構配置完成後，在此直接下載對應的問卷模組文件，即可發放給受訪者填寫或於第一線訪談使用。' } },
                 { menu: true, sel: '#csv-guide-btn', en: { t: 'Unsure how to format your survey results?', b: 'Open this guide to see the exact columns needed for analysis. You can also download a pre-formatted CSV template to organise your data.' },
                   zh: { t: '不確定問卷結果該如何整理成資料檔？', b: '開啟此指南即可查看分析所需的完整欄位規範，也能下載現成對照範本，輕鬆整理回收的資料。' } },

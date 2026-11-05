@@ -1,4 +1,11 @@
 
+        // The sample-data file loads last (so it never holds up the language screen or the video); anything that needs it waits here
+        function whenDataReady(fn) {
+            if (typeof PRE_LOADED_DATA !== 'undefined' || !window.__enDataPending || window.__enDataLoaded) fn();
+            else window.__enDataPending.then(fn);
+        }
+        window.whenDataReady = whenDataReady;
+
         function detectInitialLanguage() {
             try {
                 const urlParams = new URLSearchParams(window.location.search);
@@ -9467,15 +9474,17 @@ window.activeSection = activeSection;
         // Start downloading the intro video for a language while the language screen is still showing,
         // so it is already buffered when the viewer chooses and playback can begin at 0:00.
         function commercialSrcFor(lang) {
+            if (typeof window.__qpVideoSrc === 'function') return window.__qpVideoSrc(lang);
             return (lang === 'zh') ? 'assets/quan-persona_commercial_zh_1080p_web.mp4' : 'assets/quan-persona_commercial_1080p_web.mp4';
         }
         function preloadCommercial(lang) {
             const player = document.getElementById('commercial-video-player');
             if (!player) return;
             lang = (lang === 'zh') ? 'zh' : 'en';
-            // Do not pre-download the ~19 MB video on Data Saver or a slow connection; it still loads when the viewer opens it
+            // Do not pre-download the video on Data Saver; it still loads when the viewer opens it. Slow connections get the lighter copy (see index.html).
             var _cn = navigator.connection;
-            if (_cn && (_cn.saveData || /^(slow-2g|2g|3g)$/.test(_cn.effectiveType || ''))) return;
+            if (_cn && _cn.saveData) return;
+            if (typeof window.__qpSetVideo === 'function') { window.__qpSetVideo(lang); return; }
             if (player.getAttribute('data-lang') === lang) return;
             Array.prototype.slice.call(player.querySelectorAll('source')).forEach(function (s) { s.remove(); });
             player.setAttribute('data-lang', lang);
@@ -9524,9 +9533,12 @@ window.activeSection = activeSection;
                 const wantLang = isZh ? 'zh' : 'en';
                 // Normally already preloaded while the language screen was showing; otherwise start loading now.
                 if (player.getAttribute('data-lang') !== wantLang) preloadCommercial(wantLang);
+                // The language click may already have started the video before this code had loaded: keep it playing, do not restart it
+                const early = !!window.__qpEarly; window.__qpEarly = false;
+                if (early && !player.paused) { if (player.readyState < 3) showCommercialLoading(player); hidePlayBtn(); return; }
                 showCommercialLoading(player);
 
-                player.currentTime = 0;
+                if (!early) player.currentTime = 0;
                 // Attempt unmuted playback with sound on
                 player.muted = false;
                 player.volume = 1.0;
@@ -9589,22 +9601,24 @@ window.activeSection = activeSection;
                 footer.style.display = 'none';
             }
 
-            // Ensure background data initialization has completed
-            if (typeof initPlatformData === 'function') {
-                initPlatformData();
-            }
-
-            // When users close the video, it goes directly to the tutorial:
-            if (typeof switchMainSection === 'function') {
-                switchMainSection('personas');
-            }
-            setTimeout(function () {
-                if (typeof window.openStartHereAuto === 'function') {
-                    window.openStartHereAuto();
-                } else if (typeof startTour === 'function') {
-                    startTour();
+            // Ensure background data initialization has completed (it waits for the sample data if that is still loading)
+            whenDataReady(function () {
+                if (typeof initPlatformData === 'function') {
+                    initPlatformData();
                 }
-            }, 250);
+
+                // When users close the video, it goes directly to the tutorial:
+                if (typeof switchMainSection === 'function') {
+                    switchMainSection('personas');
+                }
+                setTimeout(function () {
+                    if (typeof window.openStartHereAuto === 'function') {
+                        window.openStartHereAuto();
+                    } else if (typeof startTour === 'function') {
+                        startTour();
+                    }
+                }, 250);
+            });
         }
         window.openCommercialModal = openCommercialModal;
         window.closeCommercialModal = closeCommercialModal;
@@ -9624,7 +9638,7 @@ window.activeSection = activeSection;
                         lblDontShow.textContent = isZh ? '不再顯示影片' : 'Don’t show the video again';
                     }
                     if (lblContinue) {
-                        lblContinue.textContent = isZh ? '立即探索平台 →' : 'Explore the portal now →';
+                        lblContinue.textContent = isZh ? '開始教學導覽 →' : 'Start a tutorial →';
                     }
                     if (chk) {
                         chk.checked = (localStorage.getItem('quan_persona_dont_show_video') === 'true');
@@ -9639,6 +9653,7 @@ window.activeSection = activeSection;
         // Initialize Platform Data & Views in the background while video is playing
         function initPlatformData() {
             if (window.__platformDataInitialized) return;
+            if (typeof PRE_LOADED_DATA === 'undefined' && window.__enDataPending && !window.__enDataLoaded) { window.__enDataPending.then(initPlatformData); return; }
             if (typeof PRE_LOADED_DATA === 'undefined' && typeof PRE_LOADED_DATA_ZH === 'undefined' && document.readyState === 'loading') {
                 window.addEventListener('DOMContentLoaded', initPlatformData);
                 window.addEventListener('load', initPlatformData);
@@ -9696,20 +9711,29 @@ window.activeSection = activeSection;
         window.chooseLandingLang = function (lang) {
             lang = (lang === 'zh') ? 'zh' : 'en';
             try { localStorage.setItem('portal_lang', lang); } catch (e) {}
-            if (typeof initPlatformData === 'function') initPlatformData();
             currentLang = lang; window.currentLang = lang;
-            if (typeof applyLanguage === 'function') applyLanguage(lang);
             const gate = document.getElementById('lang-gate');
             if (gate) {
                 gate.classList.remove('show');
                 setTimeout(function () { gate.style.display = 'none'; }, 300);
             }
             document.body.style.overflow = '';
-            if (window.__skipLandingVideo) {
-                if (typeof switchMainSection === 'function') switchMainSection('personas');
-            } else {
-                openCommercialModal(true);
-            }
+            // The video starts first; the data-dependent set-up follows as soon as the sample data is in (it loads while the video plays)
+            if (!window.__skipLandingVideo && !window.__qpCloseWanted) openCommercialModal(true);
+            const runSetup = function () {
+                if (typeof initPlatformData === 'function') initPlatformData();
+                currentLang = lang; window.currentLang = lang;
+                if (typeof applyLanguage === 'function') applyLanguage(lang);
+                if (window.__skipLandingVideo && typeof switchMainSection === 'function') switchMainSection('personas');
+                if (window.__qpCloseWanted) { window.__qpCloseWanted = false; closeCommercialModal(true); }
+            };
+            whenDataReady(function () {
+                const vp = document.getElementById('commercial-video-player');
+                if (window.__skipLandingVideo || window.__qpCloseWanted || !vp || !vp.paused) { setTimeout(runSetup, window.__skipLandingVideo || window.__qpCloseWanted ? 0 : 400); return; }
+                // let the video begin playing first; the set-up (which briefly keeps the page busy) follows
+                let ran = false; const go = function () { if (ran) return; ran = true; vp.removeEventListener('playing', go); runSetup(); };
+                vp.addEventListener('playing', go); setTimeout(go, 1500);
+            });
         };
 
         // Auto-launch commercial video IMMEDIATELY on landing, then load data concurrently while video plays
@@ -9719,7 +9743,7 @@ window.activeSection = activeSection;
                 currentLang = 'zh';
                 window.currentLang = 'zh';
                 if (typeof applyLanguage === 'function') {
-                    applyLanguage('zh');
+                    whenDataReady(function () { applyLanguage('zh'); });
                 }
             }
 
@@ -9732,12 +9756,14 @@ window.activeSection = activeSection;
             showLangGate();
             if (!dontShow) {
                 preloadCommercial(initLang === 'zh' ? 'zh' : 'en');
+                // The app scripts are in: now let the video buffer fully
+                try { const _vp = document.getElementById('commercial-video-player'); if (_vp && !(navigator.connection && navigator.connection.saveData)) _vp.preload = 'auto'; } catch (e) {}
                 Array.prototype.slice.call(document.querySelectorAll('#lang-gate .lang-gate-btn')).forEach(function (b) {
                     const l = b.getAttribute('data-lang');
                     ['pointerenter', 'touchstart', 'focus'].forEach(function (n) { b.addEventListener(n, function () { preloadCommercial(l); }, { passive: true }); });
                 });
             }
-            setTimeout(initPlatformData, 50);
+            // The heavy set-up (clustering the sample data, ~3 s of CPU) no longer runs behind the language screen: it starts after a language is chosen
             if (window.__pendingLang) { const pl = window.__pendingLang; window.__pendingLang = null; window.chooseLandingLang(pl); }
         }
 
@@ -9748,7 +9774,8 @@ window.activeSection = activeSection;
         }
 
         window.addEventListener('load', () => {
-            initPlatformData();
+            const g = document.getElementById('lang-gate');
+            if (!g || g.style.display === 'none') initPlatformData();   // while the language screen is up, the page stays idle so the buttons respond at once
         });
     (function () {
         const wrap = document.getElementById('data-menu-wrap'), btn = document.getElementById('data-menu-btn');

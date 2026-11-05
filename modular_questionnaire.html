@@ -4352,5 +4352,22 @@
         window.addEventListener('load', adjustAllQuestionTextareaHeights);
         window.addEventListener('resize', adjustAllQuestionTextareaHeights);
     </script>
+<script>
+/* Tutorial helper: tell the host page where the Apply Schema button is, so the tutorial can highlight it even when this page is not same-origin readable */
+(function () {
+    if (window.parent === window) return;
+    function report() {
+        try {
+            var b = document.querySelector('[onclick*="applySchemaToPlatformAction"]');
+            if (!b) return;
+            var r = b.getBoundingClientRect();
+            window.parent.postMessage({ qpsApplyRect: { left: r.left, top: r.top, width: r.width, height: r.height } }, '*');
+        } catch (e) {}
+    }
+    window.addEventListener('load', report);
+    window.addEventListener('resize', report);
+    setInterval(report, 600);
+})();
+</script>
 </body>
 </html>

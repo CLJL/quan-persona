@@ -422,6 +422,9 @@
         #view-about .about-privacy { background: rgba(30,34,42,.65); border: 1px solid var(--panel-border); border-left: 3px solid var(--accent-yellow); border-radius: 12px; padding: 18px 20px; color: var(--text-secondary); }
         #view-about .about-privacy p { margin: 0 0 10px; } #view-about .about-privacy p:last-child { margin: 0; }
         #view-about .about-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+        #view-about .about-actions { align-items: center; }
+        #view-about .about-actions a > img { display: block; }
+        #view-about .about-actions a.btn > svg { display: block; }
         @media (max-width: 720px) { #view-about .about-hero h2 { font-size: var(--fs-heading); } #view-about .about-table th { width: auto; white-space: normal; } }
 
 
@@ -2557,13 +2560,19 @@ body:has(#view-faq.active) .capsule-tabs-container { display: none !important; }
 .qps-ch-note { margin: 14px 0 0; font-size: 0.9375rem; line-height: 1.5; color: #8b93a5; }
 .qps-link { background: none; border: 0; padding: 4px 0; color: #f5c518; font: inherit; font-size: 1rem; text-decoration: underline; cursor: pointer; }
 .qps-link:hover { color: #ffd84d; }
-#qps-spot { position: fixed; z-index: 10501; border-radius: 12px; pointer-events: none; box-shadow: 0 0 0 9999px rgba(4,6,10,0.62), 0 0 0 3px #f5c518; animation: qpsPulse 1.8s ease-in-out infinite; }
-@keyframes qpsPulse { 0%, 100% { box-shadow: 0 0 0 9999px rgba(4,6,10,0.62), 0 0 0 3px #f5c518, 0 0 0 3px rgba(245,197,24,0.6); } 50% { box-shadow: 0 0 0 9999px rgba(4,6,10,0.62), 0 0 0 3px #f5c518, 0 0 0 11px rgba(245,197,24,0); } }
+#qps-spot { position: fixed; z-index: 10501; border-radius: 12px; pointer-events: none; box-shadow: 0 0 0 9999px rgba(4,6,10,0.8), 0 0 0 3px #f5c518; animation: qpsPulse 1.8s ease-in-out infinite; }
+@keyframes qpsPulse { 0%, 100% { box-shadow: 0 0 0 9999px rgba(4,6,10,0.8), 0 0 0 3px #f5c518, 0 0 0 3px rgba(245,197,24,0.6); } 50% { box-shadow: 0 0 0 9999px rgba(4,6,10,0.8), 0 0 0 3px #f5c518, 0 0 0 11px rgba(245,197,24,0); } }
+#qps-spot2 { position: fixed; z-index: 10501; border-radius: 10px; pointer-events: none; -webkit-backdrop-filter: brightness(3.8); backdrop-filter: brightness(3.8); box-shadow: 0 0 0 3px #f5c518, 0 0 18px 4px rgba(245,197,24,0.55); animation: qpsRing 1.8s ease-in-out infinite; }
+@keyframes qpsRing { 0%, 100% { box-shadow: 0 0 0 3px #f5c518, 0 0 10px 2px rgba(245,197,24,0.4); } 50% { box-shadow: 0 0 0 3px #f5c518, 0 0 22px 7px rgba(245,197,24,0.7); } }
 #qps-card { position: fixed; z-index: 10502; background: #151a22; border: 1px solid rgba(245,197,24,0.55); border-radius: 12px; padding: 14px 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.55); color: #f1f5f9; box-sizing: border-box; }
 #qps-card .qps-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px; }
 #qps-card .qps-count { font-size: 0.9375rem; color: #f5c518; font-weight: 600; }
-#qps-card .qps-x { background: none; border: 0; color: #8b93a5; font: inherit; font-size: 0.9375rem; cursor: pointer; padding: 2px 4px; }
-#qps-card .qps-x:hover { color: #f1f5f9; }
+#qps-card .qps-x, .qps-ch-x { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; margin: -4px -6px -4px 0; background: none; border: 0; border-radius: 8px; color: #aab3c0; cursor: pointer; padding: 0; }
+#qps-card .qps-x:hover, .qps-ch-x:hover { color: #f1f5f9; background: rgba(255,255,255,0.08); }
+#qps-card .qps-x:focus-visible, .qps-ch-x:focus-visible { outline: 2px solid #f5c518; outline-offset: 1px; }
+#qps-chooser .qps-ch-card { position: relative; }
+.qps-ch-x { position: absolute; top: 12px; right: 12px; margin: 0; }
+#qps-chooser h2 { padding-right: 40px; }
 #qps-card .qps-t { margin: 0 0 6px; font-size: 1.3125rem; line-height: 1.3; font-weight: 700; }
 #qps-card .qps-b { margin: 0; font-size: 1.0625rem; line-height: 1.55; color: #d5dbe5; }
 #qps-card .qps-act { margin: 10px 0 0; font-size: 0.9375rem; line-height: 1.45; color: #f5c518; }
@@ -2590,4 +2599,4 @@ body:has(#view-faq.active) .capsule-tabs-container { display: none !important; }
     #qps-panel { right: 12px; bottom: 62px; }
     #qps-chooser .qps-ch-card { padding: 20px; }
 }
-@media (prefers-reduced-motion: reduce) { #qps-spot, #qps-chip .qps-dot { animation: none; } }
+@media (prefers-reduced-motion: reduce) { #qps-spot, #qps-spot2, #qps-chip .qps-dot { animation: none; } }
