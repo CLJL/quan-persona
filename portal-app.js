@@ -9542,19 +9542,25 @@ window.activeSection = activeSection;
                 wrap.appendChild(sp);
             }
             sp.style.display = 'block';
-            const hide = function () { sp.style.display = 'none'; ['playing', 'pause', 'error', 'ended'].forEach(function (n) { player.removeEventListener(n, hide); }); };
-            ['playing', 'pause', 'error', 'ended'].forEach(function (n) { player.addEventListener(n, hide); });
+            const hide = function () { sp.style.display = 'none'; ['playing', 'loadeddata', 'canplay', 'pause', 'error', 'ended'].forEach(function (n) { player.removeEventListener(n, hide); }); };
+            ['playing', 'loadeddata', 'canplay', 'pause', 'error', 'ended'].forEach(function (n) { player.addEventListener(n, hide); });
         }
 
         function openCommercialModal(isLanding = false) {
-            if (isLanding && commercialHasOpened) return;
-            commercialHasOpened = true;
             const modal = document.getElementById('commercial-video-modal');
             const player = document.getElementById('commercial-video-player');
             const footer = document.getElementById('commercial-footer-actions');
             if (footer) footer.style.display = 'none';
 
             if (!modal) return;
+            const isAlreadyActive = modal.classList.contains('active') || modal.style.display === 'flex';
+            if (isLanding && (commercialHasOpened || window.__commercialHasOpened || isAlreadyActive)) {
+                commercialHasOpened = true;
+                return;
+            }
+            commercialHasOpened = true;
+            window.__commercialHasOpened = true;
+
             modal.style.display = 'flex';
             void modal.offsetWidth;
             modal.classList.add('active');
@@ -9563,35 +9569,47 @@ window.activeSection = activeSection;
             if (player) {
                 const isZh = (typeof currentLang !== 'undefined' && currentLang === 'zh') || (typeof detectInitialLanguage === 'function' && detectInitialLanguage() === 'zh');
                 const wantLang = isZh ? 'zh' : 'en';
-                // Normally already preloaded while the language screen was showing; otherwise start loading now.
-                if (player.getAttribute('data-lang') !== wantLang) preloadCommercial(wantLang);
-                // The language click may already have started the video before this code had loaded: keep it playing, do not restart it
-                const early = !!window.__qpEarly; window.__qpEarly = false;
-                if (early && !player.paused) { if (player.readyState < 3) showCommercialLoading(player); hidePlayBtn(); return; }
+                // Switch language video source if needed
+                if (player.getAttribute('data-lang') !== wantLang) {
+                    if (typeof window.__qpSetVideo === 'function') {
+                        window.__qpSetVideo(wantLang);
+                    } else {
+                        preloadCommercial(wantLang);
+                    }
+                }
+
+                // If already playing smoothly from early click, don't restart or disrupt
+                if (!player.paused && player.currentTime > 0) {
+                    hidePlayBtn();
+                    return;
+                }
+
                 showCommercialLoading(player);
 
-                if (!early) player.currentTime = 0;
-                // Attempt unmuted playback with sound on
+                // Queue background dataset warmup only after video is happily playing
+                player.addEventListener('playing', function onVideoPlayingOnce() {
+                    player.removeEventListener('playing', onVideoPlayingOnce);
+                    hidePlayBtn();
+                    const sp = document.getElementById('commercial-loading');
+                    if (sp) sp.style.display = 'none';
+                    setTimeout(function () {
+                        if (typeof whenDataReady === 'function') whenDataReady();
+                    }, 2500);
+                });
+
+                player.currentTime = 0;
                 player.muted = false;
                 player.volume = 1.0;
                 const playPromise = player.play();
                 if (playPromise !== undefined) {
                     playPromise.then(function () {
-                        // Unmuted autoplay succeeded directly!
                         hidePlayBtn();
                     }).catch(function (error) {
-                        // Browsers forbid autoplay WITH sound before user gesture.
-                        // Pause at greeting cover frame (1.6s) and show clean centered Play button ▶
                         player.pause();
-                        const showStill = function () { try { player.currentTime = 1.6; } catch (e) {} };
-                        showStill();
-                        player.addEventListener('loadeddata', function once() { player.removeEventListener('loadeddata', once); if (player.paused) showStill(); });
-                        setTimeout(function () { if (player.paused && player.currentTime < 1) showStill(); }, 400);
-                        player.muted = false;
-                        player.volume = 1.0;
                         showPlayBtn();
+                        const sp = document.getElementById('commercial-loading');
+                        if (sp) sp.style.display = 'none';
 
-                        // Clicking anywhere on the video or modal starts playing with sound on from 0:00
                         const evts = ['click', 'pointerdown', 'keydown', 'touchstart'];
                         removeCommercialStartListeners();
                         const startOnUserClick = function (ev) {
@@ -9749,9 +9767,6 @@ window.activeSection = activeSection;
             }
             document.body.style.overflow = '';
 
-            // Quietly fetch dataset in background via async script (network only, zero main-thread CPU)
-            whenDataReady(function () {});
-
             let skip = false;
             try { skip = (localStorage.getItem('quan_persona_dont_show_video') === 'true'); } catch (e) {}
 
@@ -9799,7 +9814,13 @@ window.activeSection = activeSection;
             if (window.__pendingLang) {
                 const pl = window.__pendingLang;
                 window.__pendingLang = null;
-                window.chooseLandingLang(pl);
+                const modal = document.getElementById('commercial-video-modal');
+                if (modal && (modal.classList.contains('active') || modal.style.display === 'flex')) {
+                    currentLang = pl;
+                    window.currentLang = pl;
+                } else {
+                    window.chooseLandingLang(pl);
+                }
             }
         }
 
