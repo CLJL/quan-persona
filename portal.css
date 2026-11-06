@@ -221,6 +221,7 @@
             color: var(--text-secondary);
             font-size: var(--fs-heading);
             font-weight: 600;
+            text-decoration: none;
             cursor: pointer;
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
@@ -421,10 +422,95 @@
         #view-about .about-table td { color: var(--text-secondary); }
         #view-about .about-privacy { background: rgba(30,34,42,.65); border: 1px solid var(--panel-border); border-left: 3px solid var(--accent-yellow); border-radius: 12px; padding: 18px 20px; color: var(--text-secondary); }
         #view-about .about-privacy p { margin: 0 0 10px; } #view-about .about-privacy p:last-child { margin: 0; }
-        #view-about .about-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
-        #view-about .about-actions { align-items: center; }
-        #view-about .about-actions a > img { display: block; }
+        #view-about .about-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; align-items: center; }
+        #view-about .about-actions a > img { display: block; border-radius: 10px; }
         #view-about .about-actions a.btn > svg { display: block; }
+
+        /* Badge-style community/contact action cards matching Product Hunt review badge */
+        .badge-action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 250px;
+            height: 54px;
+            box-sizing: border-box;
+            padding: 0 14px 0 11px;
+            background: #221D21;
+            border: 1px solid #221D21;
+            border-radius: 10px;
+            color: #EEF2FF !important;
+            text-decoration: none !important;
+            transition: background 0.18s ease, border-color 0.18s ease, transform 0.15s ease, box-shadow 0.18s ease;
+            user-select: none;
+            flex-shrink: 0;
+        }
+        .badge-action-btn:hover {
+            background: #2c252b;
+            border-color: #3d343b;
+            color: #EEF2FF !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+        }
+        .badge-action-btn:active {
+            transform: translateY(0);
+        }
+        .badge-action-left {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .badge-action-brand {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 31px;
+            height: 31px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        .badge-action-brand svg {
+            display: block;
+            width: 31px;
+            height: 31px;
+        }
+        .badge-action-text {
+            display: inline-flex;
+            flex-direction: column;
+            text-align: left;
+            line-height: 1.15;
+        }
+        .badge-action-sub {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: #EEF2FF;
+            opacity: 0.95;
+        }
+        .badge-action-main {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: #EEF2FF;
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+        }
+        .badge-action-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 30px;
+            height: 30px;
+            color: #EEF2FF;
+            transition: color 0.18s ease, transform 0.18s ease;
+        }
+        .badge-action-btn:hover .badge-action-icon {
+            color: #EEF2FF;
+            transform: scale(1.08);
+        }
         @media (max-width: 720px) { #view-about .about-hero h2 { font-size: var(--fs-heading); } #view-about .about-table th { width: auto; white-space: normal; } }
 
 
@@ -2214,11 +2300,6 @@
         .header-actions .btn { height: 28px !important; padding: 0 10px !important; font-size: 0.8125rem !important; font-weight: 600; gap: 5px !important; border-radius: 8px; }
         .header-actions .btn svg { width: 12px; height: 12px; }
         @media (max-width: 700px) { .header-controls { flex-direction: column; } }
-        /* guided tour */
-        #tour-root { position: fixed; inset: 0; z-index: 20000; }
-        #tour-shield { position: fixed; inset: 0; background: rgba(0,0,0,0.72); }
-        #tour-spot { position: fixed; border-radius: 12px; box-shadow: 0 0 0 9999px rgba(0,0,0,0.72), 0 0 0 2px var(--accent-yellow); pointer-events: none; transition: all 0.25s ease; }
-        #tour-card { position: fixed; z-index: 20001; background: #151a22; border: 1px solid rgba(245,197,24,0.5); border-radius: 12px; padding: 12px 14px; box-shadow: 0 12px 40px rgba(0,0,0,0.55); box-sizing: border-box; }
         #tour-btn { height: 28px; font-size: 0.8125rem !important; padding: 0 12px; border-radius: 14px; white-space: nowrap; display: inline-flex; align-items: center; gap: 5px; }
         #lang-toggle-btn { height: 28px; font-size: 0.8125rem !important; }
         #lang-toggle-btn span { font-size: 0.8125rem; }
@@ -2466,20 +2547,6 @@
             }
         }
 
-        /* Mobile Tutorial Dialogue positioned at the bottom */
-        @media (max-width: 768px) {
-            #tour-card {
-                left: 12px !important;
-                right: 12px !important;
-                bottom: 16px !important;
-                top: auto !important;
-                width: calc(100vw - 24px) !important;
-                max-width: calc(100vw - 24px) !important;
-                box-sizing: border-box !important;
-                transform: none !important;
-            }
-        }
-
 #main-nav .rail-divider-top { margin: 0 6px 8px 6px; }
 #main-nav .rail-footer-group .nav-tab-btn { flex-shrink: 0; }
 
@@ -2499,7 +2566,9 @@
 
 #lang-gate.is-loading .lang-gate-btn { opacity: 0.55; cursor: progress; }
 
+.about-wrap a.about-link,
 #view-faq .faq-a a.faq-link { color: var(--accent-yellow); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.about-wrap a.about-link:hover,
 #view-faq .faq-a a.faq-link:hover { filter: brightness(1.15); }
 
 /* Journey Map content text: 17px (headings, stage headers and chart labels keep their own sizes) */
@@ -2567,9 +2636,9 @@ body:has(#view-faq.active) .capsule-tabs-container { display: none !important; }
 #qps-card { position: fixed; z-index: 10502; background: #151a22; border: 1px solid rgba(245,197,24,0.55); border-radius: 12px; padding: 14px 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.55); color: #f1f5f9; box-sizing: border-box; }
 #qps-card .qps-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px; }
 #qps-card .qps-count { font-size: 0.9375rem; color: #f5c518; font-weight: 600; }
-#qps-card .qps-x, .qps-ch-x { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; margin: -4px -6px -4px 0; background: none; border: 0; border-radius: 8px; color: #aab3c0; cursor: pointer; padding: 0; }
-#qps-card .qps-x:hover, .qps-ch-x:hover { color: #f1f5f9; background: rgba(255,255,255,0.08); }
-#qps-card .qps-x:focus-visible, .qps-ch-x:focus-visible { outline: 2px solid #f5c518; outline-offset: 1px; }
+.qps-x, .qps-ch-x { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; margin: -4px -6px -4px 0; background: none; border: 0; border-radius: 8px; color: #aab3c0; cursor: pointer; padding: 0; }
+.qps-x:hover, .qps-ch-x:hover { color: #f1f5f9; background: rgba(255,255,255,0.08); }
+.qps-x:focus-visible, .qps-ch-x:focus-visible { outline: 2px solid #f5c518; outline-offset: 1px; }
 #qps-chooser .qps-ch-card { position: relative; }
 .qps-ch-x { position: absolute; top: 12px; right: 12px; margin: 0; }
 #qps-chooser h2 { padding-right: 40px; }

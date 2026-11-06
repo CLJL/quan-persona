@@ -190,14 +190,14 @@
         function parseTenureValue(expStr) {
             if (!expStr) return 5.0;
             const s = String(expStr).toLowerCase();
-            if (s.includes('under 1') || s.includes('less than 1')) return 0.5;
-            if (s.includes('1-3') || s.includes('1~3')) return 2.0;
-            if (s.includes('3-5') || s.includes('3~5')) return 4.0;
-            if (s.includes('5-10') || s.includes('5~10') || s.includes('6-10') || s.includes('6~10')) return 7.5;
-            if (s.includes('10-15') || s.includes('10~15') || s.includes('11-15') || s.includes('11~15')) return 12.5;
-            if (s.includes('15-20') || s.includes('15~20') || s.includes('16-20') || s.includes('16~20')) return 17.5;
-            if (s.includes('20-25') || s.includes('20~25') || s.includes('21-25') || s.includes('21~25')) return 22.5;
-            if (s.includes('25-30') || s.includes('25~30') || s.includes('26-30') || s.includes('26~30')) return 27.5;
+            if (s.includes('under 1') || s.includes('less than 1') || s.includes('未滿') || s.includes('1年以下')) return 0.5;
+            if (s.includes('1-3') || s.includes('1~3') || s.includes('1–3') || s.includes('1到3')) return 2.0;
+            if (s.includes('3-5') || s.includes('3~5') || s.includes('3–5') || s.includes('3到5')) return 4.0;
+            if (s.includes('5-10') || s.includes('5~10') || s.includes('6-10') || s.includes('6~10') || s.includes('6–10') || s.includes('5–10')) return 7.5;
+            if (s.includes('10-15') || s.includes('10~15') || s.includes('11-15') || s.includes('11~15') || s.includes('11–15') || s.includes('10–15')) return 12.5;
+            if (s.includes('15-20') || s.includes('15~20') || s.includes('16-20') || s.includes('16~20') || s.includes('16–20') || s.includes('15–20')) return 17.5;
+            if (s.includes('20-25') || s.includes('20~25') || s.includes('21-25') || s.includes('21~25') || s.includes('21–25') || s.includes('20–25')) return 22.5;
+            if (s.includes('25-30') || s.includes('25~30') || s.includes('26-30') || s.includes('26~30') || s.includes('26–30') || s.includes('25–30')) return 27.5;
             if (s.includes('30+') || s.includes('30年') || s.includes('over 30') || s.includes('more than 30')) return 35.0;
             const m = s.match(/(\d+)/);
             if (m) return parseFloat(m[1]);
@@ -327,11 +327,11 @@
         // feature vectors (skills + stage satisfaction + SUP/WP/AR/PR). An initial DBSCAN stage
         // isolates statistical outliers into a dedicated noise cohort.
         //
-        // The cluster count K is fully user-adjustable (K=2..8) via the AI Clustering slider.
+        // The cluster count K is fully user-adjustable (K=3..8) via the AI Clustering slider.
         // Dynamic cluster tabs (C1..CK) update responsively with auto-extracted distinguishing
         // features, mode demographics, and radar profiles.
         //
-        // In addition, autoDiscoverK() runs a silhouette-score evaluation across K=2..8 to
+        // In addition, autoDiscoverK() runs a silhouette-score evaluation across K=3..8 to
         // diagnose the mathematically optimal cluster count, stored in window.__autoDiscoveredClusters.
 
         function silhouetteScoreLocal(data, assignments) {
@@ -359,7 +359,7 @@
             return total / n;
         }
 
-        function autoDiscoverK(standardized, kMin = 2, kMax = 8) {
+        function autoDiscoverK(standardized, kMin = 3, kMax = 8) {
             const upper = Math.min(kMax, Math.max(kMin, Math.floor(standardized.length / 3)));
             let best = null;
             for (let k = kMin; k <= upper; k++) {
@@ -388,10 +388,12 @@
             return maxIdx === expected ? 1 : (s - expected) / (maxIdx - expected);
         }
 
-        // Same outlier filter as assignDynamicArchetypes (eps 0.85*sqrt(dims), minPts ~0.8%): keep the two in sync.
-        function computeInlierStandardized(list) {
+        // Same outlier filter as assignDynamicArchetypes: keep the two in sync.
+        function computeInlierStandardized(list, options = {}) {
             const { standardized } = standardizeMatrix(list.map(extractClusterVector));
-            const labels = runDBSCAN(standardized, dbscanEps(standardized[0] ? standardized[0].length : 1), Math.max(5, Math.floor(list.length * 0.008)));
+            const dims = standardized[0] ? standardized[0].length : 1;
+            const { eps, minPts } = calculateDBSCANParams(dims, list.length, options);
+            const labels = runDBSCAN(standardized, eps, minPts);
             return standardized.filter((_, i) => labels[i] !== -1);
         }
         function kDiagSignature() {
@@ -486,13 +488,34 @@
         // it used to represent.
         const ARCHETYPE_SLOT_ORDER = ['explorer', 'expert', 'optimizer', 'skeptic', 'parttimer'];
 
-        // DBSCAN, reduced to what the portal uses it for: finding NOISE (outliers). Exact for up to CLUSTER_FIT_SAMPLE respondents, sample-based above.
-        // Exactly the standard definition: a point is a core point if >= minPts points (itself included) lie within eps;
-        // a non-core point is clustered only if a core point lies within eps of it; every other point is noise.
-        // Returns -1 for noise and 0 for every clustered point (cluster ids are never used, so they are not built).
-        // Core test stops counting at minPts and the noise test stops at the first core neighbour, so dense data is fast.
-        // Neighbourhood radius grows with the number of clustering features (distances in standardised space scale with sqrt(dims)); 0.85*sqrt(d) flags roughly the sparsest 10% as outliers.
-        function dbscanEps(dims) { return 0.85 * Math.sqrt(Math.max(1, dims)); }
+        /**
+         * ==================== DENSITY-BASED OUTLIER & NOISE IDENTIFICATION (DBSCAN) ====================
+         * DBSCAN identifies data points that do not belong to sufficiently dense clusters.
+         * The proportion of outliers depends on the actual survey data and the DBSCAN configuration.
+         * The number of points classified as noise depends on:
+         *  - Dataset characteristics: How respondents answer the questions and how similar their responses are.
+         *  - Dataset size and distribution: Some datasets contain clearly defined groups, while others have more scattered responses.
+         *  - DBSCAN parameters: eps (the distance threshold) and min_samples (minPts, the minimum number of neighbouring points required to form a dense region).
+         *  - Data preparation: Scaling, feature selection and distance calculation can affect clustering results.
+         */
+        const DBSCAN_CONFIG = {
+            epsFactor: 0.85,    // Scaling factor proportional to sqrt(dims) in standardised Euclidean space
+            minPtsRatio: 0.008, // Base density requirement relative to population size (~0.8%)
+            minPtsFloor: 5      // Absolute floor for statistical reliability
+        };
+
+        function calculateDBSCANParams(dims, n, customConfig = {}) {
+            const cfg = Object.assign({}, DBSCAN_CONFIG, customConfig);
+            const eps = cfg.eps !== undefined ? cfg.eps : (cfg.epsFactor * Math.sqrt(Math.max(1, dims)));
+            const minPts = cfg.minPts !== undefined ? cfg.minPts : Math.max(cfg.minPtsFloor, Math.floor(n * cfg.minPtsRatio));
+            return { eps, minPts, config: cfg };
+        }
+
+        // Backward-compatibility wrapper
+        function dbscanEps(dims) { return calculateDBSCANParams(dims, 1000).eps; }
+
+        // Standard DBSCAN implementation for noise isolation:
+        // A point is core if >= minPts points lie within eps; border points reach a core point; others are noise.
 
         function runDBSCAN(points, eps, minPts) {
             const n = points.length;
@@ -576,9 +599,9 @@
             const vectors = list.map(extractClusterVector);
             const { standardized, means, stds } = standardizeMatrix(vectors);
 
-            // DBSCAN Outlier Pre-filtering on standardized coordinates to isolate sparse noise
-            const eps = dbscanEps(standardized[0] ? standardized[0].length : 1);
-            const minPts = Math.max(5, Math.floor(list.length * 0.008)); // ~0.8% of the data size
+            // DBSCAN Outlier Pre-filtering on standardized coordinates based on density and distribution
+            const dims = standardized[0] ? standardized[0].length : 1;
+            const { eps, minPts } = calculateDBSCANParams(dims, list.length);
             const dbscanLabels = runDBSCAN(standardized, eps, minPts);
 
             // Separate inliers and outliers
@@ -599,7 +622,8 @@
                 }
             });
 
-            let k = overrideK || 5;
+            const sliderEl = document.getElementById('cluster-k-slider');
+            let k = overrideK || (sliderEl ? parseInt(sliderEl.value, 10) || 5 : 5);
             let labels, centroids;
 
             if (inliers.length < k * 3) {
@@ -611,7 +635,7 @@
             } else {
                 // Wire in autoDiscoverK: compute and store silhouette-optimal K diagnostic
                 if (inlierStandardized.length >= 6 && inlierStandardized.length <= CLUSTER_FIT_SAMPLE) {
-                    const autoK = autoDiscoverK(inlierStandardized, 2, 8);
+                    const autoK = autoDiscoverK(inlierStandardized, 3, 8);
                     window.__autoDiscoveredClusters = autoK;
                     if (autoK) {
                         console.info(`[Dynamic Classification] Silhouette-optimal K=${autoK.k} (score: ${autoK.score.toFixed(3)})`);
@@ -662,14 +686,17 @@
             const order = Array.from({ length: k }, (_, i) => i)
                 .sort((a, b) => ((clusterAvgRaw[a] ? clusterAvgRaw[a][sortDim] : 0) - (clusterAvgRaw[b] ? clusterAvgRaw[b][sortDim] : 0)));
 
+            const isZh = (typeof currentLang !== 'undefined' && currentLang === 'zh');
             const profiles = order.map((clusterId, ordinal) => {
                 const centroidStd = centroids[clusterId];
                 const ranked = centroidStd.map((z, d) => ({ d, z })).sort((a, b) => Math.abs(b.z) - Math.abs(a.z));
                 const topFeatures = ranked.slice(0, 2).map(r => ({
-                    label: CLUSTER_FEATURES[r.d] ? CLUSTER_FEATURES[r.d].label : `dim ${r.d}`,
-                    direction: r.z >= 0 ? 'High' : 'Low'
+                    label: CLUSTER_FEATURES[r.d] ? CLUSTER_FEATURES[r.d].label : (isZh ? `維度 ${r.d}` : `dim ${r.d}`),
+                    direction: r.z >= 0 ? (isZh ? '高' : 'High') : (isZh ? '低' : 'Low')
                 }));
-                const shortLabel = topFeatures.map(f => `${f.direction} ${f.label}`).join(' / ') || `Cluster ${ordinal + 1}`;
+                const shortLabel = isZh
+                    ? (topFeatures.map(f => `${f.label}${f.direction === '高' ? '偏高' : '偏低'}`).join(' / ') || `分群 ${ordinal + 1}`)
+                    : (topFeatures.map(f => `${f.direction} ${f.label}`).join(' / ') || `Cluster ${ordinal + 1}`);
                 return {
                     id: clusterId,
                     key: 'c' + clusterId,
@@ -688,10 +715,10 @@
                     id: -1,
                     key: 'outlier',
                     ordinal: profiles.length,
-                    label: 'Low Density / Outliers',
+                    label: isZh ? '低密度／離群值' : 'Low Density / Outliers',
                     color: '#8c8c8c',
                     count: outliers.length,
-                    topFeatures: [{ direction: 'Low', label: 'Conformity / Density' }],
+                    topFeatures: [{ direction: isZh ? '低' : 'Low', label: isZh ? '一致性／密度' : 'Conformity / Density' }],
                     centroidRaw: new Array(vectors[0].length).fill(2.5) // default mid value
                 });
             }
@@ -723,7 +750,8 @@
             if (slider) slider.value = k;
             if (sliderVal) sliderVal.textContent = k;
 
-            console.info(`[Dynamic Classification] ${list.length} respondents processed. Inliers: ${inliers.length} clustered into ${k} K-means groups. Outliers (Noise): ${outliers.length} isolated via DBSCAN.`);
+            const outlierPct = list.length > 0 ? ((outliers.length / list.length) * 100).toFixed(1) : '0.0';
+            console.info(`[Dynamic Classification] ${list.length} respondents processed. Inliers: ${inliers.length} clustered into ${k} K-means groups. Outliers / Noise: ${outliers.length} (${outlierPct}%) identified based on density and distribution via DBSCAN.`);
         }
 
         let lastClusterResult = null;
@@ -745,13 +773,21 @@
             const k = parseInt(document.getElementById('cluster-k-slider').value, 10);
 
             if (!parsedData || parsedData.length < k * 3) {
-                if (statusEl) statusEl.textContent = `⚠️ Insufficient data points for stable clustering (目前 ${parsedData ? parsedData.length : 0} 筆, Suggestions至少 ${k * 3} 筆以上再執行, 或降低 K 值) 。`;
+                const isZh = (typeof currentLang !== 'undefined' && currentLang === 'zh');
+                if (statusEl) {
+                    statusEl.textContent = isZh
+                        ? `⚠️ 資料筆數不足以進行穩定分群（目前 ${parsedData ? parsedData.length : 0} 筆，建議至少 ${k * 3} 筆以上再執行，或請降低 K 值）。`
+                        : `⚠️ Insufficient data points for stable clustering (${parsedData ? parsedData.length : 0} records currently; recommend at least ${k * 3} records, or reduce K).`;
+                }
                 const cr = document.getElementById('cluster-discovery-results');
                 if (cr) cr.style.display = 'none';
                 return;
             }
 
-            if (statusEl) statusEl.textContent = 'Running K-means algorithm......';
+            if (statusEl) {
+                const isZh = (typeof currentLang !== 'undefined' && currentLang === 'zh');
+                statusEl.textContent = isZh ? '正在執行 K-means 分群演算法⋯⋯' : 'Running K-means algorithm......';
+            }
 
             // Only re-cluster if requested or not yet clustered
             if (options.recluster !== false || !window.__dynamicClusterProfiles || window.__dynamicClusterProfiles.length === 0) {
@@ -805,6 +841,9 @@
                 + (window.__clusterSampleNote ? ` Note: K-means was fitted on a sample of ${window.__clusterSampleNote.fit.toLocaleString()} of ${window.__clusterSampleNote.total.toLocaleString()} respondents; all respondents were then assigned to the nearest cluster.` : '');
             }
             renderClusterDiscovery();
+            if (typeof initAnalyticsRadarChart === 'function') {
+                initAnalyticsRadarChart();
+            }
             if (options.runKCheck) {
                 runKChoiceCheck(k);
             }

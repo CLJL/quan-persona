@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8">
+    <title>保險業務員客群畫像與銷售旅程</title>
+    <style>
+        :root {
+            --fs-display: 30px;
+            --fs-heading: 24px;
+            --fs-title: 20px;
+            --fs-subtitle: 17px;
+            --fs-body: 15px;
+            --fs-small: 14px;
+            --fs-caption: 13px;
+        }
+        @page {
+            size: A4 portrait;
+            margin: 12mm 14mm 12mm 14mm;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang TC", "Microsoft JhengHei", Arial, sans-serif;
+            color: #1e293b;
+            background: #f1f5f9;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            font-size: var(--fs-body);
+        }
+        .print-toolbar {
+            position: sticky;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #0f172a;
+            color: #ffffff;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10000;
+        }
+        .btn-tb {
+            background: #2563eb;
+            color: #ffffff;
+            border: none;
+            padding: 7px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+        .btn-tb:hover { background: #1d4ed8; }
+        .btn-tb-secondary {
+            background: rgba(255,255,255,0.12);
+            color: #ffffff;
+            border: 1px solid rgba(255,255,255,0.25);
+        }
+        .btn-tb-secondary:hover { background: rgba(255,255,255,0.22); }
+        .paper-container {
+            max-width: 900px;
+            margin: 24px auto;
+            background: #ffffff;
+            padding: 40px 48px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            border-radius: 8px;
+        }
+        h1 {
+            font-size: var(--fs-heading);
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 14px 0;
+            line-height: 1.35;
+            text-align: center;
+        }
+        .section-header {
+            background: #1e293b;
+            color: #ffffff;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: var(--fs-title);
+            margin: 28px 0 14px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            page-break-after: avoid;
+        }
+        .table-matrix {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: var(--fs-body);
+        }
+        .table-matrix th {
+            background: #f1f5f9;
+            color: #334155;
+            padding: 9px 12px;
+            border: 1px solid #cbd5e1;
+            font-weight: 700;
+            font-size: var(--fs-body);
+        }
+        .table-matrix td {
+            border: 1px solid #cbd5e1;
+            padding: 8px 12px;
+            font-size: var(--fs-body);
+        }
+        @media print {
+            .print-toolbar { display: none !important; }
+            body { background: #ffffff !important; }
+            .paper-container {
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                max-width: 100% !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="print-toolbar">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-weight: 700; font-size: 15px;">📋 問卷預覽與列印</span>
+            <span style="font-size: var(--fs-small); color: #94a3b8;">依據目前自訂架構動態生成（完全符合 V.1 原檔規格）</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <button type="button" class="btn-tb" onclick="window.print()">
+                <span>🖨️</span>
+                <span>列印 / 另存為 PDF</span>
+            </button>
+            <button type="button" class="btn-tb btn-tb-secondary" onclick="window.close()">
+                <span>✕</span>
+                <span>關閉視窗</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="paper-container">
+        <h1>保險業務員客群畫像與銷售旅程</h1>
+
+        <!-- Briefing Instructions Box -->
+        <div style="background: #f8fafc; border-left: 4px solid #2563eb; border: 1px solid #e2e8f0; border-left-width: 4px; padding: 14px 18px; border-radius: 6px; margin-bottom: 20px; font-size: var(--fs-body); color: #334155; line-height: 1.6;">
+            親愛的業務夥伴，您好！本問卷旨在了解您在保險銷售歷程中的日常工作風格、工具使用習慣，以及所遇到的挑戰與需求，並作為優化業務員數位工具、提升服務品質的基準。問卷約需 10–15 分鐘完成。所有回覆將透過非監督式機器學習演算法進行彙整與動態分析，即時描繪業務員輪廓，而不依賴僵化、預先設定的依時序劃分之人口統計篩選條件。感謝您的配合與協助！
+        </div>
+
+        <!-- Respondent Header Info -->
+        <div style="display: flex; justify-content: space-between; align-items: center; background: #ffffff; border: 1px dashed #cbd5e1; padding: 10px 16px; border-radius: 6px; margin-bottom: 20px; font-size: var(--fs-body); color: #475569;">
+            <span>姓名: ______________________</span>
+            <span>業務員編號: ______________________</span>
+            <span>所屬通訊處: ______________________</span>
+            <span>填寫日期: 202___ / ___ / ___</span>
+        </div>
+
+        
+                    <!-- PART: DEMOGRAPHICS -->
+                    <div class="section-header">
+                        <span>第一部分：基本資料</span>
+                        <span style="font-size: var(--fs-small); opacity: 0.9;">Q1 ~ Q7</span>
+                    </div>
+                    
+                            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">1. 請問您的年齡區間為何？</label>
+                                <div class="field-options" style="display: flex; flex-wrap: wrap; gap: 10px 20px; font-size: var(--fs-body); margin-top: 8px;"><span>[ ] 25 歲以下</span><span>[ ] 26–35 歲</span><span>[ ] 36–45 歲</span><span>[ ] 46–55 歲</span><span>[ ] 56–65 歲</span><span>[ ] 66 歲以上</span></div>
+                                
+                                
+                            </div>
+                        
+                            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">2. 請問您目前所屬的服務區域為何？</label>
+                                <div class="field-options" style="display: flex; flex-wrap: wrap; gap: 10px 20px; font-size: var(--fs-body); margin-top: 8px;"><span>[ ] 台北一區業務發展部</span><span>[ ] 台北二區業務發展部</span><span>[ ] 桃竹苗業務發展部</span><span>[ ] 中區業務發展部</span><span>[ ] 南區業務發展部</span></div>
+                                
+                                
+                            </div>
+                        
+                            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">3. 請問您所屬的通訊處（分處）名稱為何？</label>
+                                <div class="field-writein" style="font-family: monospace; font-size: var(--fs-body); color: #475569; margin-top: 6px; letter-spacing: 1px;">__________________________________________________</div>
+                                
+                                
+                            </div>
+                        
+                            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">4. 請問您目前的職級／職稱為何？</label>
+                                <div class="field-options" style="display: flex; flex-wrap: wrap; gap: 10px 20px; font-size: var(--fs-body); margin-top: 8px;"><span>[ ] 新進業務員</span><span>[ ] 業務主任</span><span>[ ] 業務經理</span><span>[ ] 區經理</span><span>[ ] 處經理</span><span>[ ] 協理</span></div>
+                                
+                                
+                            </div>
+                        
+                            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">5. 請問您的保險銷售年資區間為何？</label>
+                                <div class="field-options" style="display: flex; flex-wrap: wrap; gap: 10px 20px; font-size: var(--fs-body); margin-top: 8px;"><span>[ ] 未滿 1 年</span><span>[ ] 1–3 年</span><span>[ ] 3–5 年</span><span>[ ] 6–10 年</span><span>[ ] 11–15 年</span><span>[ ] 16–20 年</span><span>[ ] 21–25 年</span><span>[ ] 26–30 年</span><span>[ ] 30 年以上</span></div>
+                                
+                                
+                            </div>
+                        
+                            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">6. 請問您至今大約服務過多少位客戶？</label>
+                                <div class="field-options" style="display: flex; flex-wrap: wrap; gap: 10px 20px; font-size: var(--fs-body); margin-top: 8px;"><span>[ ] 50 位以下</span><span>[ ] 51–100 位</span><span>[ ] 101–300 位</span><span>[ ] 301–600 位</span><span>[ ] 600 位以上</span></div>
+                                
+                                
+                            </div>
+                        
+                            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">7. 與同通訊處的同儕相比，您過去 12 個月的銷售業績排名為何？</label>
+                                <div class="field-options" style="display: flex; flex-wrap: wrap; gap: 10px 20px; font-size: var(--fs-body); margin-top: 8px;"><span>[ ] 前 10%</span><span>[ ] 前 25%</span><span>[ ] 平均水準</span><span>[ ] 後 50%</span><span>[ ] 不確定／不便透露</span></div>
+                                <div style="font-size: var(--fs-small); color: #64748b; font-style: italic; margin-top: 6px; line-height: 1.5;">註：本題僅用於篩選後續題目，不會用於個人績效考核，請安心作答。</div>
+                                
+                            </div>
+                        
+                
+                    <!-- PART: ARCHETYPE TAGS (SELF-IMAGE) -->
+                    <div class="section-header">
+                        <span>第二部分：自我形象標籤</span>
+                        <span style="font-size: var(--fs-small); opacity: 0.9;">Q8 ~ Q10</span>
+                    </div>
+
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px 18px; margin-bottom: 12px;">
+                        <p style="margin: 0 0 10px 0; font-size: var(--fs-body); color: #334155; line-height: 1.6;">
+                            以下標籤用於協助我們了解您的工作風格與自我認同。答案沒有對錯，請憑直覺選擇最符合您的描述。
+                        </p>
+                        <table style="width: 100%; border-collapse: collapse; margin-bottom: 12px;">
+                            <tbody>
+                                <tr style="border-bottom: 1px solid #e2e8f0;"><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 深耕客戶關係</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 預測式服務</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 商機獵人</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 主動開發</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 菜鳥業務員</td></tr><tr style="border-bottom: 1px solid #e2e8f0;"><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 數位工具達人</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 擁抱理想</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 直覺敏銳</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 好學求知</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 信任導向</td></tr><tr style="border-bottom: 1px solid #e2e8f0;"><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 責任感強</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 精進培訓</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 彈性應變</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 數字導向</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 高同理心</td></tr><tr style="border-bottom: 1px solid #e2e8f0;"><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 主動溝通</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 快速精準</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 即時回應</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 進度透明</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 流程專家</td></tr><tr style="border-bottom: 1px solid #e2e8f0;"><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 情感連結</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 家庭守護者</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 行動導向</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 以服務贏得信任</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 細節掌控</td></tr><tr style="border-bottom: 1px solid #e2e8f0;"><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 高峰會常客</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 活動敏銳</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 服務優先</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 分析規劃</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] 效率至上</td></tr>
+                            </tbody>
+                        </table>
+                        <div style="font-size: var(--fs-body); color: #475569; margin-bottom: 14px;">
+                            [ ] 其他（請說明）: __________________________________________________
+                        </div>
+
+                        <div style="display: flex; flex-direction: column; gap: 10px; border-top: 1px dashed #cbd5e1; padding-top: 12px;">
+                            <div>
+                                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                                    8. 請從上方選項中，選出「最能代表您」的第 1 個標籤：
+                                </label>
+                                <div style="font-size: var(--fs-body); color: #2563eb; margin-top: 6px;">
+                                    Tag 1: __________________________________________________
+                                </div>
+                            </div>
+                            <div>
+                                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                                    9. 請選出代表您的第 2 個標籤；不得與第 8 題重複。
+                                </label>
+                                <div style="font-size: var(--fs-body); color: #2563eb; margin-top: 6px;">
+                                    Tag 2: __________________________________________________
+                                </div>
+                            </div>
+                            <div>
+                                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                                    10. 請選出代表您的第 3 個標籤；不得與第 8、9 題重複。
+                                </label>
+                                <div style="font-size: var(--fs-body); color: #2563eb; margin-top: 6px;">
+                                    Tag 3: __________________________________________________
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="section-header">
+                        <span>第三部分：現況評估</span>
+                        <span style="font-size: var(--fs-small); opacity: 0.9;">Q11 ~ Q19</span>
+                    </div>
+
+                    <!-- Agent Tools Familiarity (Q11) -->
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                            11. 您對目前工作上使用的工具／系統熟悉程度為何？
+                        </label>
+                        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; font-size: var(--fs-body); margin-top: 8px; color: #334155;">
+                            <span style="font-weight: 600; color: #64748b;">極不熟悉</span>
+                            <span>[ ] 0%</span> <span>[ ] 20%</span> <span>[ ] 40%</span> <span>[ ] 60%</span> <span>[ ] 80%</span> <span>[ ] 100%</span>
+                            <span style="font-weight: 600; color: #64748b;">極為熟悉</span>
+                        </div>
+                    </div>
+
+                    <!-- Work Feeling Emoji Scale (Q12) -->
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                            12. 整體而言，您目前的工作方式讓您感覺如何？
+                        </label>
+                        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; font-size: var(--fs-body); margin-top: 8px; color: #334155;">
+                            <span style="font-weight: 600; color: #64748b;">極不滿意</span>
+                            <span>[ ] 😩</span> <span>[ ] 🙁</span> <span>[ ] 😐</span> <span>[ ] 🙂</span> <span>[ ] 😄</span>
+                            <span style="font-weight: 600; color: #64748b;">極為滿意</span>
+                        </div>
+                    </div>
+
+                    <!-- Tools Efficiency Impact (Q13) -->
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                            13. 目前提供給您的工具／系統，對您日常效率有何影響？
+                        </label>
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: var(--fs-body); margin-top: 8px;">
+                            <span>[ ] 嚴重拖慢效率</span><span>[ ] 略微拖慢效率</span><span>[ ] 無明顯影響</span><span>[ ] 略微提升效率</span><span>[ ] 大幅提升效率</span>
+                        </div>
+                    </div>
+                    <!-- System / Digital Tool Factors Matrix (Q14) -->
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                            14. 請評估下列「系統／數位工具」因素對您效率或體驗的影響程度。
+                        </label>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 8px; font-size: var(--fs-body);">
+                            <thead>
+                                <tr style="background: #f8fafc; border-bottom: 1.5px solid #cbd5e1; color: #475569;">
+                                    <th style="text-align: left; padding: 8px 10px; width: 45%;">評估項目</th>
+                                    <th style="text-align: center;">0%</th><th style="text-align: center;">20%</th><th style="text-align: center;">40%</th><th style="text-align: center;">60%</th><th style="text-align: center;">80%</th><th style="text-align: center;">100%</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                                        <td style="padding: 8px 10px; color: #1e293b; font-weight: 500;">工具／系統熟悉度</td>
+                                        <td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td>
+                                    </tr>
+                                
+                                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                                        <td style="padding: 8px 10px; color: #1e293b; font-weight: 500;">專業保險產品條款知識</td>
+                                        <td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td>
+                                    </tr>
+                                
+                                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                                        <td style="padding: 8px 10px; color: #1e293b; font-weight: 500;">銷售訪談溝通話術能力</td>
+                                        <td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td>
+                                    </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Professional Capabilities Matrix (Q15) -->
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                            15. 請評估下列「能力／服務」因素對您整體表現或滿意度的影響程度。
+                        </label>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 8px; font-size: var(--fs-body);">
+                            <thead>
+                                <tr style="background: #f8fafc; border-bottom: 1.5px solid #cbd5e1; color: #475569;">
+                                    <th style="text-align: left; padding: 8px 10px; width: 45%;">評估項目</th>
+                                    <th style="text-align: center;">0%</th><th style="text-align: center;">20%</th><th style="text-align: center;">40%</th><th style="text-align: center;">60%</th><th style="text-align: center;">80%</th><th style="text-align: center;">100%</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                                        <td style="padding: 8px 10px; color: #1e293b; font-weight: 500;">客戶關係經營維護能力</td>
+                                        <td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td>
+                                    </tr>
+                                
+                                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                                        <td style="padding: 8px 10px; color: #1e293b; font-weight: 500;">數位工具熟悉度</td>
+                                        <td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td>
+                                    </tr>
+                                
+                                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                                        <td style="padding: 8px 10px; color: #1e293b; font-weight: 500;">系統速度與穩定度</td>
+                                        <td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td>
+                                    </tr>
+                                
+                                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                                        <td style="padding: 8px 10px; color: #1e293b; font-weight: 500;">行動裝置使用體驗</td>
+                                        <td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td>
+                                    </tr>
+                                
+                                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                                        <td style="padding: 8px 10px; color: #1e293b; font-weight: 500;">客戶服務能力</td>
+                                        <td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td>
+                                    </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- LINE / Personal Tools Reasons (Q16) -->
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                            16. 您使用個人工具或聯絡方式，而不使用官方管道的主要原因為何？（可複選）
+                        </label>
+                        <div style="display: flex; flex-direction: column; gap: 8px; font-size: var(--fs-body); margin-top: 8px;">
+                            <span>[ ] 速度較快</span><span>[ ] 介面較熟悉</span><span>[ ] 公司系統沒有此功能</span><span>[ ] 客戶偏好這樣溝通</span><span>[ ] 公司系統登入／操作太麻煩</span><span>[ ] 我很少使用個人工具</span><span>[ ] 其他</span>
+                        </div>
+                    </div>
+
+                    <!-- Customer Visit Scheduling (Q17) -->
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                            17. 您如何規劃與安排主要的重複性工作（例如客戶拜訪）？（可複選）
+                        </label>
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: var(--fs-body); margin-top: 8px;">
+                            <span>[ ] 公司系統</span><span>[ ] 個人 App（例如 Google 行事曆）</span><span>[ ] 紙本桌曆／筆記本</span><span>[ ] 沒有特別規劃</span><span>[ ] 其他</span>
+                        </div>
+                        
+                    </div>
+
+                    <!-- Paper Calendar Reason (Q18) -->
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                            18. 若您上述選擇紙本方式，主要原因為何？（單選；若不適用請略過）
+                        </label>
+                        <div style="display: flex; flex-direction: column; gap: 8px; font-size: var(--fs-body); margin-top: 8px;">
+                            <span>[ ] 行動地點容易標註</span><span>[ ] 可清楚比較時間配置，並前後翻閱對照</span><span>[ ] 空檔一目了然</span>
+                        </div>
+                    </div>
+
+                    <!-- Calendar Suggestions Adoption (Q19) -->
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                            19. 若系統能在您下一個預定活動前，自動提供相關資訊或建議，您的使用意願為何？
+                        </label>
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: var(--fs-body); margin-top: 8px;">
+                            <span>[ ] 極度願意</span><span>[ ] 願意嘗試</span><span>[ ] 視情況而定</span><span>[ ] 不希望系統存取我的行事曆</span>
+                        </div>
+                    </div>
+                
+                    <!-- PART: DAILY WORK CONTENT & NEEDS -->
+                    <div class="section-header">
+                        <span>第四部分：日常工作內容與需求</span>
+                        <span style="font-size: var(--fs-small); opacity: 0.9;">Q20 ~ Q25</span>
+                    </div>
+
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px 18px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                            20. 以下列出主要活動類型。請選出最常進行的項目（最多 5 項），並預估各項所佔時間比例。
+                        </label>
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; padding: 10px 14px; margin: 10px 0 12px 0; font-size: var(--fs-body); color: #334155; line-height: 1.7;">
+                            <span>a) 安排與拜訪客戶</span> &nbsp;|&nbsp; <span>b) 維護準客戶名單／開發新名單</span> &nbsp;|&nbsp; <span>c) 簽署保單</span> &nbsp;|&nbsp; <span>d) 售後服務</span> &nbsp;|&nbsp; <span>e) 提升專業知識／教育訓練</span> &nbsp;|&nbsp; <span>f) 內部行政事務</span> &nbsp;|&nbsp; <span>g) 系統／工具優化與學習</span> &nbsp;|&nbsp; <span>h) 辦公室聚會與團隊活動</span> &nbsp;|&nbsp; <span>i) 增員</span> &nbsp;|&nbsp; <span>j) 其他</span>
+                        </div>
+                        <table class="table-matrix" style="width: 100%; margin: 10px auto;">
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%; text-align: left;">代碼</th>
+                                    <th style="text-align: left;">比例選擇</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="padding: 8px 12px;">[ _______ ]</td>
+                                    <td style="padding: 8px 12px; font-size: var(--fs-body);"><span>[ ] 10%</span> <span>[ ] 20%</span> <span>[ ] 30%</span> <span>[ ] 40%</span> <span>[ ] 50%</span> <span>[ ] 60%</span> <span>[ ] 70%</span> <span>[ ] 80%</span> <span>[ ] 90%</span> <span>[ ] 100%</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px 12px;">[ _______ ]</td>
+                                    <td style="padding: 8px 12px; font-size: var(--fs-body);"><span>[ ] 10%</span> <span>[ ] 20%</span> <span>[ ] 30%</span> <span>[ ] 40%</span> <span>[ ] 50%</span> <span>[ ] 60%</span> <span>[ ] 70%</span> <span>[ ] 80%</span> <span>[ ] 90%</span> <span>[ ] 100%</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px 12px;">[ _______ ]</td>
+                                    <td style="padding: 8px 12px; font-size: var(--fs-body);"><span>[ ] 10%</span> <span>[ ] 20%</span> <span>[ ] 30%</span> <span>[ ] 40%</span> <span>[ ] 50%</span> <span>[ ] 60%</span> <span>[ ] 70%</span> <span>[ ] 80%</span> <span>[ ] 90%</span> <span>[ ] 100%</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px 12px;">[ _______ ]</td>
+                                    <td style="padding: 8px 12px; font-size: var(--fs-body);"><span>[ ] 10%</span> <span>[ ] 20%</span> <span>[ ] 30%</span> <span>[ ] 40%</span> <span>[ ] 50%</span> <span>[ ] 60%</span> <span>[ ] 70%</span> <span>[ ] 80%</span> <span>[ ] 90%</span> <span>[ ] 100%</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px 12px;">[ _______ ]</td>
+                                    <td style="padding: 8px 12px; font-size: var(--fs-body);"><span>[ ] 10%</span> <span>[ ] 20%</span> <span>[ ] 30%</span> <span>[ ] 40%</span> <span>[ ] 50%</span> <span>[ ] 60%</span> <span>[ ] 70%</span> <span>[ ] 80%</span> <span>[ ] 90%</span> <span>[ ] 100%</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="font-size: var(--fs-body); color: #475569; margin-top: 10px;">
+                            若選擇「j) 其他」，請說明工作項目： __________________________________________________
+                        </div>
+                    </div>
+
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                            21. 在進行上述活動時，您期望達成的目標與實際獲得的成果之間，是否存在落差或矛盾？請簡要說明。
+                        </label>
+                        <div style="border-bottom: 1px dashed #94a3b8; height: 26px; margin-top: 10px;"></div>
+                        <div style="border-bottom: 1px dashed #94a3b8; height: 26px; margin-top: 6px;"></div>
+                    </div>
+
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                            22. 您最常使用哪些「官方系統／管道」？（可複選） （複選）
+                        </label>
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: var(--fs-body); margin-top: 8px;">
+                            <span>[ ] 投保送件系統</span><span>[ ] 線上簽署系統</span><span>[ ] 理賠系統</span><span>[ ] 服務系統</span><span>[ ] 業務員 App</span><span>[ ] 業務員入口網站</span><span>[ ] ABC 學院</span><span>[ ] 建議書系統</span>
+                            <span>[ ] 其他正式系統（請說明）: __________________________________________________</span>
+                        </div>
+                    </div>
+
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                            23. 您最常使用哪些「個人工具／替代做法」？（可複選） （複選）
+                        </label>
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: var(--fs-body); margin-top: 8px;">
+                            <span>[ ] LINE</span><span>[ ] 手機記事本／日曆 App</span><span>[ ] 電話（個人）</span><span>[ ] Canva</span><span>[ ] 紙本申請書</span><span>[ ] AI 工具（例如 NotebookLM）</span><span>[ ] Notion／Google 試算表</span><span>[ ] 紙本筆記本／桌曆</span><span>[ ] 行政助理／同儕協助資料登錄</span><span>[ ] 分公司櫃檯／臨櫃（人工處理）</span>
+                            <span>[ ] 其他個人工具（請說明）: ___________________________________________</span>
+                        </div>
+                    </div>
+
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                            24. 您最重要的需求或期待為何？ （最多選 5 項）
+                        </label>
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: var(--fs-body); margin-top: 8px;">
+                            <span>[ ] 快速登入／Face ID 與指紋登入</span><span>[ ] 簡化系統介面操作</span><span>[ ] 單一入口系統整合</span><span>[ ] 開放 API／客製化整合功能</span><span>[ ] 模糊關鍵字搜尋</span><span>[ ] 優化行動 App 體驗</span><span>[ ] 名單自動分類／標籤</span><span>[ ] 離線快取支援</span><span>[ ] 一鍵自動產生報價</span><span>[ ] 保留櫃檯／紙本作業選項</span><span>[ ] 延長線上簽署的有效期限</span><span>[ ] 助理帳號委派權限</span><span>[ ] 便利的紙本列印／大字體介面</span><span>[ ] 縮短載入時間</span><span>[ ] 常見職業／商品的預設選項</span>
+                            <span>[ ] 其他（請說明）: __________________________________________________</span>
+                        </div>
+                    </div>
+
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                            25. 請以一句話或座右銘，分享最能代表您的想法。
+                        </label>
+                        <div style="margin-top: 10px; font-size: var(--fs-body); color: #475569;">
+                            回覆：__________________________________________________________________________________________
+                        </div>
+                    </div>
+                
+                    <!-- PART: JOURNEY STAGES -->
+                    <div class="section-header">
+                        <span>第五部分：業務員歷程地圖</span>
+                        <span style="font-size: var(--fs-small); opacity: 0.9;">Q26 ~ Q27</span>
+                    </div>
+
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 16px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                            26. 請問在日常工作中，您最著重並每日體會的是哪一個歷程？（單選）
+                        </label>
+                        <div style="display: flex; flex-wrap: wrap; gap: 14px 24px; font-size: var(--fs-body); margin-top: 8px;">
+                            <span>[ ] 銷售歷程</span><span>[ ] 組織發展歷程</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 12px;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); margin-bottom: 6px; line-height: 1.5;">
+                            27. 階段歷程接觸點深度盤點（階段 1 至 階段 6）：
+                        </label>
+                        <div style="font-size: var(--fs-body); color: #475569; margin: 0 0 10px 0; font-weight: 500;">
+                            以下列出業務員六大核心任務。請依據您的實際作業經驗填寫下列項目組：
+                        </div>
+                        
+                        <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px 20px; margin-bottom: 18px; page-break-inside: avoid;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span style="background: #1e293b; color: #ffffff; font-size: var(--fs-small); font-weight: 700; padding: 3px 10px; border-radius: 4px;">階段 1</span>
+                                    <strong style="font-size: var(--fs-title); color: #0f172a;">時間規劃與客戶關係</strong>
+                                </div>
+                                <span style="font-size: var(--fs-small); color: #64748b;">完成此階段通常依序執行的行動（最多3項）：</span>
+                            </div>
+                            
+                            <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                                <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">A. 行動: 客戶名單整理與開拓</strong>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) 執行時的實體／數位地點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 辦公室</span><span>[ ] 客戶所在的任何地點</span><span>[ ] 電話</span><span>[ ] 住家</span><span>[ ] 通勤途中</span><span>[ ] 社群或興趣團體</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) 協助完成此行動的工具或對象：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] LINE</span><span>[ ] Agent Pro</span><span>[ ] Agent Portal</span><span>[ ] Service System</span><span>[ ] Contacts</span><span>[ ] 同儕支援</span><span>[ ] 親朋好友</span><span>[ ] 資深主管</span><span>[ ] 行政助理</span><span>[ ] 客戶轉介</span><span>[ ] 孤兒保單</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) 此行動中遭遇的痛點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 聯絡資料不全</span><span>[ ] 客戶聯絡回應率低</span><span>[ ] 跨裝置紀錄不一致</span><span>[ ] 缺乏自動追蹤提醒</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 6px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) 補充考量：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 優先處理特定客戶考量</span><span>[ ] 跨單位協同作業</span><span>[ ] 緊急案件優先</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                                <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">B. 行動: 客戶聯絡與紀錄／保單服務</strong>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) 執行時的實體／數位地點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 辦公室</span><span>[ ] 客戶所在的任何地點</span><span>[ ] 電話</span><span>[ ] 住家</span><span>[ ] 通勤途中</span><span>[ ] 通訊軟體</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) 協助完成此行動的工具或對象：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] LINE</span><span>[ ] Agent Pro</span><span>[ ] Agent Portal</span><span>[ ] Service System</span><span>[ ] Contacts</span><span>[ ] 同儕支援</span><span>[ ] 親朋好友</span><span>[ ] 資深主管</span><span>[ ] 行政助理</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) 此行動中遭遇的痛點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 對話紀錄分散各處</span><span>[ ] 無法即時同步保單進度</span><span>[ ] 客戶偏好非官方通訊管道</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 6px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) 補充考量：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 優先處理特定客戶考量</span><span>[ ] 跨單位協同作業</span><span>[ ] 緊急案件優先</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                                <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">C. 行動: 尋求銷售商機</strong>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) 執行時的實體／數位地點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 辦公室</span><span>[ ] 客戶所在的任何地點</span><span>[ ] 電話</span><span>[ ] 住家</span><span>[ ] 通勤途中</span><span>[ ] 社群或興趣團體</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) 協助完成此行動的工具或對象：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] LINE</span><span>[ ] Agent Pro</span><span>[ ] Agent Portal</span><span>[ ] Service System</span><span>[ ] Contacts</span><span>[ ] 同儕支援</span><span>[ ] 親朋好友</span><span>[ ] 資深主管</span><span>[ ] 行政助理</span><span>[ ] 客戶轉介</span><span>[ ] 孤兒保單</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) 此行動中遭遇的痛點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 客戶現有保障缺口不明確</span><span>[ ] 缺乏個人化建議書範本</span><span>[ ] 開發新客時間成本過高</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 6px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) 補充考量：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 續保機率高</span><span>[ ] 已建立信任基礎</span><span>[ ] 佣金制度獎勵</span><span>[ ] 開發新客成本高</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #cbd5e1;">
+                                <span style="font-size: var(--fs-subtitle); font-weight: 700; color: #1e293b;">D. 請為此階段的情緒體驗評分：</span>
+                                <div style="display: flex; gap: 18px; font-size: var(--fs-body); color: #1e293b; margin-top: 6px;">
+                                    <span>[ ] 1😫</span>
+                                    <span>[ ] 2 😮‍💨</span>
+                                    <span>[ ] 3 😐</span>
+                                    <span>[ ] 4 🙂</span>
+                                    <span>[ ] 5 🤩</span>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px 20px; margin-bottom: 18px; page-break-inside: avoid;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span style="background: #1e293b; color: #ffffff; font-size: var(--fs-small); font-weight: 700; padding: 3px 10px; border-radius: 4px;">階段 2</span>
+                                    <strong style="font-size: var(--fs-title); color: #0f172a;">保單銷售</strong>
+                                </div>
+                                <span style="font-size: var(--fs-small); color: #64748b;">完成此階段通常依序執行的行動（最多3項）：</span>
+                            </div>
+                            
+                            <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                                <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">A. 行動: 保險需求引導（發掘客戶缺口／協助客戶建立保險觀念）</strong>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) 執行時的實體／數位地點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 辦公室</span><span>[ ] 客戶所在的任何地點</span><span>[ ] 電話</span><span>[ ] 線上</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) 協助完成此行動的工具或對象：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] LINE</span><span>[ ] Agent Pro</span><span>[ ] Agent Portal</span><span>[ ] Service System</span><span>[ ] Contacts</span><span>[ ] 同儕支援</span><span>[ ] 親朋好友</span><span>[ ] 資深主管</span><span>[ ] 行政助理</span><span>[ ] 客戶轉介</span><span>[ ] 孤兒保單</span><span>[ ] 保單健檢系統</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) 此行動中遭遇的痛點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 保障缺口試算繁瑣</span><span>[ ] 條款與費率複雜難懂</span><span>[ ] 客戶缺乏預算或意願</span><span>[ ] 商品比價不易</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 6px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) 補充考量：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 優先處理特定客戶考量</span><span>[ ] 跨單位協同作業</span><span>[ ] 緊急案件優先</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                                <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">B. 行動: 查詢客戶保單狀態／保單健檢</strong>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) 執行時的實體／數位地點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 辦公室</span><span>[ ] 客戶所在的任何地點</span><span>[ ] 電話</span><span>[ ] 線上</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) 協助完成此行動的工具或對象：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] LINE</span><span>[ ] Agent Pro</span><span>[ ] Agent Portal</span><span>[ ] Service System</span><span>[ ] Contacts</span><span>[ ] 同儕支援</span><span>[ ] 親朋好友</span><span>[ ] 資深主管</span><span>[ ] 行政助理</span><span>[ ] 保單健檢系統</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) 此行動中遭遇的痛點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 保單查詢載入緩慢</span><span>[ ] 他家保單難以彙整整合</span><span>[ ] 客戶資料未及時更新</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 6px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) 補充考量：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 優先處理特定客戶考量</span><span>[ ] 跨單位協同作業</span><span>[ ] 緊急案件優先</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #cbd5e1;">
+                                <span style="font-size: var(--fs-subtitle); font-weight: 700; color: #1e293b;">C. 請為此階段的情緒體驗評分：</span>
+                                <div style="display: flex; gap: 18px; font-size: var(--fs-body); color: #1e293b; margin-top: 6px;">
+                                    <span>[ ] 1😫</span>
+                                    <span>[ ] 2 😮‍💨</span>
+                                    <span>[ ] 3 😐</span>
+                                    <span>[ ] 4 🙂</span>
+                                    <span>[ ] 5 🤩</span>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px 20px; margin-bottom: 18px; page-break-inside: avoid;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span style="background: #1e293b; color: #ffffff; font-size: var(--fs-small); font-weight: 700; padding: 3px 10px; border-radius: 4px;">階段 3</span>
+                                    <strong style="font-size: var(--fs-title); color: #0f172a;">核保與送件</strong>
+                                </div>
+                                <span style="font-size: var(--fs-small); color: #64748b;">完成此階段通常依序執行的行動（最多3項）：</span>
+                            </div>
+                            
+                            <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                                <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">A. 行動: 要保書登打與檢查</strong>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) 執行時的實體／數位地點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 辦公室</span><span>[ ] 線上</span><span>[ ] 客戶所在地點</span><span>[ ] 住家</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) 協助完成此行動的工具或對象：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 建議書系統</span><span>[ ] 業務員 App</span><span>[ ] 資深主管審單</span><span>[ ] 行政助理</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) 此行動中遭遇的痛點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 要保書欄位過多</span><span>[ ] 檢核錯誤繁瑣</span><span>[ ] 登打中斷時常被登出</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 6px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) 補充考量：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 優先處理特定客戶考量</span><span>[ ] 跨單位協同作業</span><span>[ ] 緊急案件優先</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                                <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">B. 行動: 執行送件</strong>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) 執行時的實體／數位地點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 線上</span><span>[ ] 分公司櫃檯</span><span>[ ] 客戶所在地點</span><span>[ ] 辦公室</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) 協助完成此行動的工具或對象：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 線上投保送件系統</span><span>[ ] 線上簽署系統</span><span>[ ] 臨櫃送件窗口</span><span>[ ] 行政助理</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) 此行動中遭遇的痛點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 線上簽署驗證失敗率高</span><span>[ ] 上傳逾時中斷</span><span>[ ] 紙本臨櫃受理截止時間緊迫</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 6px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) 補充考量：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 優先處理特定客戶考量</span><span>[ ] 跨單位協同作業</span><span>[ ] 緊急案件優先</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                                <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">C. 行動: 照會處理、照會覆核與送達簽收</strong>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) 執行時的實體／數位地點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 辦公室</span><span>[ ] 線上</span><span>[ ] 電話</span><span>[ ] 分公司櫃檯</span><span>[ ] 客戶所在地點</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) 協助完成此行動的工具或對象：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 照會通知系統</span><span>[ ] 核保人員專線</span><span>[ ] LINE</span><span>[ ] 行政助理</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) 此行動中遭遇的痛點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 照會補件流程冗長</span><span>[ ] 需重複請客戶補簽</span><span>[ ] 送達簽收回傳繁瑣</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 6px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) 補充考量：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 優先處理特定客戶考量</span><span>[ ] 跨單位協同作業</span><span>[ ] 緊急案件優先</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #cbd5e1;">
+                                <span style="font-size: var(--fs-subtitle); font-weight: 700; color: #1e293b;">D. 請為此階段的情緒體驗評分：</span>
+                                <div style="display: flex; gap: 18px; font-size: var(--fs-body); color: #1e293b; margin-top: 6px;">
+                                    <span>[ ] 1😫</span>
+                                    <span>[ ] 2 😮‍💨</span>
+                                    <span>[ ] 3 😐</span>
+                                    <span>[ ] 4 🙂</span>
+                                    <span>[ ] 5 🤩</span>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px 20px; margin-bottom: 18px; page-break-inside: avoid;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span style="background: #1e293b; color: #ffffff; font-size: var(--fs-small); font-weight: 700; padding: 3px 10px; border-radius: 4px;">階段 4</span>
+                                    <strong style="font-size: var(--fs-title); color: #0f172a;">保單售後服務</strong>
+                                </div>
+                                <span style="font-size: var(--fs-small); color: #64748b;">完成此階段通常依序執行的行動（最多3項）：</span>
+                            </div>
+                            
+                            <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                                <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">A. 行動: 客戶資料管理</strong>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) 執行時的實體／數位地點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 辦公室</span><span>[ ] 住家</span><span>[ ] 線上</span><span>[ ] 電話</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) 協助完成此行動的工具或對象：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 業務員入口網站</span><span>[ ] 手機通訊錄</span><span>[ ] Excel／Notion</span><span>[ ] 紙本筆記本</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) 此行動中遭遇的痛點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 客戶資料分散各處難以集中</span><span>[ ] 缺乏生日／保單週年自動提醒</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 6px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) 補充考量：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 優先處理特定客戶考量</span><span>[ ] 跨單位協同作業</span><span>[ ] 緊急案件優先</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                                <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">B. 行動: 查詢客戶保單狀態（例如：客戶因外部行銷話術、生活事件主動詢問保障）</strong>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) 執行時的實體／數位地點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 辦公室</span><span>[ ] 線上</span><span>[ ] 電話</span><span>[ ] 客戶所在地點</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) 協助完成此行動的工具或對象：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 客戶服務系統</span><span>[ ] 業務員 App</span><span>[ ] 客服中心專線</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) 此行動中遭遇的痛點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 查詢權限受限需多重授權</span><span>[ ] 尖峰時段系統回應緩慢</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 6px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) 補充考量：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 優先處理特定客戶考量</span><span>[ ] 跨單位協同作業</span><span>[ ] 緊急案件優先</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                                <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">C. 行動: 理賠與契約變更處理</strong>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) 執行時的實體／數位地點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 辦公室</span><span>[ ] 分公司櫃檯</span><span>[ ] 線上</span><span>[ ] 客戶所在地點</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) 協助完成此行動的工具或對象：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 理賠系統</span><span>[ ] 契約變更申請書</span><span>[ ] 臨櫃服務窗口</span><span>[ ] 行政助理</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) 此行動中遭遇的痛點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 理賠證明文件繁複</span><span>[ ] 契約變更審核進度緩慢</span><span>[ ] 客戶因等待時間過長抱怨</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 6px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) 補充考量：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 優先處理特定客戶考量</span><span>[ ] 跨單位協同作業</span><span>[ ] 緊急案件優先</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #cbd5e1;">
+                                <span style="font-size: var(--fs-subtitle); font-weight: 700; color: #1e293b;">D. 請為此階段的情緒體驗評分：</span>
+                                <div style="display: flex; gap: 18px; font-size: var(--fs-body); color: #1e293b; margin-top: 6px;">
+                                    <span>[ ] 1😫</span>
+                                    <span>[ ] 2 😮‍💨</span>
+                                    <span>[ ] 3 😐</span>
+                                    <span>[ ] 4 🙂</span>
+                                    <span>[ ] 5 🤩</span>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px 20px; margin-bottom: 18px; page-break-inside: avoid;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span style="background: #1e293b; color: #ffffff; font-size: var(--fs-small); font-weight: 700; padding: 3px 10px; border-radius: 4px;">階段 5</span>
+                                    <strong style="font-size: var(--fs-title); color: #0f172a;">通訊處行政與支援工作</strong>
+                                </div>
+                                <span style="font-size: var(--fs-small); color: #64748b;">完成此階段通常依序執行的行動（最多3項）：</span>
+                            </div>
+                            
+                            <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                                <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">A. 行動: 搜尋銷售支援文件</strong>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) 執行時的實體／數位地點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 通訊處辦公室</span><span>[ ] 線上公用區</span><span>[ ] 住家</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) 協助完成此行動的工具或對象：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 業務員入口網站</span><span>[ ] 內部共享雲端</span><span>[ ] 行政助理</span><span>[ ] 資深前輩</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) 此行動中遭遇的痛點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 公文文件檢索不易</span><span>[ ] 易下載到過期舊版文件</span><span>[ ] 資料夾層級過於混亂</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 6px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) 補充考量：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 優先處理特定客戶考量</span><span>[ ] 跨單位協同作業</span><span>[ ] 緊急案件優先</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                                <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">B. 行動: 搜尋增員文件／準增員人設輪廓、評估與測驗</strong>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) 執行時的實體／數位地點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 通訊處辦公室</span><span>[ ] 咖啡廳</span><span>[ ] 線上</span><span>[ ] 電話</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) 協助完成此行動的工具或對象：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 增員入口系統</span><span>[ ] 人才測評系統</span><span>[ ] 處經理／資深主管</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) 此行動中遭遇的痛點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 準增員對象缺乏數位進度追蹤</span><span>[ ] 紙本測驗批改耗時</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 6px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) 補充考量：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 優先處理特定客戶考量</span><span>[ ] 跨單位協同作業</span><span>[ ] 緊急案件優先</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                                <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">C. 行動: 團隊輔導與績效管理</strong>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) 執行時的實體／數位地點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 通訊處會議室</span><span>[ ] 線上視訊會議</span><span>[ ] LINE 群組</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) 協助完成此行動的工具或對象：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 業績儀表板</span><span>[ ] 佣金試算系統</span><span>[ ] 輔導前輩</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) 此行動中遭遇的痛點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 業績報表產出延遲</span><span>[ ] 早會晨報實體出席率不易維持</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 6px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) 補充考量：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 優先處理特定客戶考量</span><span>[ ] 跨單位協同作業</span><span>[ ] 緊急案件優先</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #cbd5e1;">
+                                <span style="font-size: var(--fs-subtitle); font-weight: 700; color: #1e293b;">D. 請為此階段的情緒體驗評分：</span>
+                                <div style="display: flex; gap: 18px; font-size: var(--fs-body); color: #1e293b; margin-top: 6px;">
+                                    <span>[ ] 1😫</span>
+                                    <span>[ ] 2 😮‍💨</span>
+                                    <span>[ ] 3 😐</span>
+                                    <span>[ ] 4 🙂</span>
+                                    <span>[ ] 5 🤩</span>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px 20px; margin-bottom: 18px; page-break-inside: avoid;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span style="background: #1e293b; color: #ffffff; font-size: var(--fs-small); font-weight: 700; padding: 3px 10px; border-radius: 4px;">階段 6</span>
+                                    <strong style="font-size: var(--fs-title); color: #0f172a;">培訓與學習</strong>
+                                </div>
+                                <span style="font-size: var(--fs-small); color: #64748b;">完成此階段通常依序執行的行動（最多3項）：</span>
+                            </div>
+                            
+                            <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                                <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">A. 行動: 教育訓練課程</strong>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) 執行時的實體／數位地點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 實體培訓教室</span><span>[ ] 線上視訊研討會</span><span>[ ] 通訊處培訓室</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) 協助完成此行動的工具或對象：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 紙本講義簡報</span><span>[ ] 內聘講師</span><span>[ ] ABC 學院</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) 此行動中遭遇的痛點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 課程時間與客戶拜訪衝突</span><span>[ ] 單向講授缺乏實務互動</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 6px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) 補充考量：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 優先處理特定客戶考量</span><span>[ ] 跨單位協同作業</span><span>[ ] 緊急案件優先</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                                <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">B. 行動: 線上學習資源（例如 ABC 學院）</strong>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) 執行時的實體／數位地點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 住家</span><span>[ ] 通勤手機使用</span><span>[ ] 辦公室</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) 協助完成此行動的工具或對象：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] ABC 學院 App</span><span>[ ] 法遵測驗模擬系統</span><span>[ ] 數位學習入口</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) 此行動中遭遇的痛點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 線上影片無法自訂倍速</span><span>[ ] 法遵必修測驗重複刷題耗時</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 6px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) 補充考量：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 優先處理特定客戶考量</span><span>[ ] 跨單位協同作業</span><span>[ ] 緊急案件優先</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                                <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">C. 行動: 觀摩前輩拜訪與展業技巧</strong>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) 執行時的實體／數位地點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 陪同拜訪客戶現場</span><span>[ ] 通訊處辦公室</span><span>[ ] 餐敘場合</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) 協助完成此行動的工具或對象：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 資深主管</span><span>[ ] 專屬導師</span><span>[ ] 隨身筆記本</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) 此行動中遭遇的痛點：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 與資深主管時間難以配合</span><span>[ ] 現場陪同觀摩機會有限</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 6px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) 補充考量：</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                        <span>[ ] 優先處理特定客戶考量</span><span>[ ] 跨單位協同作業</span><span>[ ] 緊急案件優先</span><span>[ ] 其他: _________________</span>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #cbd5e1;">
+                                <span style="font-size: var(--fs-subtitle); font-weight: 700; color: #1e293b;">D. 請為此階段的情緒體驗評分：</span>
+                                <div style="display: flex; gap: 18px; font-size: var(--fs-body); color: #1e293b; margin-top: 6px;">
+                                    <span>[ ] 1😫</span>
+                                    <span>[ ] 2 😮‍💨</span>
+                                    <span>[ ] 3 😐</span>
+                                    <span>[ ] 4 🙂</span>
+                                    <span>[ ] 5 🤩</span>
+                                </div>
+                            </div>
+                        </div>
+                    
+                    </div>
+                
+
+
+        <!-- Sign-off / Footer -->
+        <div style="text-align: center; color: #64748b; font-size: var(--fs-body); border-top: 2px solid #e2e8f0; padding-top: 18px; margin-top: 24px;">
+            <strong>—— 問卷到此結束。再次感謝您的寶貴時間與協助！ ——</strong>
+            <div style="margin-top: 8px; font-size: var(--fs-small); color: #94a3b8;">
+                保險業務員客群畫像與銷售旅程 &bull; 數位化架構問卷
+            </div>
+        </div>
+    </div>
+</body>
+</html>

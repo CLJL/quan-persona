@@ -1,5 +1,4 @@
-/* quan-persona - "Start here" onboarding: chooser, three short guided routes (act-to-advance) and a Getting-started checklist.
-   Works alongside the existing 14-step guided tour (portal-tour.js), which is kept as the "full tour". */
+/* quan-persona - "Start here" interactive onboarding & guided tutorial routes (act-to-advance) with a Getting-started checklist. */
 (function () {
     'use strict';
     const KEY = 'qp-start-v1';
@@ -10,7 +9,7 @@
     const secNow = () => (typeof activeSection !== 'undefined') ? activeSection : null;
 
     // ---------- persisted state (per-viewer convenience only; every access is guarded) ----------
-    let S = { done: {}, dismissed: false, seen: false };   // done: { sample, quest, own }
+    let S = { done: {}, dismissed: false, seen: false, dontShowAgain: false };   // done: { sample, quest, own }
     try { const raw = localStorage.getItem(KEY); if (raw) S = Object.assign(S, JSON.parse(raw)); } catch (e) {}
     function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
 
@@ -24,7 +23,7 @@
             optC: ['Analyse my own survey data', 'Get the CSV template, upload your file and check how your columns match.'],
             step: 'Step', of: 'of', back: 'Back', next: 'Next', close: 'Close',
             ownData: 'Analyse my own data', toSample: 'Explore the sample data', toQuest: 'Design a questionnaire', finish: 'Finish',
-            chip: 'Getting started', show: 'Show me',
+            chip: 'Getting started', show: 'Show me', review: 'Review', dontShow: "Don't show again",
             items: { sample: 'Explore the sample data', quest: 'Design a questionnaire', own: 'Analyse my own survey data' }
         },
         zh: {
@@ -35,7 +34,7 @@
             optC: ['分析我自己的問卷資料', '取得 CSV 範本、上傳檔案，並確認欄位對應的結果。'],
             step: '步驟', of: '／', back: '上一步', next: '下一步', close: '關閉',
             ownData: '分析我的資料', toSample: '先看範例資料', toQuest: '設計問卷', finish: '完成',
-            chip: '新手上路', show: '帶我去',
+            chip: '新手上路', show: '帶我去', review: '複習', dontShow: '不再顯示',
             items: { sample: '先看範例資料', quest: '設計問卷', own: '分析我自己的問卷資料' }
         }
     };
@@ -110,9 +109,9 @@
             { id: 'analytics', section: 'journeys', drawer: true, pad: 1, sel: '#btn-sec-analytics', wait: { section: 'analytics' },
               en: ['Then open {navAnalytics}', 'Click {navAnalytics} in the left menu to see how the groups were formed.'],
               zh: ['再來：開啟「{navAnalytics}」', '點選左側選單的「{navAnalytics}」，查看這些分群是怎麼形成的。'] },
-            { id: 'k', section: 'analytics', sel: () => { const sl = document.getElementById('cluster-k-slider'); let e = sl && sl.parentElement; while (e && !e.querySelector('.btn-primary')) e = e.parentElement; return e; }, wait: { click: '#ai-cluster-discovery .btn-primary' },
-              en: ['Try a different number of groups', 'Drag the slider (3 to 8), then press {runClustering}. The groups, charts and tables are recalculated.'],
-              zh: ['試試不同的分群數量', '拖曳滑桿（3 到 8 組），再按「{runClustering}」；分群、圖表與表格都會重新計算。'] },
+            { id: 'k', section: 'analytics', sel: () => { const sl = document.getElementById('cluster-k-slider'); return sl ? sl.closest('label') || sl : null; }, wait: { change: '#cluster-k-slider' },
+              en: ['Try a different number of groups', 'Drag the slider (3 to 8). The groups, charts and tables are automatically recalculated in real time.'],
+              zh: ['試試不同的分群數量', '拖曳滑桿（3 到 8 組），分群、圖表與表格便會即時自動重新計算。'] },
             { id: 'end', center: true, last: true, buttons: ['toQuest'],
               en: ['You have seen the full loop', 'Personas, then Journey Map, then Analytics. Next, learn how to design a questionnaire.'],
               zh: ['完整流程你已經走過一遍', '人物誌、歷程地圖、數據分析。接下來，來看看怎麼設計問卷。'] }
@@ -179,6 +178,7 @@
         // act-to-advance listeners (capture so we see the click even if the page stops propagation)
         document.addEventListener('click', onClick, true);
         document.addEventListener('change', onChange, true);
+        document.addEventListener('input', onChange, true);
     }
 
     // ---------- fly the dialogue to the tutorial icon (same motion as the 14-step tour) ----------
@@ -229,7 +229,7 @@
     }
     function closeChooser(showChip, animate) {
         if (!chooser || chooser.style.display === 'none') { refreshChip(); return; }
-        const fin = () => { chooser.style.display = 'none'; if (showChip) { S.dismissed = false; save(); } refreshChip(); };
+        const fin = () => { chooser.style.display = 'none'; if (showChip && !S.dontShowAgain) { S.dismissed = false; save(); } refreshChip(); };
         if (animate) flyTo(chooser.querySelector('.qps-ch-card'), chooser, fin); else fin();
     }
 
@@ -391,14 +391,37 @@
     function doneCount() { return ITEMS.filter(i => S.done[i.k]).length; }
     function renderPanel() {
         if (!panel) return; const x = T();
-        panel.innerHTML = '<div class="qps-ph"><strong>' + x.chip + '</strong><span>' + doneCount() + '/' + ITEMS.length + '</span></div><ul class="qps-list">' +
+        panel.innerHTML = '<div class="qps-ph" style="display:flex;align-items:center;justify-content:space-between;">' +
+            '<div><strong>' + x.chip + '</strong> <span style="font-size:0.875rem;color:#f5c518;margin-left:6px;">' + doneCount() + '/' + ITEMS.length + '</span></div>' +
+            '<button type="button" class="qps-x" data-act="close-panel" aria-label="' + x.close + '">' + X_SVG + '</button>' +
+            '</div>' +
+            '<ul class="qps-list">' +
             ITEMS.map(i => '<li class="' + (S.done[i.k] ? 'is-done' : '') + '"><span class="qps-tick" aria-hidden="true">' + (S.done[i.k] ? '&#10003;' : '') + '</span><span class="qps-li-t">' + x.items[i.k] + '</span>' +
-                (S.done[i.k] ? '' : '<button type="button" class="qps-link" data-k="' + i.k + '">' + x.show + '</button>') + '</li>').join('') +
-            '</ul>';
+                '<button type="button" class="qps-link" data-k="' + i.k + '">' + (S.done[i.k] ? x.review : x.show) + '</button></li>').join('') +
+            '</ul>' +
+            '<div class="qps-pf" style="display:flex;align-items:center;justify-content:space-between;gap:8px;">' +
+            '<label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none;font-size:1rem;color:#aab3c0;">' +
+            '<input type="checkbox" id="qps-dont-show-chk" ' + (S.dontShowAgain ? 'checked' : '') + ' style="accent-color:#f5c518;cursor:pointer;width:16px;height:16px;margin:0;">' +
+            '<span>' + x.dontShow + '</span></label>' +
+            '</div>';
         panel.onclick = e => {
+            const closeBtn = e.target.closest('[data-act="close-panel"]');
+            if (closeBtn) { togglePanel(false); return; }
             const b = e.target.closest('[data-k]');
             if (b) { const it = ITEMS.find(i => i.k === b.getAttribute('data-k')); togglePanel(false); startRoute(it.route); }
         };
+        const chk = panel.querySelector('#qps-dont-show-chk');
+        if (chk) {
+            chk.onchange = () => {
+                S.dontShowAgain = chk.checked;
+                S.dismissed = chk.checked;
+                save();
+                if (chk.checked) {
+                    togglePanel(false);
+                    refreshChip();
+                }
+            };
+        }
     }
     function togglePanel(force) {
         if (!panel) return; const open = (force === undefined) ? panel.style.display === 'none' : force;
@@ -410,8 +433,8 @@
     }
     function refreshChip() {
         if (!chip) return; const x = T();
-        const hide = S.dismissed || !S.seen || blocked() || doneCount() === ITEMS.length;
-        if (hide) { chip.style.display = 'none'; if (panel && (blocked() || doneCount() === ITEMS.length)) panel.style.display = 'none'; return; }
+        const hide = S.dontShowAgain || S.dismissed || !S.seen || blocked();
+        if (hide) { chip.style.display = 'none'; if (panel && (blocked() || S.dontShowAgain || S.dismissed)) panel.style.display = 'none'; return; }
         const n = doneCount();
         chip.innerHTML = '<span class="qps-dot" aria-hidden="true"></span><span>' + x.chip + ' &middot; ' + n + '/' + ITEMS.length + '</span>';
         chip.style.display = 'inline-flex';
@@ -425,14 +448,20 @@
 
     // ---------- public API and hooks ----------
     // After the landing video: first-time viewers get the chooser; returning viewers just see the checklist chip
-    window.openStartHereAuto = function () { build(); if (!S.seen) openStartHere(); else refreshChip(); };
+    window.openStartHereAuto = function () { if (S.dontShowAgain) return; build(); if (!S.seen) openStartHere(); else refreshChip(); };
     window.openStartHere = openStartHere;
     window.startRoute = startRoute;
     function init() {
-        build(); renderPanel();
+        build(); renderPanel(); refreshChip();
         setInterval(refreshChip, 700);
-        const full = window.startTour;
-        if (typeof full === 'function') window.startTour = function () { endRoute(true); closeChooser(false); togglePanel(false); return full.apply(this, arguments); };
+        window.startTour = function () { openStartHere(); };
+        try {
+            const p = new URLSearchParams(window.location.search);
+            const r = p.get('startRoute');
+            if (r && ROUTES[r]) {
+                setTimeout(() => startRoute(r), 120);
+            }
+        } catch (e) {}
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();

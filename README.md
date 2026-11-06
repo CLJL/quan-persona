@@ -1,4 +1,4 @@
-# quan-persona: Data-Driven Behavioural Segmentation & Persona Analytics
+# quan-persona: Behavioural Segmentation & Persona Analytics
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -74,7 +74,7 @@ Raw Survey Responses (CSV)
 1. Dynamic Column Normalisation & Role Mapping
    │
    ▼
-2. DBSCAN Density Clustering ──► Isolates Outliers & Noise (eps=3.0)
+2. DBSCAN Density Clustering ──► Isolates Outliers & Noise
    │
    ▼
 3. Inlier Normalisation (Z-score standardisation)
@@ -89,9 +89,9 @@ Raw Survey Responses (CSV)
 6. Multi-Lens Visualisation (Personas, Journey Maps, Radar Analytics)
 ```
 
-1. **DBSCAN Filtering**: Identifies irregular or extreme respondent profiles (~5–10%) and isolates them into a dedicated *Outliers & Noise* cohort so they do not distort cluster centroids.
-2. **K-Means Clustering**: Partitions inliers into $K$ empirical clusters based on Euclidean distance across normalised behavioural vectors.
-3. **Automated K-Check**: Evaluates silhouette coefficients and centroid stability across $K=3$ through $K=8$ to help researchers determine optimal mathematical cluster boundaries.
+1. **DBSCAN Filtering**: DBSCAN identifies potential outliers and noise points based on the density and distribution of the uploaded survey data. The proportion of responses classified as noise varies depending on the dataset characteristics and clustering parameters.
+2. **K-Means Clustering ($K = 3$ to $8$)**: Partitions inliers into $K$ empirical clusters based on Euclidean distance across normalised behavioural vectors. While theoretical K-means and silhouette scoring allow $K \ge 2$, the user-facing interactive slider is intentionally constrained to $K = 3$ through $K = 8$ (defaulting to 5)—binary 2-cluster splits are rarely meaningful for persona differentiation in UX and service design.
+3. **Automated K-Check ($K = 3$ to $8$)**: Evaluates silhouette coefficients and centroid stability (subsample Adjusted Rand Index) across $K = 3$ through $K = 8$ to guide researchers toward optimal mathematical and practical cluster boundaries.
 4. **Deterministic Reproducibility**: Seeded clustering guarantees that uploading the same dataset always reproduces identical cluster assignments.
 
 ---

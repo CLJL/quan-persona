@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Agent Persona &amp; Sales Journey</title>
+    <style>
+        :root {
+            --fs-display: 30px;
+            --fs-heading: 24px;
+            --fs-title: 20px;
+            --fs-subtitle: 17px;
+            --fs-body: 15px;
+            --fs-small: 14px;
+            --fs-caption: 13px;
+        }
+        @page {
+            size: A4 portrait;
+            margin: 12mm 14mm 12mm 14mm;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang TC", "Microsoft JhengHei", Arial, sans-serif;
+            color: #1e293b;
+            background: #f1f5f9;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            font-size: var(--fs-body);
+        }
+        .print-toolbar {
+            position: sticky;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #0f172a;
+            color: #ffffff;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10000;
+        }
+        .btn-tb {
+            background: #2563eb;
+            color: #ffffff;
+            border: none;
+            padding: 7px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+        .btn-tb:hover { background: #1d4ed8; }
+        .btn-tb-secondary {
+            background: rgba(255,255,255,0.12);
+            color: #ffffff;
+            border: 1px solid rgba(255,255,255,0.25);
+        }
+        .btn-tb-secondary:hover { background: rgba(255,255,255,0.22); }
+        .paper-container {
+            max-width: 900px;
+            margin: 24px auto;
+            background: #ffffff;
+            padding: 40px 48px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            border-radius: 8px;
+        }
+        h1 {
+            font-size: var(--fs-heading);
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 14px 0;
+            line-height: 1.35;
+            text-align: center;
+        }
+        .section-header {
+            background: #1e293b;
+            color: #ffffff;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: var(--fs-title);
+            margin: 28px 0 14px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            page-break-after: avoid;
+        }
+        .table-matrix {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: var(--fs-body);
+        }
+        .table-matrix th {
+            background: #f1f5f9;
+            color: #334155;
+            padding: 9px 12px;
+            border: 1px solid #cbd5e1;
+            font-weight: 700;
+            font-size: var(--fs-body);
+        }
+        .table-matrix td {
+            border: 1px solid #cbd5e1;
+            padding: 8px 12px;
+            font-size: var(--fs-body);
+        }
+        @media print {
+            .print-toolbar { display: none !important; }
+            body { background: #ffffff !important; }
+            .paper-container {
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                max-width: 100% !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="print-toolbar">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-weight: 700; font-size: 15px;">📋 Questionnaire Preview &amp; Export</span>
+            <span style="font-size: var(--fs-small); color: #94a3b8;">Generated dynamically from active schema (Faithfully aligns with V.1)</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <button type="button" class="btn-tb" onclick="window.print()">
+                <span>🖨️</span>
+                <span>Print / Save as PDF</span>
+            </button>
+            <button type="button" class="btn-tb btn-tb-secondary" onclick="window.close()">
+                <span>✕</span>
+                <span>Close</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="paper-container">
+        <h1>Agent Persona &amp; Sales Journey</h1>
+
+        <!-- Briefing Instructions Box -->
+        <div style="background: #f8fafc; border-left: 4px solid #2563eb; border: 1px solid #e2e8f0; border-left-width: 4px; padding: 14px 18px; border-radius: 6px; margin-bottom: 20px; font-size: var(--fs-body); color: #334155; line-height: 1.6;">
+            Dear Business Partners, Hello! This questionnaire aims to understand your daily work styles, tool usage habits, and the challenges and needs you encounter during your insurance sales journey. This will serve as a baseline for optimising digital tools for agents and improving our service quality. The questionnaire takes about 10–15 minutes to complete. All responses are aggregated and analysed dynamically via unsupervised machine learning algorithms to map agent profiles in real-time without relying on rigid, predefined chronological demographic filters. Thank you for your cooperation and assistance!
+        </div>
+
+        <!-- Respondent Header Info -->
+        <div style="display: flex; justify-content: space-between; align-items: center; background: #ffffff; border: 1px dashed #cbd5e1; padding: 10px 16px; border-radius: 6px; margin-bottom: 20px; font-size: var(--fs-body); color: #475569;">
+            <span>Name: ______________________</span>
+            <span>Agent Code: ______________________</span>
+            <span>Branch / Office: ______________________</span>
+            <span>Date: 202___ / ___ / ___</span>
+        </div>
+
+        
+            <!-- PART: DEMOGRAPHICS -->
+            <div class="section-header">
+                <span>Part I: Demographic Information</span>
+                <span style="font-size: var(--fs-small); opacity: 0.9;">Q1 ~ Q7</span>
+            </div>
+            
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">1. What is your age range?</label>
+                        <div class="field-options" style="display: flex; flex-wrap: wrap; gap: 10px 20px; font-size: var(--fs-body); margin-top: 8px;"><span>[ ] Under 25</span><span>[ ] 26–35</span><span>[ ] 36–45</span><span>[ ] 46–55</span><span>[ ] 56–65</span><span>[ ] 66 or above</span></div>
+                        
+                    </div>
+                
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">2. What is your current service region?</label>
+                        <div class="field-options" style="display: flex; flex-wrap: wrap; gap: 10px 20px; font-size: var(--fs-body); margin-top: 8px;"><span>[ ] Taipei I Business Development Dept.</span><span>[ ] Taipei II Business Development Dept.</span><span>[ ] Taoyuan/Hsinchu/Miaoli Business Development Dept.</span><span>[ ] Central Region Business Development Dept.</span><span>[ ] Southern Region Business Development Dept.</span></div>
+                        
+                    </div>
+                
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">3. What is the name of your communication office (branch)?</label>
+                        <div class="field-writein" style="font-family: monospace; font-size: var(--fs-body); color: #475569; margin-top: 6px; letter-spacing: 1px;">Communication Office / Branch: ________________________________________________</div>
+                        
+                    </div>
+                
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">4. What is your current job rank/title?</label>
+                        <div class="field-options" style="display: flex; flex-wrap: wrap; gap: 10px 20px; font-size: var(--fs-body); margin-top: 8px;"><span>[ ] New Agent</span><span>[ ] Sales Supervisor</span><span>[ ] Sales Manager</span><span>[ ] District Manager</span><span>[ ] Agency Manager</span><span>[ ] Director</span></div>
+                        
+                    </div>
+                
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">5. What is your range of years of experience in insurance sales?</label>
+                        <div class="field-options" style="display: flex; flex-wrap: wrap; gap: 10px 20px; font-size: var(--fs-body); margin-top: 8px;"><span>[ ] Under 1 year</span><span>[ ] 1–3 years</span><span>[ ] 3–5 years</span><span>[ ] 6–10 years</span><span>[ ] 11–15 years</span><span>[ ] 16–20 years</span><span>[ ] 21–25 years</span><span>[ ] 26–30 years</span><span>[ ] 30 years or more</span></div>
+                        
+                    </div>
+                
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">6. Approximately how many customers have you served up to now?</label>
+                        <div class="field-options" style="display: flex; flex-wrap: wrap; gap: 10px 20px; font-size: var(--fs-body); margin-top: 8px;"><span>[ ] Under 50 customers</span><span>[ ] 51–100 customers</span><span>[ ] 101–300 customers</span><span>[ ] 301–600 customers</span><span>[ ] 600 customers or more</span></div>
+                        
+                    </div>
+                
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">7. Compared to peers in your same communication office, where did your sales performance rank over the past 12 months?</label>
+                        <div class="field-options" style="display: flex; flex-wrap: wrap; gap: 10px 20px; font-size: var(--fs-body); margin-top: 8px;"><span>[ ] Top 10%</span><span>[ ] Top 25%</span><span>[ ] Average level</span><span>[ ] Bottom 50%</span><span>[ ] Uncertain / Inconvenient to disclose</span></div>
+                        <div style="font-size: var(--fs-small); color: #64748b; font-style: italic; margin-top: 6px; line-height: 1.5;">Note: This question is strictly used to filter subsequent questions and will not be used for individual performance reviews. Please answer with confidence.</div>
+                    </div>
+                
+        
+            <!-- PART: ARCHETYPE TAGS (SELF-IMAGE) -->
+            <div class="section-header">
+                <span>Part II: Self-Image Tags</span>
+                <span style="font-size: var(--fs-small); opacity: 0.9;">Q8 ~ Q10</span>
+            </div>
+
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px 18px; margin-bottom: 12px;">
+                <p style="margin: 0 0 10px 0; font-size: var(--fs-body); color: #334155; line-height: 1.6;">
+                    The following tags are used to help us understand your working style and self-identity. There are no right or wrong answers; please select the descriptions that fit you best based on your intuition.
+                </p>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 12px;">
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e2e8f0;"><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Cultivation of Customer Relations</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Predictive Service</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Opportunity Hunter</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Embracing Ideals</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Rookie Agent</td></tr><tr style="border-bottom: 1px solid #e2e8f0;"><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Digital Savvy Tool User</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Proactive Development</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Intuitive &amp; Sharp</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Inquisitive Learner</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Trust-Based</td></tr><tr style="border-bottom: 1px solid #e2e8f0;"><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Strong Sense of Responsibility</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Premium Training</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Flexible Adaptation</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Number-Oriented</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] High Empathy</td></tr><tr style="border-bottom: 1px solid #e2e8f0;"><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Proactive Communication</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Fast &amp; Precise</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Rapid Response</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Progress Transparency</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Process Expert</td></tr><tr style="border-bottom: 1px solid #e2e8f0;"><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Emotional Connection</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Family Protector</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Action-Oriented</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Trust Through Service</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Detail Controller</td></tr><tr style="border-bottom: 1px solid #e2e8f0;"><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Summit Convention Regular</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Event Sensitive</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Service Priority</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Analytical Planning</td><td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] Efficiency First</td></tr>
+                    </tbody>
+                </table>
+                <div style="font-size: var(--fs-body); color: #475569; margin-bottom: 14px;">
+                    [ ] Other (please specify): __________________________________________________
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 10px; border-top: 1px dashed #cbd5e1; padding-top: 12px;">
+                    <div>
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                            8. Please write down the 1st tag that “best represents you” from the options above.
+                        </label>
+                        <div style="font-size: var(--fs-body); color: #2563eb; margin-top: 6px;">
+                            Tag 1: __________________________________________________
+                        </div>
+                    </div>
+                    <div>
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                            9. Please write down the 2nd tag that represents you; please do not repeat Q8.
+                        </label>
+                        <div style="font-size: var(--fs-body); color: #2563eb; margin-top: 6px;">
+                            Tag 2: __________________________________________________
+                        </div>
+                    </div>
+                    <div>
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                            10. Please write down the 3rd tag that represents you; please do not repeat Q8 and Q9.
+                        </label>
+                        <div style="font-size: var(--fs-body); color: #2563eb; margin-top: 6px;">
+                            Tag 3: __________________________________________________
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="section-header">
+                <span>Part III: Agent Background</span>
+                <span style="font-size: var(--fs-small); opacity: 0.9;">Q11 ~ Q19</span>
+            </div>
+
+            <!-- Agent Tools Familiarity (Q11) -->
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                    11. How familiar are you with the tools and systems you currently use for your work?
+                </label>
+                <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; font-size: var(--fs-body); margin-top: 8px; color: #334155;">
+                    <span style="font-weight: 600; color: #64748b;">Extremely Unfamiliar</span>
+                    <span>[ ] 0%</span> <span>[ ] 20%</span> <span>[ ] 40%</span> <span>[ ] 60%</span> <span>[ ] 80%</span> <span>[ ] 100%</span>
+                    <span style="font-weight: 600; color: #64748b;">Extremely Familiar</span>
+                </div>
+            </div>
+
+            <!-- Work Feeling Emoji Scale (Q12) -->
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                    12. Overall, how does your current way of working make you feel?
+                </label>
+                <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; font-size: var(--fs-body); margin-top: 8px; color: #334155;">
+                    <span style="font-weight: 600; color: #64748b;">Extremely Unhappy</span>
+                    <span>[ ] 😩</span> <span>[ ] 🙁</span> <span>[ ] 😐</span> <span>[ ] 🙂</span> <span>[ ] 😄</span>
+                    <span style="font-weight: 600; color: #64748b;">Extremely Happy</span>
+                </div>
+            </div>
+
+            <!-- Tools Efficiency Impact (Q13) -->
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                    13. What impact do the tools and systems currently provided to you have on your daily efficiency?
+                </label>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: var(--fs-body); margin-top: 8px;">
+                    <span>[ ] Severely slows down efficiency</span><span>[ ] Slightly slows down efficiency</span><span>[ ] No noticeable impact</span><span>[ ] Slightly improves efficiency</span><span>[ ] Significantly improves efficiency</span>
+                </div>
+            </div>
+
+            <!-- System / Digital Tool Factors Matrix (Q14) -->
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                    14. Please rate the impact of each of the following SYSTEM / DIGITAL TOOL factors on your efficiency or experience.
+                </label>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 8px; font-size: var(--fs-body);">
+                    <thead>
+                        <tr style="background: #f8fafc; border-bottom: 1.5px solid #cbd5e1; color: #475569;">
+                            <th style="text-align: left; padding: 8px 10px; width: 45%;">Item</th>
+                            <th style="text-align: center;">0%</th><th style="text-align: center;">20%</th><th style="text-align: center;">40%</th><th style="text-align: center;">60%</th><th style="text-align: center;">80%</th><th style="text-align: center;">100%</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                            <tr style="border-bottom: 1px solid #e2e8f0;">
+                                <td style="padding: 8px 10px; color: #1e293b; font-weight: 500;">Tool/System Familiarity</td>
+                                <td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td>
+                            </tr>
+                        
+                            <tr style="border-bottom: 1px solid #e2e8f0;">
+                                <td style="padding: 8px 10px; color: #1e293b; font-weight: 500;">Insurance Knowledge</td>
+                                <td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td>
+                            </tr>
+                        
+                            <tr style="border-bottom: 1px solid #e2e8f0;">
+                                <td style="padding: 8px 10px; color: #1e293b; font-weight: 500;">Sales Pitch Communication</td>
+                                <td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td>
+                            </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Professional Capabilities Matrix (Q15) -->
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                    15. Please rate the impact of each of the following CAPABILITY / SERVICE factors on your overall performance or satisfaction.
+                </label>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 8px; font-size: var(--fs-body);">
+                    <thead>
+                        <tr style="background: #f8fafc; border-bottom: 1.5px solid #cbd5e1; color: #475569;">
+                            <th style="text-align: left; padding: 8px 10px; width: 45%;">Item</th>
+                            <th style="text-align: center;">0%</th><th style="text-align: center;">20%</th><th style="text-align: center;">40%</th><th style="text-align: center;">60%</th><th style="text-align: center;">80%</th><th style="text-align: center;">100%</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                            <tr style="border-bottom: 1px solid #e2e8f0;">
+                                <td style="padding: 8px 10px; color: #1e293b; font-weight: 500;">Customer Relationship Management</td>
+                                <td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td>
+                            </tr>
+                        
+                            <tr style="border-bottom: 1px solid #e2e8f0;">
+                                <td style="padding: 8px 10px; color: #1e293b; font-weight: 500;">Digital Tool Usage</td>
+                                <td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td>
+                            </tr>
+                        
+                            <tr style="border-bottom: 1px solid #e2e8f0;">
+                                <td style="padding: 8px 10px; color: #1e293b; font-weight: 500;">System Speed &amp; Reliability</td>
+                                <td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td>
+                            </tr>
+                        
+                            <tr style="border-bottom: 1px solid #e2e8f0;">
+                                <td style="padding: 8px 10px; color: #1e293b; font-weight: 500;">Mobile Experience</td>
+                                <td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td>
+                            </tr>
+                        
+                            <tr style="border-bottom: 1px solid #e2e8f0;">
+                                <td style="padding: 8px 10px; color: #1e293b; font-weight: 500;">Customer Service</td>
+                                <td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td><td style="text-align: center; padding: 6px 4px;">[ ]</td>
+                            </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- LINE / Personal Tools Reasons (Q16) -->
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                    16. What are the main reasons you use personal tools or contacts instead of the official channel? (Multi-select)
+                </label>
+                <div style="display: flex; flex-direction: column; gap: 8px; font-size: var(--fs-body); margin-top: 8px;">
+                    <span>[ ] Faster speed</span><span>[ ] More familiar interface</span><span>[ ] Company system lacks this function</span><span>[ ] Customers prefer communicating this way</span><span>[ ] Company system login/operation is too troublesome</span><span>[ ] I rarely use personal tools</span><span>[ ] Other</span>
+                </div>
+            </div>
+
+            <!-- Customer Visit Scheduling (Q17) -->
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                    17. How do you plan and schedule your main recurring work (e.g., customer visits)? (Multi-select)
+                </label>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: var(--fs-body); margin-top: 8px;">
+                    <span>[ ] Company system</span><span>[ ] Personal apps (e.g., Google Calendar)</span><span>[ ] Paper calendar/notebook</span><span>[ ] Do not specifically plan</span><span>[ ] Other</span>
+                </div>
+            </div>
+
+            <!-- Paper Calendar Reason (Q18) -->
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                    18. If you chose the paper-based option above, what is the main reason? (Single select; skip if not applicable)
+                </label>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: var(--fs-body); margin-top: 8px;">
+                    <span>[ ] Action locations are easy to mark</span><span>[ ] Time allocations can be clearly compared, and pages can be flipped back and forth for comparison</span><span>[ ] Free slots can be seen at a glance</span>
+                </div>
+            </div>
+
+            <!-- Calendar Proactive Suggestions Willingness (Q19) -->
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                    19. If the system could automatically offer relevant information or suggestions before your next planned activity, how willing would you be to use it?
+                </label>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: var(--fs-body); margin-top: 8px;">
+                    <span>[ ] Extremely willing</span><span>[ ] Open to trying it</span><span>[ ] Depends on the situation</span><span>[ ] Do not want the system to access my calendar</span>
+                </div>
+            </div>
+        
+            <!-- PART: DAILY WORK CONTENT & NEEDS -->
+            <div class="section-header">
+                <span>Part IV: Daily Work Content and Needs</span>
+                <span style="font-size: var(--fs-small); opacity: 0.9;">Q20 ~ Q25</span>
+            </div>
+
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px 18px; margin-bottom: 12px; page-break-inside: avoid;">
+                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                    20. Below are your main kinds of activity. Choose up to 5 you do most often and estimate the share of time each takes.
+                </label>
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; padding: 10px 14px; margin: 10px 0 12px 0; font-size: var(--fs-body); color: #334155; line-height: 1.7;">
+                    <span>a) Scheduling and visiting clients</span> &nbsp;|&nbsp; <span>b) Maintaining prospect lists / developing new lists</span> &nbsp;|&nbsp; <span>c) Signing policies</span> &nbsp;|&nbsp; <span>d) Post-sales service</span> &nbsp;|&nbsp; <span>e) Enhancing professional knowledge/training</span> &nbsp;|&nbsp; <span>f) Internal administrative tasks</span> &nbsp;|&nbsp; <span>g) System/tool optimisation and learning</span> &nbsp;|&nbsp; <span>h) Office gatherings and team activities</span> &nbsp;|&nbsp; <span>i) Recruiting</span> &nbsp;|&nbsp; <span>j) Other</span>
+                </div>
+                <table class="table-matrix" style="width: 100%; margin: 10px auto;">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%; text-align: left;">Code</th>
+                            <th style="text-align: left;">Percentage Range Selection</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 8px 12px;">[ _______ ]</td>
+                            <td style="padding: 8px 12px; font-size: var(--fs-body);"><span>[ ] 10%</span> <span>[ ] 20%</span> <span>[ ] 30%</span> <span>[ ] 40%</span>
+> <span>[ ] 50%</span> <span>[ ] 60%</span> <span>[ ] 70%</span> <span>[ ] 80%</span> <span>[ ] 90%</span> <span>[ ] 100%</span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 12px;">[ _______ ]</td>
+                            <td style="padding: 8px 12px; font-size: var(--fs-body);"><span>[ ] 10%</span> <span>[ ] 20%</span> <span>[ ] 30%</span> <span>[ ] 40%</span> <span>[ ] 50%</span> <span>[ ] 60%</span> <span>[ ] 70%</span> <span>[ ] 80%</span> <span>[ ] 90%</span> <span>[ ] 100%</span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 12px;">[ _______ ]</td>
+                            <td style="padding: 8px 12px; font-size: var(--fs-body);"><span>[ ] 10%</span> <span>[ ] 20%</span> <span>[ ] 30%</span> <span>[ ] 40%</span> <span>[ ] 50%</span> <span>[ ] 60%</span> <span>[ ] 70%</span> <span>[ ] 80%</span> <span>[ ] 90%</span> <span>[ ] 100%</span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 12px;">[ _______ ]</td>
+                            <td style="padding: 8px 12px; font-size: var(--fs-body);"><span>[ ] 10%</span> <span>[ ] 20%</span> <span>[ ] 30%</span> <span>[ ] 40%</span> <span>[ ] 50%</span> <span>[ ] 60%</span> <span>[ ] 70%</span> <span>[ ] 80%</span> <span>[ ] 90%</span> <span>[ ] 100%</span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 12px;">[ _______ ]</td>
+                            <td style="padding: 8px 12px; font-size: var(--fs-body);"><span>[ ] 10%</span> <span>[ ] 20%</span> <span>[ ] 30%</span> <span>[ ] 40%</span> <span>[ ] 50%</span> <span>[ ] 60%</span> <span>[ ] 70%</span> <span>[ ] 80%</span> <span>[ ] 90%</span> <span>[ ] 100%</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="font-size: var(--fs-body); color: #475569; margin-top: 10px;">
+                    If selected “j) Other”, please specify work item: __________________________________________________
+                </div>
+            </div>
+
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                    21. In carrying out these activities, is there a gap or contradiction between what you hope to achieve and what you actually get? Please briefly explain.
+                </label>
+                <div style="border-bottom: 1px dashed #94a3b8; height: 26px; margin-top: 10px;"></div>
+                <div style="border-bottom: 1px dashed #94a3b8; height: 26px; margin-top: 6px;"></div>
+            </div>
+
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                    22. Which OFFICIAL systems or channels do you use most often?  (Multiple Choice)
+                </label>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: var(--fs-body); margin-top: 8px;">
+                    <span>[ ] Insurance Submission System</span><span>[ ] Online Signing System</span><span>[ ] Claims System</span><span>[ ] Service System</span><span>[ ] Agent App</span><span>[ ] Agent Portal</span><span>[ ] ABC Academy</span><span>[ ] Proposal System</span>
+                    <span>[ ] Other official system (please specify): __________________________________________________</span>
+                </div>
+            </div>
+
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                    23. Which PERSONAL tools or workarounds do you use most often?  (Multiple Choice)
+                </label>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: var(--fs-body); margin-top: 8px;">
+                    <span>[ ] LINE</span><span>[ ] Mobile Notes / Calendar App</span><span>[ ] Phone Call (personal)</span><span>[ ] Canva</span><span>[ ] Paper Application Forms</span><span>[ ] AI tools (e.g., NotebookLM)</span><span>[ ] Notion / Google Sheets</span><span>[ ] Paper Notebook / Desk Calendar</span><span>[ ] Administrative Assistant / Peer assistance for data logging</span><span>[ ] Branch Counter / In-Person (manual override)</span>
+                    <span>[ ] Other personal tool (please specify): ___________________________________________</span>
+                </div>
+            </div>
+
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                    24. What are your most important needs or expectations?  (Select up to 5)
+                </label>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: var(--fs-body); margin-top: 8px;">
+                    <span>[ ] Fast login / FaceID &amp; Fingerprint login</span><span>[ ] Simplified system interface operations</span><span>[ ] Single portal system integration</span><span>[ ] Open API / custom integration features</span><span>[ ] Fuzzy keyword search</span><span>[ ] Mobile App experience optimisation</span><span>[ ] Automated list classification / tagging</span><span>[ ] Offline cache support</span><span>[ ] One-click automatic quotation generation</span><span>[ ] Retain counter/paper processing options</span><span>[ ] Extend online signature validity duration</span><span>[ ] Assistant account delegation permissions</span><span>[ ] Convenient paper printing / large-font interface</span><span>[ ] Reduce loading times</span><span>[ ] Predefined options for common occupations/products</span>
+                    <span>[ ] Other (please specify): __________________________________________________</span>
+                </div>
+            </div>
+
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                    25. Please share one sentence or motto that best represents you.
+                </label>
+                <div style="margin-top: 10px; font-size: var(--fs-body); color: #475569;">
+                    Reply: __________________________________________________________________________________________
+                </div>
+            </div>
+        
+            <!-- PART: JOURNEY STAGES -->
+            <div class="section-header">
+                <span>Part V: Agent Journey</span>
+                <span style="font-size: var(--fs-small); opacity: 0.9;">Q26 ~ Q27</span>
+            </div>
+
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 16px; page-break-inside: avoid;">
+                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
+                    26. In your daily work, which journey do you focus on most and experience every day? (Single Select)
+                </label>
+                <div style="display: flex; flex-wrap: wrap; gap: 14px 24px; font-size: var(--fs-body); margin-top: 8px;">
+                    <span>[ ] Sales Journey</span><span>[ ] Organisational Development Journey</span>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 12px;">
+                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); margin-bottom: 6px; line-height: 1.5;">
+                    27. Stage Journey Touchpoint Deep-Dive (Stages 1 to 6):
+                </label>
+                <div style="font-size: var(--fs-body); color: #475569; margin: 0 0 10px 0; font-weight: 500;">
+                    Six core agent tasks are listed below. Please fill out the following item sets based on your actual operational experience.
+                </div>
+                
+                <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px 20px; margin-bottom: 18px; page-break-inside: avoid;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="background: #1e293b; color: #ffffff; font-size: var(--fs-small); font-weight: 700; padding: 3px 10px; border-radius: 4px;">Stage 1</span>
+                            <strong style="font-size: var(--fs-title); color: #0f172a;">Scheduling &amp; Client Relationships</strong>
+                        </div>
+                        <span style="font-size: var(--fs-small); color: #64748b;">To complete this stage, the sequential actions you typically perform are (up to 3):</span>
+                    </div>
+                    
+                    <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                        <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">A. Action: Client List Development</strong>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) Physical/Digital location when executing:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Office</span><span>[ ] Anywhere the client is</span><span>[ ] Phone</span><span>[ ] Home</span><span>[ ] Commuting</span><span>[ ] Community or interest groups</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) Tools or people helping you complete this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] LINE</span><span>[ ] Agent Pro</span><span>[ ] Agent Portal</span><span>[ ] Service System</span><span>[ ] Contacts</span><span>[ ] Peer support</span><span>[ ] Friends &amp; Family</span><span>[ ] Senior colleague</span><span>[ ] Administrative Assistant</span><span>[ ] Client referral</span><span>[ ] Orphan policies</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) Pain points encountered in this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Incomplete contact info</span><span>[ ] Low client response rate</span><span>[ ] Inconsistent records across devices</span><span>[ ] Lack of automated reminders</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 6px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) Additional context:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Primary consideration for prioritising specific clients</span><span>[ ] Cross-unit coordination</span><span>[ ] Urgent case priority</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                        <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">B. Action: Client Contact &amp; Data Recording / Client Policy Servicing</strong>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) Physical/Digital location when executing:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Office</span><span>[ ] Anywhere the client is</span><span>[ ] Phone</span><span>[ ] Home</span><span>[ ] Commuting</span><span>[ ] Communication software</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) Tools or people helping you complete this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] LINE</span><span>[ ] Agent Pro</span><span>[ ] Agent Portal</span><span>[ ] Service System</span><span>[ ] Contacts</span><span>[ ] Peer support</span><span>[ ] Friends &amp; Family</span><span>[ ] Senior colleague</span><span>[ ] Administrative Assistant</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) Pain points encountered in this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Scattered communication history</span><span>[ ] Difficult to update policy records quickly</span><span>[ ] Customer prefers non-official channels</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 6px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) Additional context:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Primary consideration for prioritising specific clients</span><span>[ ] Cross-unit coordination</span><span>[ ] Urgent case priority</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                        <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">C. Action: Seeking Sales Opportunities</strong>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) Physical/Digital location when executing:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Office</span><span>[ ] Anywhere the client is</span><span>[ ] Phone</span><span>[ ] Home</span><span>[ ] Commuting</span><span>[ ] Community or interest groups</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) Tools or people helping you complete this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] LINE</span><span>[ ] Agent Pro</span><span>[ ] Agent Portal</span><span>[ ] Service System</span><span>[ ] Contacts</span><span>[ ] Peer support</span><span>[ ] Friends &amp; Family</span><span>[ ] Senior colleague</span><span>[ ] Administrative Assistant</span><span>[ ] Client referral</span><span>[ ] Orphan policies</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) Pain points encountered in this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Unclear customer coverage gaps</span><span>[ ] Lack of personalised proposal templates</span><span>[ ] High cost of acquiring new leads</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 6px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) Additional context:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] High renewal probability</span><span>[ ] Trust already established</span><span>[ ] Commission structure incentives</span><span>[ ] High cost of acquiring new clients</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #cbd5e1;">
+                        <span style="font-size: var(--fs-subtitle); font-weight: 700; color: #1e293b;">D. Please rate your emotional experience for this stage:</span>
+                        <div style="display: flex; gap: 18px; font-size: var(--fs-body); color: #1e293b; margin-top: 6px;">
+                            <span>[ ] 1😫</span>
+                            <span>[ ] 2 😮‍💨</span>
+                            <span>[ ] 3 😐</span>
+                            <span>[ ] 4 🙂</span>
+                            <span>[ ] 5 🤩</span>
+                        </div>
+                    </div>
+                </div>
+            
+                <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px 20px; margin-bottom: 18px; page-break-inside: avoid;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="background: #1e293b; color: #ffffff; font-size: var(--fs-small); font-weight: 700; padding: 3px 10px; border-radius: 4px;">Stage 2</span>
+                            <strong style="font-size: var(--fs-title); color: #0f172a;">Policy Sales</strong>
+                        </div>
+                        <span style="font-size: var(--fs-small); color: #64748b;">To complete this stage, the sequential actions you typically perform are (up to 3):</span>
+                    </div>
+                    
+                    <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                        <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">A. Action: Insurance Needs Elicitation (finding client gaps / helping clients build insurance concepts)</strong>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) Physical/Digital location when executing:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Office</span><span>[ ] Anywhere the client is</span><span>[ ] Phone</span><span>[ ] Online</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) Tools or people helping you complete this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] LINE</span><span>[ ] Agent Pro</span><span>[ ] Agent Portal</span><span>[ ] Service System</span><span>[ ] Contacts</span><span>[ ] Peer support</span><span>[ ] Friends &amp; Family</span><span>[ ] Senior colleague</span><span>[ ] Administrative Assistant</span><span>[ ] Client referral</span><span>[ ] Orphan policies</span><span>[ ] Policy Review System</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) Pain points encountered in this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Complex coverage gap calculation</span><span>[ ] Complicated policy terms and rates</span><span>[ ] Client lacks budget or interest</span><span>[ ] Difficult cross-product comparison</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 6px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) Additional context:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Primary consideration for prioritising specific clients</span><span>[ ] Cross-unit coordination</span><span>[ ] Urgent case priority</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                        <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">B. Action: Querying Client Policy Status / Policy Review</strong>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) Physical/Digital location when executing:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Office</span><span>[ ] Anywhere the client is</span><span>[ ] Phone</span><span>[ ] Online</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) Tools or people helping you complete this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] LINE</span><span>[ ] Agent Pro</span><span>[ ] Agent Portal</span><span>[ ] Service System</span><span>[ ] Contacts</span><span>[ ] Peer support</span><span>[ ] Friends &amp; Family</span><span>[ ] Senior colleague</span><span>[ ] Administrative Assistant</span><span>[ ] Policy Review System</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) Pain points encountered in this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Slow policy inquiry loading</span><span>[ ] Cross-company policies difficult to consolidate</span><span>[ ] Outdated client data</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 6px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) Additional context:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Primary consideration for prioritising specific clients</span><span>[ ] Cross-unit coordination</span><span>[ ] Urgent case priority</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #cbd5e1;">
+                        <span style="font-size: var(--fs-subtitle); font-weight: 700; color: #1e293b;">C. Please rate your emotional experience for this stage:</span>
+                        <div style="display: flex; gap: 18px; font-size: var(--fs-body); color: #1e293b; margin-top: 6px;">
+                            <span>[ ] 1😫</span>
+                            <span>[ ] 2 😮‍💨</span>
+                            <span>[ ] 3 😐</span>
+                            <span>[ ] 4 🙂</span>
+                            <span>[ ] 5 🤩</span>
+                        </div>
+                    </div>
+                </div>
+            
+                <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px 20px; margin-bottom: 18px; page-break-inside: avoid;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="background: #1e293b; color: #ffffff; font-size: var(--fs-small); font-weight: 700; padding: 3px 10px; border-radius: 4px;">Stage 3</span>
+                            <strong style="font-size: var(--fs-title); color: #0f172a;">Underwriting &amp; Submission</strong>
+                        </div>
+                        <span style="font-size: var(--fs-small); color: #64748b;">To complete this stage, the sequential actions you typically perform are (up to 3):</span>
+                    </div>
+                    
+                    <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                        <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">A. Action: Keying in &amp; Checking Proposals</strong>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) Physical/Digital location when executing:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Office</span><span>[ ] Online</span><span>[ ] Client&#039;s location</span><span>[ ] Home</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) Tools or people helping you complete this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Proposal System</span><span>[ ] Agent App</span><span>[ ] Senior colleague review</span><span>[ ] Administrative Assistant</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) Pain points encountered in this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Too many application fields</span><span>[ ] Redundant validation errors</span><span>[ ] Frequent system logout during key-in</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 6px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) Additional context:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Primary consideration for prioritising specific clients</span><span>[ ] Cross-unit coordination</span><span>[ ] Urgent case priority</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                        <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">B. Action: Executing Submission</strong>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) Physical/Digital location when executing:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Online</span><span>[ ] Branch counter</span><span>[ ] Client&#039;s location</span><span>[ ] Office</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) Tools or people helping you complete this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Online submission system</span><span>[ ] Online Signing System</span><span>[ ] Branch counter staff</span><span>[ ] Administrative Assistant</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) Pain points encountered in this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] High e-signature verification failure</span><span>[ ] Network timeout during upload</span><span>[ ] Strict paper counter cutoffs</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 6px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) Additional context:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Primary consideration for prioritising specific clients</span><span>[ ] Cross-unit coordination</span><span>[ ] Urgent case priority</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                        <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">C. Action: Handling Underwriting Requisitions, Reviewing Notifications, &amp; Completing Policy Receipt Acknowledgement</strong>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) Physical/Digital location when executing:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Office</span><span>[ ] Online</span><span>[ ] Phone</span><span>[ ] Branch counter</span><span>[ ] Client&#039;s location</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) Tools or people helping you complete this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Underwriting notification system</span><span>[ ] Underwriter consultation</span><span>[ ] LINE</span><span>[ ] Administrative Assistant</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) Pain points encountered in this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Lengthy requisition amendment process</span><span>[ ] Repeated client signature requests</span><span>[ ] Delayed policy delivery acknowledgement</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 6px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) Additional context:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Primary consideration for prioritising specific clients</span><span>[ ] Cross-unit coordination</span><span>[ ] Urgent case priority</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #cbd5e1;">
+                        <span style="font-size: var(--fs-subtitle); font-weight: 700; color: #1e293b;">D. Please rate your emotional experience for this stage:</span>
+                        <div style="display: flex; gap: 18px; font-size: var(--fs-body); color: #1e293b; margin-top: 6px;">
+                            <span>[ ] 1😫</span>
+                            <span>[ ] 2 😮‍💨</span>
+                            <span>[ ] 3 😐</span>
+                            <span>[ ] 4 🙂</span>
+                            <span>[ ] 5 🤩</span>
+                        </div>
+                    </div>
+                </div>
+            
+                <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px 20px; margin-bottom: 18px; page-break-inside: avoid;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="background: #1e293b; color: #ffffff; font-size: var(--fs-small); font-weight: 700; padding: 3px 10px; border-radius: 4px;">Stage 4</span>
+                            <strong style="font-size: var(--fs-title); color: #0f172a;">Policy Servicing</strong>
+                        </div>
+                        <span style="font-size: var(--fs-small); color: #64748b;">To complete this stage, the sequential actions you typically perform are (up to 3):</span>
+                    </div>
+                    
+                    <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                        <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">A. Action: Managing Client Data</strong>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) Physical/Digital location when executing:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Office</span><span>[ ] Home</span><span>[ ] Online</span><span>[ ] Phone</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) Tools or people helping you complete this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Agent Portal</span><span>[ ] Mobile contacts</span><span>[ ] Excel / Notion</span><span>[ ] Paper notebook</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) Pain points encountered in this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Scattered customer files across systems</span><span>[ ] No automatic anniversary alerts</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 6px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) Additional context:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Primary consideration for prioritising specific clients</span><span>[ ] Cross-unit coordination</span><span>[ ] Urgent case priority</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                        <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">B. Action: Querying Client Policy Status (e.g., client proactively asks about coverage due to external sales pitches, life events, etc.)</strong>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) Physical/Digital location when executing:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Office</span><span>[ ] Online</span><span>[ ] Phone</span><span>[ ] Client&#039;s location</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) Tools or people helping you complete this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Customer Service System</span><span>[ ] Agent App</span><span>[ ] Call centre hotline</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) Pain points encountered in this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Restricted query permissions</span><span>[ ] Slow system response during peak hours</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 6px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) Additional context:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Primary consideration for prioritising specific clients</span><span>[ ] Cross-unit coordination</span><span>[ ] Urgent case priority</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                        <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">C. Action: Processing Claims / Policy Alterations</strong>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) Physical/Digital location when executing:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Office</span><span>[ ] Branch counter</span><span>[ ] Online</span><span>[ ] Client&#039;s location</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) Tools or people helping you complete this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Claims System</span><span>[ ] Alteration forms</span><span>[ ] Branch counter staff</span><span>[ ] Administrative Assistant</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) Pain points encountered in this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Complex claims documentation</span><span>[ ] Slow alteration approval progress</span><span>[ ] Lengthy wait times</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 6px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) Additional context:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Primary consideration for prioritising specific clients</span><span>[ ] Cross-unit coordination</span><span>[ ] Urgent case priority</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #cbd5e1;">
+                        <span style="font-size: var(--fs-subtitle); font-weight: 700; color: #1e293b;">D. Please rate your emotional experience for this stage:</span>
+                        <div style="display: flex; gap: 18px; font-size: var(--fs-body); color: #1e293b; margin-top: 6px;">
+                            <span>[ ] 1😫</span>
+                            <span>[ ] 2 😮‍💨</span>
+                            <span>[ ] 3 😐</span>
+                            <span>[ ] 4 🙂</span>
+                            <span>[ ] 5 🤩</span>
+                        </div>
+                    </div>
+                </div>
+            
+                <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px 20px; margin-bottom: 18px; page-break-inside: avoid;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="background: #1e293b; color: #ffffff; font-size: var(--fs-small); font-weight: 700; padding: 3px 10px; border-radius: 4px;">Stage 5</span>
+                            <strong style="font-size: var(--fs-title); color: #0f172a;">Branch Administration &amp; Support Work</strong>
+                        </div>
+                        <span style="font-size: var(--fs-small); color: #64748b;">To complete this stage, the sequential actions you typically perform are (up to 3):</span>
+                    </div>
+                    
+                    <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                        <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">A. Action: Searching for Sales Support Files</strong>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) Physical/Digital location when executing:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Branch office</span><span>[ ] Online portal</span><span>[ ] Home</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) Tools or people helping you complete this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Agent Portal</span><span>[ ] Shared network drive</span><span>[ ] Administrative Assistant</span><span>[ ] Senior colleague</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) Pain points encountered in this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Difficult file search</span><span>[ ] Obsolete document versions</span><span>[ ] Complex folder hierarchy</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 6px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) Additional context:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Primary consideration for prioritising specific clients</span><span>[ ] Cross-unit coordination</span><span>[ ] Urgent case priority</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                        <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">B. Action: Searching for Recruiting Files / Prospect Profiling, Evaluations, &amp; Testing</strong>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) Physical/Digital location when executing:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Branch office</span><span>[ ] Coffee shop</span><span>[ ] Online</span><span>[ ] Phone</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) Tools or people helping you complete this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Recruitment portal</span><span>[ ] Personality test system</span><span>[ ] Senior manager</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) Pain points encountered in this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Lack of digital candidate tracking</span><span>[ ] Tedious paper assessment forms</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 6px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) Additional context:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Primary consideration for prioritising specific clients</span><span>[ ] Cross-unit coordination</span><span>[ ] Urgent case priority</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                        <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">C. Action: Team Mentoring &amp; Performance Management</strong>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) Physical/Digital location when executing:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Branch conference room</span><span>[ ] Remote video meeting</span><span>[ ] LINE group</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) Tools or people helping you complete this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] KPI performance dashboard</span><span>[ ] Commission calculation system</span><span>[ ] Senior mentors</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) Pain points encountered in this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Delayed performance data updates</span><span>[ ] Low attendance in morning physical meetings</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 6px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) Additional context:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Primary consideration for prioritising specific clients</span><span>[ ] Cross-unit coordination</span><span>[ ] Urgent case priority</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #cbd5e1;">
+                        <span style="font-size: var(--fs-subtitle); font-weight: 700; color: #1e293b;">D. Please rate your emotional experience for this stage:</span>
+                        <div style="display: flex; gap: 18px; font-size: var(--fs-body); color: #1e293b; margin-top: 6px;">
+                            <span>[ ] 1😫</span>
+                            <span>[ ] 2 😮‍💨</span>
+                            <span>[ ] 3 😐</span>
+                            <span>[ ] 4 🙂</span>
+                            <span>[ ] 5 🤩</span>
+                        </div>
+                    </div>
+                </div>
+            
+                <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px 20px; margin-bottom: 18px; page-break-inside: avoid;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="background: #1e293b; color: #ffffff; font-size: var(--fs-small); font-weight: 700; padding: 3px 10px; border-radius: 4px;">Stage 6</span>
+                            <strong style="font-size: var(--fs-title); color: #0f172a;">Training &amp; Learning</strong>
+                        </div>
+                        <span style="font-size: var(--fs-small); color: #64748b;">To complete this stage, the sequential actions you typically perform are (up to 3):</span>
+                    </div>
+                    
+                    <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                        <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">A. Action: Educational Training Courses</strong>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) Physical/Digital location when executing:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Classroom</span><span>[ ] Online webinar</span><span>[ ] Branch training room</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) Tools or people helping you complete this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Printed training slides</span><span>[ ] Internal lecturers</span><span>[ ] ABC Academy</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) Pain points encountered in this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Course schedules conflict with client visits</span><span>[ ] Heavy reliance on one-way lecturing</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 6px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) Additional context:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Primary consideration for prioritising specific clients</span><span>[ ] Cross-unit coordination</span><span>[ ] Urgent case priority</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                        <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">B. Action: Online Learning Resources (e.g., ABC Academy)</strong>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) Physical/Digital location when executing:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Home</span><span>[ ] Mobile during commute</span><span>[ ] Office</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) Tools or people helping you complete this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] ABC Academy App</span><span>[ ] Compliance exam simulator</span><span>[ ] Learning portal</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) Pain points encountered in this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Video playback speed cannot be adjusted</span><span>[ ] Mandatory compliance test questions tedious</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 6px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) Additional context:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Primary consideration for prioritising specific clients</span><span>[ ] Cross-unit coordination</span><span>[ ] Urgent case priority</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                        <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">C. Action: Observing Visits &amp; Presentation Approaches of Senior Agents</strong>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) Physical/Digital location when executing:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Client&#039;s meeting venue</span><span>[ ] Branch office</span><span>[ ] Dining venue</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) Tools or people helping you complete this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Senior colleagues</span><span>[ ] Mentors</span><span>[ ] Paper note taking</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) Pain points encountered in this action:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Hard to schedule mutual time with senior mentors</span><span>[ ] Field accompaniment opportunities limited</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 6px;">
+                            <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) Additional context:</span>
+                            <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
+                                <span>[ ] Primary consideration for prioritising specific clients</span><span>[ ] Cross-unit coordination</span><span>[ ] Urgent case priority</span><span>[ ] Other: _________________</span>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #cbd5e1;">
+                        <span style="font-size: var(--fs-subtitle); font-weight: 700; color: #1e293b;">D. Please rate your emotional experience for this stage:</span>
+                        <div style="display: flex; gap: 18px; font-size: var(--fs-body); color: #1e293b; margin-top: 6px;">
+                            <span>[ ] 1😫</span>
+                            <span>[ ] 2 😮‍💨</span>
+                            <span>[ ] 3 😐</span>
+                            <span>[ ] 4 🙂</span>
+                            <span>[ ] 5 🤩</span>
+                        </div>
+                    </div>
+                </div>
+            
+            </div>
+        
+
+        <!-- Sign-off / Footer -->
+        <div style="text-align: center; color: #64748b; font-size: var(--fs-body); border-top: 2px solid #e2e8f0; padding-top: 18px; margin-top: 24px;">
+            <strong>—— End of Questionnaire. Thank you once again for your cooperation and assistance! ——</strong>
+            <div style="margin-top: 8px; font-size: var(--fs-small); color: #94a3b8;">
+                Agent Persona &amp; Sales Journey &bull; Digital Modular Architecture Questionnaire
+            </div>
+        </div>
+    </div>
+</body>
+</html>

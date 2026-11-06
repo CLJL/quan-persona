@@ -2092,6 +2092,7 @@ if (typeof window !== 'undefined') {
     window.DEFAULT_JOURNEY_SCHEMAS = DEFAULT_JOURNEY_SCHEMAS;
     window.BLANK_SCHEMA_TEMPLATE = BLANK_SCHEMA_TEMPLATE;
     window.getActiveJourneySchema = getActiveJourneySchema;
+    window.getSchemaQuestionMap = getSchemaQuestionMap;
 }
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { JOURNEY_SCHEMAS, DEFAULT_JOURNEY_SCHEMAS, BLANK_SCHEMA_TEMPLATE, getActiveJourneySchema };

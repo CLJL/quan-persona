@@ -1,7 +1,23 @@
 User-agent: *
 Allow: /
 
+# Explicit AI Search & Answer Engine User-Agents (AEO)
 User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
 Allow: /
 
 Sitemap: https://quan-persona.netlify.app/sitemap.xml

@@ -32,4 +32,15 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
 
+# Clean URLs & Rewrites for Standalone SEO/AEO Pages
+[[redirects]]
+  from = "/about"
+  to = "/about.html"
+  status = 200
+
+[[redirects]]
+  from = "/faq"
+  to = "/faq.html"
+  status = 200
+
 # Unknown URLs return a real 404 (see 404.html) instead of the home page with status 200

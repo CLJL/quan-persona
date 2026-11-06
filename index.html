@@ -16,7 +16,7 @@
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="quan-persona logo with the title Behaviour Segmentation &amp; Persona Analytics">
+    <meta property="og:image:alt" content="quan-persona logo with the title Behavioural Segmentation &amp; Persona Analytics">
     <meta property="og:site_name" content="quan-persona">
     <meta property="og:locale" content="en_US">
     <meta property="og:locale:alternate" content="zh_TW">
@@ -27,7 +27,7 @@
     <meta name="twitter:title" content="quan-persona | Behavioural Segmentation & Persona Analytics">
     <meta name="twitter:description" content="Turn survey data into behavioural segments, personas and customer journey maps for UX research, service design and CX. Runs in your browser.">
     <meta name="twitter:image" content="https://quan-persona.netlify.app/quan-persona-og-card.png">
-    <meta name="twitter:image:alt" content="quan-persona logo with the title Behaviour Segmentation &amp; Persona Analytics">
+    <meta name="twitter:image:alt" content="quan-persona logo with the title Behavioural Segmentation &amp; Persona Analytics">
 
     <!-- Structured Data (Schema.org SoftwareApplication) -->
     <script type="application/ld+json">
@@ -66,111 +66,6 @@
       ]
     }
     </script>
-    <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "inLanguage": "en",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "What is quan-persona?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "quan-persona is a behavioural segmentation and persona analytics platform. You bring survey responses as a CSV; it groups respondents by how they actually behave, then turns each group into a persona and a customer journey map."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Does my data leave my computer?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "No. Survey data is processed on your device, in your browser, and is not uploaded to a cloud server for analysis. Your browser does load the page itself from wherever it is hosted, but your responses are not sent anywhere."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Is my data saved after I close the page?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Your uploaded dataset is saved in your browser, on this device only, and is not sent to any server. When you come back or refresh the page, the portal loads it again. It stays until you upload another CSV, which replaces it, or you use Restore Default Data in the Data menu, which deletes the saved dataset from your browser for good. Because the data stays in your browser, please do not upload your CSV files on a shared or public computer. If you have to, use Restore Default Data before you leave. Custom schemas, your language choice and a few display settings are also kept in your browser's local storage. Edits to personas are not saved."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What is the sample data I see when I open the portal?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "A synthetic insurance-agent dataset that demonstrates how the portal works. Upload your own CSV to replace it, and use Restore Default Data in the Data menu to bring it back."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What CSV format do I need?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "One row per respondent and one header row, with multi-select answers separated by a semicolon. Column names don't have to match exactly: the portal matches them to your schema, and you can correct the matching before analysis. Open the CSV Column Guide in the Data menu for the exact columns, and download the CSV template if you want a ready-made header."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How many respondents do I need?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "With fewer than 15 respondents the portal puts everyone in a single group, because that is too few for stable clustering. The K check needs at least 24 respondents. In general, more respondents give more stable groups. The K check runs automatically for up to 3,000 respondents."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How does it decide how many groups there are?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "DBSCAN first identifies potential outliers and noise points based on data density and distribution, then K-means groups the remaining inliers. You choose K from 3 to 8 with the slider, and the K check reports how well each choice is supported using a silhouette score and stability."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Will I get the same result every time?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes. The same file always gives the same clusters."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Can I use my own questionnaire and measures?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes. In the Schema designer, define your research questions, behavioural dimensions and measurement criteria. Then download the questionnaire from the Data menu and send it to respondents by email or through your survey platform. quan-persona does not send or collect questionnaires itself: you bring the responses back as a CSV."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Can I edit and export the personas?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes. You can edit a persona's title, description, photo and quote."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Which browsers does it work in?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Any modern browser: Chrome, Edge, Safari and Firefox."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Is quan-persona open source?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes. It is released under the MIT License."
-      }
-    }
-  ]
-}
-    </script>
     <link rel="icon" href="favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
     <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
@@ -181,19 +76,40 @@
     <!-- Externalised Stylesheet -->
     <link rel="stylesheet" href="portal.css?v=20261105i">
 
+    <!-- Early section pre-activation: if URL targets a specific section or modal, prevent flash of default personas view -->
+    <script>
+    (function () {
+        var hash = (window.location.hash || '').replace('#', '');
+        var params = new URLSearchParams(window.location.search);
+        var target = params.get('section') || (['personas', 'journeys', 'analytics'].indexOf(hash) !== -1 ? hash : '');
+        if (params.get('startRoute') === 'quest' || params.get('open') === 'schema-builder') {
+            target = 'journeys';
+        }
+        if (target === 'journeys' || target === 'analytics') {
+            var css = '#view-personas { display: none !important; } ' +
+                      '#view-' + target + ' { display: block !important; } ' +
+                      '#btn-sec-personas { background: rgba(255, 255, 255, 0.02) !important; color: var(--text-secondary) !important; border-color: var(--panel-border) !important; box-shadow: none !important; } ' +
+                      '#btn-sec-' + target + ' { background: linear-gradient(135deg, rgba(245, 197, 24, 0.15) 0%, rgba(245, 197, 24, 0.05) 100%) !important; border-color: var(--accent-yellow) !important; color: var(--accent-yellow) !important; box-shadow: 0 0 15px rgba(245, 197, 24, 0.1) !important; }';
+            var s = document.createElement('style');
+            s.id = 'qp-pre-active';
+            s.textContent = css;
+            document.head.appendChild(s);
+        }
+    })();
+    </script>
+
     <!-- Offline Core Libraries & Deferred Application Modules (sample data loads asynchronously on demand) -->
     <script src="chart.min.js" defer></script>
     <script src="journey_schemas_modular.js?v=20261105i" defer></script>
     <script src="portal_clustering.js?v=20261105i" defer></script>
     <script src="portal-csv.js?v=20261105i" defer></script>
-    <script src="portal-tour.js?v=20261105i" defer></script>
     <script src="portal-app.js?v=20261105i" defer></script>
     <script src="portal-start.js?v=20261105i" defer></script>
 </head>
 <body>
     <noscript>
         <div style="padding: 24px 32px; background: #161a1e; color: #f1f5f9; border-bottom: 2px solid #eab308; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-            <h2 style="margin: 0 0 8px 0; color: #f8fafc; font-size: 1.25rem;">quan-persona — Data-Driven Behavioural Segmentation & Persona Analytics</h2>
+            <h2 style="margin: 0 0 8px 0; color: #f8fafc; font-size: 1.25rem;">quan-persona — Behavioural Segmentation & Persona Analytics</h2>
             <p style="margin: 0 0 12px 0; color: #94a3b8; line-height: 1.5; font-size: 0.95rem;">
                 A client-side quantitative UX research platform that transforms survey responses into data-driven personas, customer journey maps, and prioritised service optimisation initiatives.
             </p>
@@ -216,7 +132,7 @@
         <div id="rail-backdrop" onclick="closeRailDrawer()"></div>
         <header class="topbar">
             <div class="topbar-context">
-                <h1 class="platform-title" data-i18n="portalTitle">Behaviour Segmentation & Persona Analytics</h1>
+                <h1 class="platform-title" data-i18n="portalTitle">Behavioural Segmentation & Persona Analytics</h1>
                 <p data-i18n="portalSubtitle" hidden>Upload survey data to dynamically discover agent behaviour clusters, pain points, and system optimisation directions at each sales stage — cluster count and character are data-driven, not predefined</p>
             </div>
             <div class="topbar-actions">
@@ -293,14 +209,14 @@
             </button>
             <div class="rail-footer-group">
                 <div class="rail-divider rail-divider-top"></div>
-                <button class="nav-tab-btn" id="btn-sec-about" onclick="switchMainSection('about')">
+                <a href="about.html" class="nav-tab-btn" id="btn-sec-about">
                     <svg viewBox="0 0 24 24"><circle cx="8" cy="11.5" r="3"></circle><path d="M2.5 21.5c0-3.2 2.3-5.5 5.5-5.5s5.5 2.3 5.5 5.5"></path><path d="M17 2c3 0 5 1.6 5 4.2S20 10.4 17 10.4c-.6 0-1.2-.1-1.7-.2L12.5 12l.7-2.6C12.4 8.6 12 7.5 12 6.2 12 3.6 14 2 17 2z"></path><line x1="17" y1="4.6" x2="17.01" y2="4.6"></line><line x1="17" y1="6.7" x2="17" y2="8"></line></svg>
                     <span class="nav-label" data-i18n="navAbout">About Us</span>
-                </button>
-                <button class="nav-tab-btn" id="btn-sec-faq" onclick="switchMainSection('faq')">
+                </a>
+                <a href="faq.html" class="nav-tab-btn" id="btn-sec-faq">
                     <svg viewBox="0 0 24 24"><path d="M10.5 15.5H9.5L6 19v-3.5H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5"></path><line x1="7" y1="7.5" x2="14" y2="7.5"></line><line x1="7" y1="11" x2="10" y2="11"></line><circle cx="16.5" cy="16.5" r="5.5"></circle><circle cx="16.2" cy="16.1" r="2"></circle><line x1="17.7" y1="17.6" x2="18.9" y2="18.8"></line></svg>
                     <span class="nav-label" data-i18n="navFaq">FAQ</span>
-                </button>
+                </a>
                 <button type="button" class="rail-pin" id="rail-pin" aria-pressed="false" onclick="toggleRailPin()">
                     <svg viewBox="0 0 24 24"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path></svg>
                     <span class="nav-label" data-i18n="railPin">Keep open</span>
@@ -332,166 +248,6 @@
 
 
         <main id="main-content" style="display: contents;">
-        <!-- ==================== VIEW D: ABOUT ==================== -->
-        <div class="section-view" id="view-about"><div class="about-wrap">
-<div class="about-en">
-  <div class="about-hero">
-    <span class="about-badge">Beta</span>
-    <h2>Turn survey responses into data-driven personas.</h2>
-    <p class="about-lede">quan-persona is a behavioural segmentation and persona analytics platform. It uses unsupervised machine learning to group survey respondents by how they actually behave, then turns each group into a persona and a customer journey map.</p>
-    <p class="about-lede">Use it to understand customer behaviour, employee experience, or where a service can improve, with evidence from your own data instead of assumptions.</p>
-  </div>
-  <h3>Why quan-persona</h3>
-  <div class="about-grid">
-    <div class="about-card"><b>Evidence-based segments</b><span>Groups come from real survey responses, not predefined profiles.</span></div>
-    <div class="about-card"><b>Your own measurements</b><span>Configure the questionnaire, measures and analytical dimensions to fit your research question.</span></div>
-    <div class="about-card"><b>Less manual analysis</b><span>Clustering and dashboards are generated automatically for compatible datasets.</span></div>
-    <div class="about-card"><b>Interactive insight</b><span>Explore each segment's characteristics and distributions visually.</span></div>
-    <div class="about-card"><b>Local by design</b><span>Your survey data is processed in your browser (see Data privacy).</span></div>
-  </div>
-  <h3>How it works</h3>
-  <div class="about-grid about-flow">
-    <div class="about-card about-step"><div class="n">1</div><div><b>Design your questionnaire</b><span>In the Schema designer, define your research questions, behavioural dimensions and measurement criteria. Download the questionnaire and send it to respondents by email or through your survey platform.</span></div></div>
-    <div class="about-card about-step"><div class="n">2</div><div><b>Upload and map your data</b><span>Import survey responses as a CSV. The portal matches columns to your schema, and you can correct the matching before analysis.</span></div></div>
-    <div class="about-card about-step"><div class="n">3</div><div><b>Discover behavioural segments</b><span>DBSCAN first sets aside respondents who do not belong to sufficiently dense clusters as potential outliers or noise (the proportion varies based on data distribution and clustering parameters), then K-means groups the rest. You choose K from 3 to 8, and a K check reports how well each choice is supported. The same file always gives the same clusters.</span></div></div>
-    <div class="about-card about-step"><div class="n">4</div><div><b>Explore your insights</b><span>Review the results in three views: Persona Dashboard, Journey Map, and Analytics &amp; DB.</span></div></div>
-  </div>
-  <h3>What you get</h3>
-  <table class="about-table">
-    <tr><th>Persona Dashboard</th><td>One page per segment: demographics, working day, tools, pain points, keywords and quotes. Edit it.</td></tr>
-    <tr><th>Journey Map</th><td>Stage-by-stage satisfaction, actions, tools and pain points for a segment, with an optimisation opportunity for each stage.</td></tr>
-    <tr><th>Analytics &amp; DB</th><td>Cluster discovery with radar and heat-map views, plus distributions and response charts for all respondents.</td></tr>
-  </table>
-  <h3>Who it's for</h3>
-  <div class="who-grid">
-    <div class="who-card" style="--c:#ff7a59"><div class="av"><div class="disc"><svg viewBox="0 0 200 200"><rect x="14" y="40" width="64" height="9" rx="4.5" fill="#ffb59f"/><rect x="14" y="58" width="44" height="9" rx="4.5" fill="#ff7a59" opacity=".8"/><rect x="122" y="30" width="62" height="9" rx="4.5" fill="#c9cdee" opacity=".7"/><rect x="136" y="48" width="48" height="9" rx="4.5" fill="#ffb59f"/><path d="M20 200c0-42 32-58 80-58s80 16 80 58z" fill="#e8613f"/><path d="M80 142l20 20 20-20z" fill="#fff" opacity=".9"/><rect x="86" y="112" width="28" height="34" rx="12" fill="#b57b55"/><ellipse cx="100" cy="88" rx="35" ry="40" fill="#c68a62"/><path d="M62 84c-6-34 14-52 40-52 28 0 44 18 36 52-4-14-8-22-14-26-10 6-30 8-48 0-8 6-12 14-14 26z" fill="#1c1410"/><circle cx="64" cy="48" r="9" fill="#1c1410"/><circle cx="82" cy="36" r="10" fill="#1c1410"/><circle cx="104" cy="32" r="10" fill="#1c1410"/><circle cx="126" cy="38" r="10" fill="#1c1410"/><circle cx="138" cy="54" r="8" fill="#1c1410"/><circle cx="86" cy="92" r="3.4" fill="#2a1a14"/><circle cx="114" cy="92" r="3.4" fill="#2a1a14"/><path d="M89 111q11 9 22 0" stroke="#7a3328" stroke-width="3.5" fill="none" stroke-linecap="round"/></svg></div><div class="bd"><svg viewBox="0 0 48 48"><path d="M10 44V6"/><path d="M10 8h26l-6 9 6 9H10"/></svg></div></div><b>Product Owners</b><span>Understand user and customer journeys, identify behavioural patterns and uncover operational pain points.</span></div>
-    <div class="who-card" style="--c:#8b5cf6"><div class="av"><div class="disc"><svg viewBox="0 0 200 200"><path d="M20 200c0-42 32-58 80-58s80 16 80 58z" fill="#4b34c9"/><path d="M78 142l22 26 22-26z" fill="#e9e4ff" opacity=".9"/><rect x="86" y="112" width="28" height="34" rx="12" fill="#e8b88f"/><ellipse cx="100" cy="86" rx="35" ry="40" fill="#f1c7a0"/><path d="M63 82c-4-34 18-52 40-52 24 0 40 18 34 52-6-14-14-24-34-24s-30 8-40 24z" fill="#1c1a26"/><g fill="none" stroke="#2a2440" stroke-width="4"><circle cx="85" cy="90" r="12"/><circle cx="117" cy="90" r="12"/><path d="M97 89h8"/></g><circle cx="85" cy="90" r="3.2" fill="#2a2440"/><circle cx="117" cy="90" r="3.2" fill="#2a2440"/><path d="M90 112q10 8 20 0" stroke="#a65f43" stroke-width="3.5" fill="none" stroke-linecap="round"/></svg></div><div class="bd"><svg viewBox="0 0 48 48"><circle cx="21" cy="21" r="12"/><path d="m30 30 12 12"/><path d="M15 21h12M21 15v12"/></svg></div></div><b>UX Researchers</b><span>Build evidence-based user segments and complement qualitative work with quantitative evidence.</span></div>
-    <div class="who-card" style="--c:#3fe0b0"><div class="av"><div class="disc"><svg viewBox="0 0 200 200"><rect x="18" y="26" width="34" height="34" rx="5" fill="#ffd966" transform="rotate(-10 35 43)"/><rect x="150" y="38" width="32" height="32" rx="5" fill="#ff9fb8" transform="rotate(9 166 54)"/><rect x="146" y="100" width="28" height="28" rx="5" fill="#9ad7ff" transform="rotate(-6 160 114)"/><path d="M20 200c0-40 30-56 80-56s80 16 80 56z" fill="#1f9d82"/><rect x="86" y="112" width="28" height="34" rx="12" fill="#c98c60"/><circle cx="100" cy="36" r="17" fill="#2b1d17"/><path d="M62 86c-8-40 16-60 40-60 26 0 46 22 36 60-4-18-14-26-38-26s-34 10-38 26z" fill="#2b1d17"/><ellipse cx="100" cy="88" rx="34" ry="39" fill="#d9a074"/><path d="M64 84c8-22 22-26 38-26 20 0 32 8 36 26-12-12-24-16-38-16s-26 6-36 16z" fill="#2b1d17"/><circle cx="87" cy="92" r="3.4" fill="#2a1a14"/><circle cx="113" cy="92" r="3.4" fill="#2a1a14"/><path d="M90 111q10 9 20 0" stroke="#8d3f35" stroke-width="3.5" fill="none" stroke-linecap="round"/><circle cx="65" cy="100" r="5" fill="#f5c518"/><circle cx="135" cy="100" r="5" fill="#f5c518"/></svg></div><div class="bd"><svg viewBox="0 0 48 48"><circle cx="9" cy="36" r="4"/><circle cx="39" cy="12" r="4"/><path d="M13 36h14a8 8 0 0 0 0-16H21a8 8 0 0 1 0-16h14"/></svg></div></div><b>Service Designers</b><span>See where experiences differ and where a service can improve.</span></div>
-    <div class="who-card" style="--c:#f5c518"><div class="av"><div class="disc"><svg viewBox="0 0 200 200"><path d="M14 200c0-42 34-58 86-58s86 16 86 58z" fill="#273360"/><path d="M80 142l20 30 20-30z" fill="#f4f4fb"/><path d="M96 150h8l5 40-9 8-9-8z" fill="#f5c518"/><path d="M62 146l24 34-28 20zM138 146l-24 34 28 20z" fill="#1d2748"/><rect x="86" y="112" width="28" height="34" rx="12" fill="#e9bf9a"/><ellipse cx="100" cy="86" rx="35" ry="40" fill="#f3d0b3"/><path d="M64 80c-2-34 20-50 42-50 22 0 36 16 30 48-8-12-22-20-40-18-14 2-24 8-32 20z" fill="#5a4a3c"/><circle cx="86" cy="92" r="3.4" fill="#2a1a14"/><circle cx="114" cy="92" r="3.4" fill="#2a1a14"/><path d="M88 111q12 10 24 0" stroke="#a65f43" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M80 84q6-5 12 0M108 84q6-5 12 0" stroke="#3b2e24" stroke-width="3" fill="none" stroke-linecap="round"/></svg></div><div class="bd"><svg viewBox="0 0 48 48"><path d="M6 40V8"/><path d="M6 40h36"/><path d="m12 32 9-10 8 6 12-16"/><circle cx="41" cy="12" r="2.5"/></svg></div></div><b>CX Consultants</b><span>Segment customers by behaviour and spot experience gaps.</span></div>
-  </div>
-  <h3>Data privacy</h3>
-  <div class="about-privacy">
-    <p>quan-persona is built to work local-first. Survey data is processed on your device, in your browser, and is not uploaded to a cloud server for analysis. Custom schemas you create are saved in your browser's local storage on that device.</p>
-    <p>This keeps control of your data with you and reduces unnecessary exposure of sensitive survey information.</p>
-    <p>Your uploaded dataset also stays in your browser on this device. Please do not upload your CSV files on a shared or public computer. If you have to, use Restore Default Data in the Data menu before you leave.</p>
-  </div>
-  <h3>Now in Beta</h3>
-  <div class="about-privacy">
-    <p>quan-persona is open for Beta testing. Upload your own survey data, build your own measurement schema, and tell us what you find.</p>
-    <div class="about-actions">
-      <button type="button" class="btn btn-secondary" onclick="startTour()">Take the guided tour</button>
-      <button type="button" class="btn btn-secondary" onclick="openCsvGuide()">CSV Column Guide</button>
-    </div>
-  </div>
-  <h3>Contact us</h3>
-  <div class="about-privacy">
-    <div class="about-actions">
-      <a href="https://github.com/CLJL/quan-persona/issues" class="btn btn-secondary" target="_blank" rel="noopener noreferrer" aria-label="Report an issue on GitHub" title="Report an issue on GitHub"><svg viewBox="0 0 16 16" width="26" height="26" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>
-      <a href="https://www.producthunt.com/products/quan-persona?launch=quan-persona" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Leave a comment</a>
-      <a href="https://www.linkedin.com/in/chen-ling-lai/" class="btn btn-secondary" target="_blank" rel="noopener noreferrer" aria-label="Contact the author on LinkedIn" title="Contact the author on LinkedIn"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
-      <a href="https://www.producthunt.com/products/quan-persona/reviews/new?utm_source=badge-product_review&utm_medium=badge&utm_source=badge-quan&#0045;persona" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/product_review.svg?product_id=1348396&theme=dark" alt="quan&#0045;persona - Turn&#0032;survey&#0032;data&#0032;into&#0032;meaningful&#0032;behavioural&#0032;segments | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
-    </div>
-  </div>
-</div>
-
-<div class="about-zh" lang="zh-Hant">
-  <div class="about-hero">
-    <span class="about-badge">Beta</span>
-    <h2>把問卷資料，變成有數據依據的人物誌。</h2>
-    <p class="about-lede">quan-persona 是一個行為分群與人物誌分析平台。它運用非監督式機器學習，依受訪者實際的行為模式分群，再為每一群產出人物誌與顧客旅程地圖。</p>
-    <p class="about-lede">無論你想了解顧客行為、員工體驗，或是找出服務可以改善的地方，都能用自己手上的資料說話，而不是憑感覺猜測。</p>
-  </div>
-  <h3>為什麼選擇 quan-persona</h3>
-  <div class="about-grid">
-    <div class="about-card"><b>以證據為基礎的分群</b><span>分群來自真實的問卷填答，不是事先設定好的樣板。</span></div>
-    <div class="about-card"><b>自訂你的衡量架構</b><span>依研究問題，自行設定問卷題目、衡量指標與分析構面。</span></div>
-    <div class="about-card"><b>減少人工分析</b><span>相容的資料集，系統會自動完成分群並產出儀表板。</span></div>
-    <div class="about-card"><b>互動式洞察</b><span>用視覺化圖表，探索各群的特徵與分佈。</span></div>
-    <div class="about-card"><b>資料留在本機</b><span>問卷資料在你的瀏覽器中處理（詳見資料隱私）。</span></div>
-  </div>
-  <h3>運作方式</h3>
-  <div class="about-grid about-flow">
-    <div class="about-card about-step"><div class="n">1</div><div><b>設計問卷</b><span>在 Schema 設計工具中，定義研究問題、行為構面與衡量標準。再下載問卷，透過電子郵件或問卷平台發送給受訪者。</span></div></div>
-    <div class="about-card about-step"><div class="n">2</div><div><b>上傳並對應資料</b><span>匯入 CSV 格式的問卷資料，系統會依你的衡量架構自動比對欄位，分析前也可以自行調整對應。</span></div></div>
-    <div class="about-card about-step"><div class="n">3</div><div><b>找出行為分群</b><span>先以 DBSCAN 依資料密度與分佈識別並排除離群值與雜訊點（比例依數據特徵與分群參數而異），再以 K-means 將其餘受訪者分群。K 值可在 3 到 8 之間自行選擇，並提供 K 值檢查，了解每個選擇的支持程度。同一份檔案，每次都會得到相同的分群結果。</span></div></div>
-    <div class="about-card about-step"><div class="n">4</div><div><b>探索洞察</b><span>透過三個檢視來閱讀分析結果：客群畫像看板、銷售旅程圖、數據分析與資料庫。</span></div></div>
-  </div>
-  <h3>你會得到什麼</h3>
-  <table class="about-table">
-    <tr><th>客群畫像看板</th><td>每一群各有一頁：人口統計特徵、一天的工作內容、常用工具、痛點、關鍵字與心聲。可以編輯內容。</td></tr>
-    <tr><th>銷售旅程圖</th><td>呈現該群在各個階段的滿意度、行動、工具與痛點，並為每個階段提出優化機會。</td></tr>
-    <tr><th>數據分析與資料庫</th><td>分群探索（雷達圖與熱度圖）、所有受訪者的分佈與填答圖表。</td></tr>
-  </table>
-  <h3>適用對象</h3>
-  <div class="who-grid">
-    <div class="who-card" style="--c:#ff7a59"><div class="av"><div class="disc"><svg viewBox="0 0 200 200"><rect x="14" y="40" width="64" height="9" rx="4.5" fill="#ffb59f"/><rect x="14" y="58" width="44" height="9" rx="4.5" fill="#ff7a59" opacity=".8"/><rect x="122" y="30" width="62" height="9" rx="4.5" fill="#c9cdee" opacity=".7"/><rect x="136" y="48" width="48" height="9" rx="4.5" fill="#ffb59f"/><path d="M20 200c0-42 32-58 80-58s80 16 80 58z" fill="#e8613f"/><path d="M80 142l20 20 20-20z" fill="#fff" opacity=".9"/><rect x="86" y="112" width="28" height="34" rx="12" fill="#b57b55"/><ellipse cx="100" cy="88" rx="35" ry="40" fill="#c68a62"/><path d="M62 84c-6-34 14-52 40-52 28 0 44 18 36 52-4-14-8-22-14-26-10 6-30 8-48 0-8 6-12 14-14 26z" fill="#1c1410"/><circle cx="64" cy="48" r="9" fill="#1c1410"/><circle cx="82" cy="36" r="10" fill="#1c1410"/><circle cx="104" cy="32" r="10" fill="#1c1410"/><circle cx="126" cy="38" r="10" fill="#1c1410"/><circle cx="138" cy="54" r="8" fill="#1c1410"/><circle cx="86" cy="92" r="3.4" fill="#2a1a14"/><circle cx="114" cy="92" r="3.4" fill="#2a1a14"/><path d="M89 111q11 9 22 0" stroke="#7a3328" stroke-width="3.5" fill="none" stroke-linecap="round"/></svg></div><div class="bd"><svg viewBox="0 0 48 48"><path d="M10 44V6"/><path d="M10 8h26l-6 9 6 9H10"/></svg></div></div><b>產品負責人</b><span>了解使用者與客戶的歷程，找出行為模式並發掘作業上的痛點。</span></div>
-    <div class="who-card" style="--c:#8b5cf6"><div class="av"><div class="disc"><svg viewBox="0 0 200 200"><path d="M20 200c0-42 32-58 80-58s80 16 80 58z" fill="#4b34c9"/><path d="M78 142l22 26 22-26z" fill="#e9e4ff" opacity=".9"/><rect x="86" y="112" width="28" height="34" rx="12" fill="#e8b88f"/><ellipse cx="100" cy="86" rx="35" ry="40" fill="#f1c7a0"/><path d="M63 82c-4-34 18-52 40-52 24 0 40 18 34 52-6-14-14-24-34-24s-30 8-40 24z" fill="#1c1a26"/><g fill="none" stroke="#2a2440" stroke-width="4"><circle cx="85" cy="90" r="12"/><circle cx="117" cy="90" r="12"/><path d="M97 89h8"/></g><circle cx="85" cy="90" r="3.2" fill="#2a2440"/><circle cx="117" cy="90" r="3.2" fill="#2a2440"/><path d="M90 112q10 8 20 0" stroke="#a65f43" stroke-width="3.5" fill="none" stroke-linecap="round"/></svg></div><div class="bd"><svg viewBox="0 0 48 48"><circle cx="21" cy="21" r="12"/><path d="m30 30 12 12"/><path d="M15 21h12M21 15v12"/></svg></div></div><b>UX 研究員</b><span>建立有證據支持的使用者分群，用量化資料補強質性研究。</span></div>
-    <div class="who-card" style="--c:#3fe0b0"><div class="av"><div class="disc"><svg viewBox="0 0 200 200"><rect x="18" y="26" width="34" height="34" rx="5" fill="#ffd966" transform="rotate(-10 35 43)"/><rect x="150" y="38" width="32" height="32" rx="5" fill="#ff9fb8" transform="rotate(9 166 54)"/><rect x="146" y="100" width="28" height="28" rx="5" fill="#9ad7ff" transform="rotate(-6 160 114)"/><path d="M20 200c0-40 30-56 80-56s80 16 80 56z" fill="#1f9d82"/><rect x="86" y="112" width="28" height="34" rx="12" fill="#c98c60"/><circle cx="100" cy="36" r="17" fill="#2b1d17"/><path d="M62 86c-8-40 16-60 40-60 26 0 46 22 36 60-4-18-14-26-38-26s-34 10-38 26z" fill="#2b1d17"/><ellipse cx="100" cy="88" rx="34" ry="39" fill="#d9a074"/><path d="M64 84c8-22 22-26 38-26 20 0 32 8 36 26-12-12-24-16-38-16s-26 6-36 16z" fill="#2b1d17"/><circle cx="87" cy="92" r="3.4" fill="#2a1a14"/><circle cx="113" cy="92" r="3.4" fill="#2a1a14"/><path d="M90 111q10 9 20 0" stroke="#8d3f35" stroke-width="3.5" fill="none" stroke-linecap="round"/><circle cx="65" cy="100" r="5" fill="#f5c518"/><circle cx="135" cy="100" r="5" fill="#f5c518"/></svg></div><div class="bd"><svg viewBox="0 0 48 48"><circle cx="9" cy="36" r="4"/><circle cx="39" cy="12" r="4"/><path d="M13 36h14a8 8 0 0 0 0-16H21a8 8 0 0 1 0-16h14"/></svg></div></div><b>服務設計師</b><span>看出不同族群的體驗差異，找到服務可以改善之處。</span></div>
-    <div class="who-card" style="--c:#f5c518"><div class="av"><div class="disc"><svg viewBox="0 0 200 200"><path d="M14 200c0-42 34-58 86-58s86 16 86 58z" fill="#273360"/><path d="M80 142l20 30 20-30z" fill="#f4f4fb"/><path d="M96 150h8l5 40-9 8-9-8z" fill="#f5c518"/><path d="M62 146l24 34-28 20zM138 146l-24 34 28 20z" fill="#1d2748"/><rect x="86" y="112" width="28" height="34" rx="12" fill="#e9bf9a"/><ellipse cx="100" cy="86" rx="35" ry="40" fill="#f3d0b3"/><path d="M64 80c-2-34 20-50 42-50 22 0 36 16 30 48-8-12-22-20-40-18-14 2-24 8-32 20z" fill="#5a4a3c"/><circle cx="86" cy="92" r="3.4" fill="#2a1a14"/><circle cx="114" cy="92" r="3.4" fill="#2a1a14"/><path d="M88 111q12 10 24 0" stroke="#a65f43" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M80 84q6-5 12 0M108 84q6-5 12 0" stroke="#3b2e24" stroke-width="3" fill="none" stroke-linecap="round"/></svg></div><div class="bd"><svg viewBox="0 0 48 48"><path d="M6 40V8"/><path d="M6 40h36"/><path d="m12 32 9-10 8 6 12-16"/><circle cx="41" cy="12" r="2.5"/></svg></div></div><b>CX 顧問</b><span>依行為特徵區分顧客，找出體驗落差。</span></div>
-  </div>
-  <h3>資料隱私</h3>
-  <div class="about-privacy">
-    <p>quan-persona 採用本機優先的設計。問卷資料在你的裝置上、於瀏覽器內處理，不會上傳到雲端伺服器進行分析。你建立的自訂衡量架構，則儲存在該裝置瀏覽器的本機儲存空間。</p>
-    <p>這讓資料的掌控權留在你手上，也降低敏感問卷資料不必要的外洩風險。</p>
-    <p>你上傳的資料集也會保留在這台裝置的瀏覽器中。請勿在共用或公用電腦上上傳你的 CSV 檔案；若不得不使用，離開前請先使用「資料」選單中的「恢復預設數據」。</p>
-  </div>
-  <h3>現正開放 Beta 測試</h3>
-  <div class="about-privacy">
-    <p>quan-persona 正式開放 Beta 測試。歡迎上傳你自己的問卷資料、建立專屬的衡量架構，並告訴我們你的發現。</p>
-    <div class="about-actions">
-      <button type="button" class="btn btn-secondary" onclick="startTour()">開啟教學導覽</button>
-      <button type="button" class="btn btn-secondary" onclick="openCsvGuide()">CSV 欄位說明</button>
-    </div>
-  </div>
-  <h3>聯絡我們</h3>
-  <div class="about-privacy">
-    <div class="about-actions">
-      <a href="https://github.com/CLJL/quan-persona/issues" class="btn btn-secondary" target="_blank" rel="noopener noreferrer" aria-label="在 GitHub 回報問題" title="在 GitHub 回報問題"><svg viewBox="0 0 16 16" width="26" height="26" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>
-      <a href="https://www.producthunt.com/products/quan-persona?launch=quan-persona" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">留下意見</a>
-      <a href="https://www.linkedin.com/in/chen-ling-lai/" class="btn btn-secondary" target="_blank" rel="noopener noreferrer" aria-label="在 LinkedIn 聯絡作者" title="在 LinkedIn 聯絡作者"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
-      <a href="https://www.producthunt.com/products/quan-persona/reviews/new?utm_source=badge-product_review&utm_medium=badge&utm_source=badge-quan&#0045;persona" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/product_review.svg?product_id=1348396&theme=dark" alt="quan&#0045;persona - Turn&#0032;survey&#0032;data&#0032;into&#0032;meaningful&#0032;behavioural&#0032;segments | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
-    </div>
-  </div>
-</div>
-</div></div>
-
-        <!-- ==================== VIEW E: FAQ ==================== -->
-        <div class="section-view" id="view-faq"><div class="about-wrap">
-<div class="about-en">
-  <div class="about-hero"><p class="about-lede">Quick answers about data, privacy and how quan-persona works.</p></div>
-  <div class="faq-list">
-    <details class="faq-item"><summary>What is quan-persona?</summary><div class="faq-a">quan-persona is a behavioural segmentation and persona analytics platform. You bring survey responses as a CSV; it groups respondents by how they actually behave, then turns each group into a persona and a customer journey map.</div></details>
-    <details class="faq-item"><summary>Does my data leave my computer?</summary><div class="faq-a">No. Survey data is processed on your device, in your browser, and is not uploaded to a cloud server for analysis. Your browser does load the page itself from wherever it is hosted, but your responses are not sent anywhere.</div></details>
-    <details class="faq-item"><summary>Is my data saved after I close the page?</summary><div class="faq-a">Your uploaded dataset is saved in your browser, on this device only, and is not sent to any server. When you come back or refresh the page, the portal loads it again. It stays until you upload another CSV, which replaces it, or you use Restore Default Data in the Data menu, which deletes the saved dataset from your browser for good. Because the data stays in your browser, please do not upload your CSV files on a shared or public computer. If you have to, use Restore Default Data before you leave. Custom schemas, your language choice and a few display settings are also kept in your browser's local storage. Edits to personas are not saved.</div></details>
-    <details class="faq-item"><summary>What is the sample data I see when I open the portal?</summary><div class="faq-a">A synthetic insurance-agent dataset that demonstrates how the portal works. Upload your own CSV to replace it, and use Restore Default Data in the Data menu to bring it back.</div></details>
-    <details class="faq-item"><summary>What CSV format do I need?</summary><div class="faq-a">One row per respondent and one header row, with multi-select answers separated by a semicolon. Column names don't have to match exactly: the portal matches them to your schema, and you can correct the matching before analysis. Open the <a href="#" class="faq-link" onclick="openCsvGuide(); return false;">CSV Column Guide</a> in the Data menu for the exact columns, and <a href="#" class="faq-link" onclick="downloadCsvTemplate(); return false;">download the CSV template</a> if you want a ready-made header.</div></details>
-    <details class="faq-item"><summary>How many respondents do I need?</summary><div class="faq-a">With fewer than 15 respondents the portal puts everyone in a single group, because that is too few for stable clustering. The K check needs at least 24 respondents. In general, more respondents give more stable groups. The K check runs automatically for up to 3,000 respondents.</div></details>
-    <details class="faq-item"><summary>How does it decide how many groups there are?</summary><div class="faq-a">DBSCAN first sets aside respondents who do not belong to sufficiently dense clusters as potential outliers or noise (the proportion varies depending on dataset characteristics and clustering parameters), then K-means groups the rest. You choose K from 3 to 8 with the slider, and the K check reports how well each choice is supported using a silhouette score and stability.</div></details>
-    <details class="faq-item"><summary>Will I get the same result every time?</summary><div class="faq-a">Yes. The same file always gives the same clusters.</div></details>
-    <details class="faq-item"><summary>Can I use my own questionnaire and measures?</summary><div class="faq-a">Yes. In the <a href="#" class="faq-link" onclick="openSchemaBuilderModal(); return false;">Schema designer</a>, define your research questions, behavioural dimensions and measurement criteria. Then download the questionnaire from the Data menu and send it to respondents by email or through your survey platform. quan-persona does not send or collect questionnaires itself: you bring the responses back as a CSV.</div></details>
-    <details class="faq-item"><summary>Can I edit and export the personas?</summary><div class="faq-a">Yes. You can edit a persona's title, description, photo and quote.</div></details>
-    <details class="faq-item"><summary>Which browsers does it work in?</summary><div class="faq-a">Any modern browser: Chrome, Edge, Safari and Firefox.</div></details>
-    <details class="faq-item"><summary>Is quan-persona open source?</summary><div class="faq-a">Yes. It is released under the MIT License.</div></details>
-  </div>
-</div>
-<div class="about-zh" lang="zh-Hant">
-  <div class="about-hero"><p class="about-lede">關於資料、隱私，以及 quan-persona 如何運作的快速解答。</p></div>
-  <div class="faq-list">
-    <details class="faq-item"><summary>什麼是 quan-persona？</summary><div class="faq-a">quan-persona 是一個行為分群與人物誌分析平台。你提供 CSV 格式的問卷資料，它會依受訪者實際的行為模式分群，再為每一群產出人物誌與顧客旅程地圖。</div></details>
-    <details class="faq-item"><summary>我的資料會離開我的電腦嗎？</summary><div class="faq-a">不會。問卷資料在你的裝置上、於瀏覽器內處理，不會上傳到雲端伺服器進行分析。瀏覽器仍會從網站所在位置載入頁面本身，但你的填答資料不會被傳送到任何地方。</div></details>
-    <details class="faq-item"><summary>關閉頁面後，我的資料會被保存嗎？</summary><div class="faq-a">您上傳的資料集會儲存在這台裝置的瀏覽器中，不會傳送到任何伺服器。下次回來或重新整理頁面時，平台會自動載入。資料會一直保留，直到您上傳另一份 CSV 加以取代，或使用「資料」選單中的「恢復預設數據」；使用後，已儲存的資料集會從瀏覽器中永久刪除。由於資料會保留在瀏覽器中，請勿在共用或公用電腦上上傳您的 CSV 檔案；若不得不使用，離開前請先執行「恢復預設數據」。自訂的衡量架構、語言選擇與部分顯示設定，也會儲存在瀏覽器的本機儲存空間。人物誌的編輯內容不會保存。</div></details>
-    <details class="faq-item"><summary>一開啟平台就看到的資料是什麼？</summary><div class="faq-a">那是一組模擬的保險業務員資料，用來示範平台怎麼運作。上傳你自己的 CSV 就會取代它，也可以在「資料」選單中使用「恢復預設資料」把它找回來。</div></details>
-    <details class="faq-item"><summary>CSV 需要符合什麼格式？</summary><div class="faq-a">每位受訪者一列，另有一列標題列，複選題的答案以分號隔開。欄位名稱不必完全一致：平台會自動比對你的衡量架構，分析前也可以自行調整對應。確切的欄位請開啟「資料」選單中的<a href="#" class="faq-link" onclick="openCsvGuide(); return false;">「CSV 欄位說明」</a>，若想要現成的標題列，也可以<a href="#" class="faq-link" onclick="downloadCsvTemplate(); return false;">下載 CSV 範本</a>。</div></details>
-    <details class="faq-item"><summary>需要多少位受訪者？</summary><div class="faq-a">受訪者少於 15 位時，平台會把所有人歸成同一群，因為樣本太少，無法穩定分群。K 值檢查至少需要 24 位受訪者。一般來說，受訪者越多，分群越穩定。受訪者在 3,000 位以內時，K 值檢查會自動執行。</div></details>
-    <details class="faq-item"><summary>平台怎麼決定要分成幾群？</summary><div class="faq-a">先以 DBSCAN 依資料密度與分佈識別並排除離群值與雜訊點（比例依數據特徵與分群參數而異），再以 K-means 將其餘受訪者分群。你可以用滑桿在 3 到 8 之間選擇 K 值，K 值檢查則會以輪廓係數與穩定度，說明每個選擇的支持程度。</div></details>
-    <details class="faq-item"><summary>每次分析的結果都一樣嗎？</summary><div class="faq-a">一樣。同一份檔案，每次都會得到相同的分群結果。</div></details>
-    <details class="faq-item"><summary>可以用我自己的問卷與衡量指標嗎？</summary><div class="faq-a">可以。在 <a href="#" class="faq-link" onclick="openSchemaBuilderModal(); return false;">Schema 設計工具</a>中，定義你的研究問題、行為構面與衡量標準。接著從「資料」選單下載問卷，再透過電子郵件或問卷平台發送給受訪者。quan-persona 本身不負責發送或回收問卷，你需要把回收的答案整理成 CSV 帶回來。</div></details>
-    <details class="faq-item"><summary>可以編輯並匯出人物誌嗎？</summary><div class="faq-a">可以。你可以編輯人物誌的標題、描述、照片與代表性語錄。</div></details>
-    <details class="faq-item"><summary>支援哪些瀏覽器？</summary><div class="faq-a">任何新版瀏覽器都可以：Chrome、Edge、Safari 與 Firefox。</div></details>
-    <details class="faq-item"><summary>quan-persona 是開源的嗎？</summary><div class="faq-a">是的，採用 MIT 授權。</div></details>
-  </div>
-</div>
-</div></div>
 
         <!-- ==================== VIEW A: PERSONA EXPLORER ==================== -->
         <div class="section-view active" id="view-personas">
@@ -568,10 +324,9 @@
                         <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
                             <label style="font-size:var(--fs-small); color:var(--text-secondary); display:flex; align-items:center; gap:8px;">
                                 <span data-i18n="numClusters">Number of Clusters (K)</span>
-                                <input type="range" id="cluster-k-slider" min="3" max="8" value="5" style="accent-color: var(--accent-primary);" oninput="document.getElementById('cluster-k-value').textContent=this.value">
+                                <input type="range" id="cluster-k-slider" min="3" max="8" value="5" style="accent-color: var(--accent-primary);" oninput="document.getElementById('cluster-k-value').textContent=this.value; runClusterDiscovery({ runKCheck: true });" onchange="runClusterDiscovery({ runKCheck: true });">
                                 <span id="cluster-k-value" style="color:var(--accent-primary); font-weight:700; min-width: 14px; display:inline-block;">5</span>
                             </label>
-                            <button class="btn btn-primary" onclick="runClusterDiscovery()" data-i18n="runClustering">Run AI Clustering</button>
                         </div>
                     </div>
                     <div id="cluster-discovery-status" style="font-size:var(--fs-small); color: var(--text-muted); margin-bottom: 12px;"></div>
@@ -966,8 +721,8 @@
     </div>
 
     <!-- COMMERCIAL VIDEO MODAL -->
-    <!-- LANDING LANGUAGE GATE: choose English / 繁體中文, then the matching video plays -->
-    <div id="lang-gate" class="show" role="dialog" aria-modal="true" aria-labelledby="lang-gate-title" style="display: flex;">
+    <!-- LANDING LANGUAGE GATE: choose English / 繁體中文, then the matching video plays (skipped if direct section or internal visit) -->
+    <div id="lang-gate" role="dialog" aria-modal="true" aria-labelledby="lang-gate-title" style="display: none;">
         <div class="lang-gate-card">
             <img class="lang-gate-logo" id="lang-gate-logo" alt="quan-persona">
             <div class="lang-gate-brand">quan-persona</div>
@@ -981,16 +736,57 @@
     </div>
 
     <script>
-    /* Language screen is shown immediately; a choice made before the app has loaded is applied as soon as it is ready */
+    /* Language screen is shown ONLY for first-time direct landing visitors without an existing session or direct target.
+       When visiting from About Us, FAQ, or clicking Persona/Journey/Analytics (#personas, etc.), skip the language screen directly. */
     (function () {
-        var g = document.getElementById('lang-gate'), l = document.getElementById('lang-gate-logo'), m = document.querySelector('.brand-mark');
-        if (l && m && !l.getAttribute('src')) l.src = m.src;
-        document.body.style.overflow = 'hidden';
+        var g = document.getElementById('lang-gate');
+        var hash = (window.location.hash || '').replace('#', '');
+        var params = new URLSearchParams(window.location.search);
+        var ref = (document.referrer || '').toLowerCase();
+        var fromInternal = ref.indexOf('about') !== -1 || ref.indexOf('faq') !== -1;
+        var hasDirectTarget = ['personas', 'journeys', 'analytics'].indexOf(hash) !== -1 ||
+                              params.has('section') || params.has('open') || params.has('startTour') || params.has('startRoute') ||
+                              params.has('downloadTemplate') || params.has('restoreDefault') || params.has('uploaded') ||
+                              params.get('skipLanding') === '1';
+        var alreadyEntered = false;
+        try {
+            alreadyEntered = (sessionStorage.getItem('quan_persona_entered') === '1') ||
+                             (sessionStorage.getItem('quan_persona_landing_done') === '1');
+        } catch (e) {}
+
+        if (hasDirectTarget || fromInternal || alreadyEntered) {
+            window.__skipLandingGate = true;
+            window.__skipLandingVideo = true;
+            try {
+                sessionStorage.setItem('quan_persona_entered', '1');
+                sessionStorage.setItem('quan_persona_landing_done', '1');
+            } catch (e) {}
+            if (g) {
+                g.classList.remove('show');
+                g.style.display = 'none';
+            }
+            document.body.style.overflow = '';
+            return;
+        }
+
+        // First-time landing visitor: display language gate
+        if (g) {
+            var l = document.getElementById('lang-gate-logo'), m = document.querySelector('.brand-mark');
+            if (l && m && !l.getAttribute('src')) l.src = m.src;
+            g.style.display = 'flex';
+            void g.offsetWidth;
+            g.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
         window.__pendingLang = null;
         window.chooseLandingLang = function (lang) {
             lang = (lang === 'zh') ? 'zh' : 'en';
             window.__pendingLang = lang;
-            try { localStorage.setItem('portal_lang', lang); } catch (e) {}
+            try {
+                localStorage.setItem('portal_lang', lang);
+                sessionStorage.setItem('quan_persona_entered', '1');
+                sessionStorage.setItem('quan_persona_landing_done', '1');
+            } catch (e) {}
             var skip = false; try { skip = localStorage.getItem('quan_persona_dont_show_video') === 'true'; } catch (e) {}
             // Before the app has loaded: close the language screen and start the video straight away; the app picks up the choice when it is ready
             if (!skip && window.__qpEarlyOpen && window.__qpEarlyOpen(lang)) return;
@@ -1022,7 +818,7 @@
                     <span id="lbl-dont-show-video">Don’t show the video again</span>
                 </label>
                 <button type="button" class="btn-continue-tour" id="btn-continue-tour" onclick="closeCommercialModal()">
-                    <span id="lbl-continue-tour">Start a tutorial &rarr;</span>
+                    <span id="lbl-continue-tour">Explore the platform &rarr;</span>
                 </button>
             </div>
         </div>

@@ -108,7 +108,7 @@ window.activeSection = activeSection;
 
         const TRANSLATIONS = {
             en: {
-                portalTitle: "Behaviour Segmentation & Persona Analytics",
+                portalTitle: "Behavioural Segmentation & Persona Analytics",
                 customizeSchema: "Customise Schema",
                 schemaBuilderModalTitle: "Change Modular Questionnaire & Measurement Schema Designer",
                 schemaBuilderModalSubtitle: "Configure questions, competency scales, and journey stages. Saving immediately updates the analytics platform measurements.",
@@ -354,13 +354,13 @@ window.activeSection = activeSection;
                 clusterViewRadar: "雷達圖",
                 clusterViewTable: "數據表",
                 csvGuide: "CSV 欄位說明",
-                navPersonas: "客群畫像看板",
-                navJourneys: "銷售旅程圖",
+                navPersonas: "人物誌看板",
+                navJourneys: "歷程地圖",
                 navAnalytics: "數據分析與資料庫",
                 navAbout: "關於我們",
                 navFaq: "常見問題",
-                journeySwipeHint: "可左右滑動以探索全部 6 大銷售旅程階段與情緒曲線",
-                emotionalCurveTitle: "銷售旅程情緒曲線",
+                journeySwipeHint: "可左右滑動以探索全部 6 大歷程階段與情緒曲線",
+                emotionalCurveTitle: "歷程情緒曲線",
                 highSat: "高度滿意",
                 medSat: "中度滿意",
                 sigPain: "顯著痛點區間",
@@ -593,6 +593,8 @@ window.activeSection = activeSection;
                 } else {
                     if (currentLang === 'zh' && typeof PRE_LOADED_DATA_ZH !== 'undefined' && PRE_LOADED_DATA_ZH.length > 0) {
                         parsedData = PRE_LOADED_DATA_ZH;
+                    } else if (currentLang === 'en' && typeof PRE_LOADED_DATA !== 'undefined' && PRE_LOADED_DATA.length > 0) {
+                        parsedData = PRE_LOADED_DATA;
                     } else if (typeof PRE_LOADED_DATA !== 'undefined' && PRE_LOADED_DATA.length > 0) {
                         parsedData = PRE_LOADED_DATA;
                     }
@@ -611,7 +613,7 @@ window.activeSection = activeSection;
                 const titleEl = document.querySelector('[data-i18n="portalTitle"]');
                 if (titleEl) {
                     if (schema.id === 'agent' || !schema.id) {
-                        titleEl.textContent = isZh ? t('portalTitle') : "Behaviour Segmentation & Persona Analytics";
+                        titleEl.textContent = isZh ? t('portalTitle') : "Behavioural Segmentation & Persona Analytics";
                     } else if (isZh) {
                         titleEl.textContent = `${schema.nameZh || schema.name} 分析平台 (V.2)`;
                     } else {
@@ -657,23 +659,27 @@ window.activeSection = activeSection;
                 initAnalyticsRadarChart();
             }    };
 
-            if (lang === 'zh' && currentJourneyDomain === 'agent' && (typeof PRE_LOADED_DATA_ZH === 'undefined' || !PRE_LOADED_DATA_ZH.length) && typeof window.loadScriptAsync === 'function') {
-                // While the language screen or the intro video is showing, load the Chinese data quietly:
-                // the loading card must not cover them (it still shows when switching language inside the portal).
+            if (lang === 'en' && currentJourneyDomain === 'agent' && (typeof PRE_LOADED_DATA === 'undefined' || !PRE_LOADED_DATA.length)) {
+                const _gate = document.getElementById('lang-gate'), _vid = document.getElementById('commercial-video-modal');
+                const quiet = !!((_gate && _gate.classList.contains('show')) || (_vid && _vid.classList.contains('active')));
+                if (!quiet && typeof showCsvLoading === 'function') {
+                    showCsvLoading('Loading English dataset...', 'Loading survey data...');
+                }
+                loadEnglishDataAsync().then(() => {
+                    if (typeof hideCsvLoading === 'function') hideCsvLoading();
+                    doApplyLang();
+                }).catch(err => {
+                    if (typeof hideCsvLoading === 'function') hideCsvLoading();
+                    console.error('Failed to load English dataset:', err);
+                    doApplyLang();
+                });
+            } else if (lang === 'zh' && currentJourneyDomain === 'agent' && (typeof PRE_LOADED_DATA_ZH === 'undefined' || !PRE_LOADED_DATA_ZH.length)) {
                 const _gate = document.getElementById('lang-gate'), _vid = document.getElementById('commercial-video-modal');
                 const quiet = !!((_gate && _gate.classList.contains('show')) || (_vid && _vid.classList.contains('active')));
                 if (!quiet && typeof showCsvLoading === 'function') {
                     showCsvLoading('載入中文資料庫...', '正在載入繁體中文問卷數據...');
                 }
-                // One shared download, so a second request while it is still loading waits for it.
-                window.__zhDataPromise = window.__zhDataPromise || new Promise(function (resolve, reject) {
-                    const sc = document.createElement('script');
-                    sc.src = 'survey_data_zh_2500.js';
-                    sc.onload = function () { resolve(); };
-                    sc.onerror = function () { window.__zhDataPromise = null; reject(new Error('Failed to load survey_data_zh_2500.js')); };
-                    document.head.appendChild(sc);
-                });
-                window.__zhDataPromise.then(() => {
+                loadChineseDataAsync().then(() => {
                     if (typeof hideCsvLoading === 'function') hideCsvLoading();
                     doApplyLang();
                 }).catch(err => {
@@ -728,7 +734,7 @@ window.activeSection = activeSection;
             const titleEl = document.querySelector('[data-i18n="portalTitle"]');
             if (titleEl) {
                 if (schema.id === 'agent' || !schema.id) {
-                    titleEl.textContent = isZh ? t('portalTitle') : "Behaviour Segmentation & Persona Analytics";
+                    titleEl.textContent = isZh ? t('portalTitle') : "Behavioural Segmentation & Persona Analytics";
                 } else if (isZh) {
                     titleEl.textContent = `${schema.nameZh || schema.name} 分析平台 (V.2)`;
                 } else {
@@ -1238,19 +1244,20 @@ window.activeSection = activeSection;
         // features instead of a pre-written bio, since there's no fixed correspondence
         // between "cluster 3" and any specific static persona.
         function getPersonaDisplayInfo(key) {
+            const isZh = (typeof currentLang !== 'undefined' && currentLang === 'zh');
             if (key === 'outlier') {
                 return {
-                    name: 'Outliers & Noise',
+                    name: isZh ? '離群值與雜訊點' : 'Outliers & Noise',
                     avatar: '🕵️',
-                    role: 'Atypical / Isolated Profiles',
+                    role: isZh ? '非典型／孤立特徵輪廓' : 'Atypical / Isolated Profiles',
                     desc: '',
                     age: '-', exp: '-', customers: '-',
                     skills: { device: 50, knowledge: 50, salesPitch: 50, customerRelations: 50, digitalTools: 50 },
                     work: [20, 20, 20, 20, 20],
-                    contradiction: 'Sparse response density / Unconventional behaviour patterns',
-                    needs: ['Direct/personalised support', 'Custom software configuration guidelines'],
-                    pains: ['Isolated workflow challenges'],
-                    journey: [], tools: 'Personal support', quote: 'My workflow is very specific to my client base.', verbatim: []
+                    contradiction: isZh ? '資料密度稀疏／非典型行為模式' : 'Sparse response density / Unconventional behaviour patterns',
+                    needs: isZh ? ['專人直接支援', '客製化軟體設定指引'] : ['Direct/personalised support', 'Custom software configuration guidelines'],
+                    pains: isZh ? ['孤立工作流程挑戰'] : ['Isolated workflow challenges'],
+                    journey: [], tools: isZh ? '專人支援' : 'Personal support', quote: isZh ? '我的工作流程因客群特性而高度個別化。' : 'My workflow is very specific to my client base.', verbatim: []
                 };
             }
             let baseDetails = PERSONA_DETAILS[key];
@@ -1265,11 +1272,17 @@ window.activeSection = activeSection;
             const profile = profiles.find(p => p.key === key);
             if (!profile) {
                 // Nothing clustered yet -- minimal placeholder so renders don't crash.
-                return { name: 'Unclassified', avatar: '❔', role: 'Awaiting data', desc: '', age: '-', exp: '-', customers: '-',
+                return { name: isZh ? '未分類' : 'Unclassified', avatar: '❔', role: isZh ? '等待數據' : 'Awaiting data', desc: '', age: '-', exp: '-', customers: '-',
                     skills: { device: 50, knowledge: 50, salesPitch: 50, customerRelations: 50, digitalTools: 50 },
                     work: [20, 20, 20, 20, 20], contradiction: '', needs: [], pains: [], journey: [], tools: '', quote: '', verbatim: [] };
             }
-            const featureText = profile.topFeatures.map(f => `${f.direction} ${f.label}`).join(' / ') || 'No standout features yet';
+            const featureText = profile.topFeatures.map(f => {
+                if (isZh) {
+                    const dir = (f.direction === 'High' || f.direction === '高') ? '偏高' : '偏低';
+                    return `${f.label}${dir}`;
+                }
+                return `${f.direction} ${f.label}`;
+            }).join(' / ') || (isZh ? '無明顯特徵' : 'No standout features yet');
             const photoList = [
                 'assets/chen_digital.jpg',
                 'assets/lin_jin_bu.jpg',
@@ -1280,8 +1293,11 @@ window.activeSection = activeSection;
             const assignedPhoto = photoList[profile.ordinal % photoList.length];
 
             const override = manualOverrides[key];
-            const displayName = (override && override.name) ? override.name : `Cluster ${profile.ordinal + 1}`;
-            const clusterDesc = `${profile.label} (n=${profile.count}) - Type To Change Persona Description`;
+            const defaultName = isZh ? `分群 ${profile.ordinal + 1}` : `Cluster ${profile.ordinal + 1}`;
+            const displayName = (override && override.name) ? override.name : defaultName;
+            const clusterDesc = isZh 
+                ? `${profile.label} (n=${profile.count}) — 點擊以修改客群描述`
+                : `${profile.label} (n=${profile.count}) - Type To Change Persona Description`;
 
             return {
                 name: displayName,
@@ -1302,7 +1318,7 @@ window.activeSection = activeSection;
                     digitalTools: profile.centroidRaw ? Math.round(profile.centroidRaw[4]) : 50
                 },
                 work: [20, 20, 20, 20, 20],
-                contradiction: 'Computed from this cluster\'s actual survey responses -- see the gap/contradiction word cloud below.',
+                contradiction: isZh ? '依據本客群受訪者之填答數據即時計算（請見下方關鍵字分析）。' : 'Computed from this cluster\'s actual survey responses -- see the gap/contradiction word cloud below.',
                 needs: [], pains: [], journey: [],
                 tools: '', quote: '', verbatim: []
             };
@@ -4354,7 +4370,7 @@ window.activeSection = activeSection;
                 const startQ = qCounter;
                 let demoRowsHtml = '';
                 if (!demographics || demographics.length === 0) {
-                    demoRowsHtml = `<div style="color: #64748b; font-style: italic; font-size: var(--fs-caption); padding: 12px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 6px; text-align: center;">${isZh ? '此問卷未設定基本資料題。' : 'No demographic questions configured.'}</div>`;
+                    demoRowsHtml = `<div style="color: #64748b; font-style: italic; font-size: var(--fs-body); padding: 14px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 6px; text-align: center;">${isZh ? '此問卷未設定基本資料題。' : 'No demographic questions configured.'}</div>`;
                 } else {
                     demoRowsHtml = demographics.map((d) => {
                         const qNum = qCounter++;
@@ -4373,16 +4389,16 @@ window.activeSection = activeSection;
 
                         let optHtml = '';
                         if (isTextType) {
-                            optHtml = `<div class="field-writein" style="font-family: monospace; font-size: var(--fs-caption); color: #475569; margin-top: 6px; letter-spacing: 1px;">${escapeHtml(typeof rawOpts === 'string' && rawOpts.includes('___') ? rawOpts : '__________________________________________________')}</div>`;
+                            optHtml = `<div class="field-writein" style="font-family: monospace; font-size: var(--fs-body); color: #475569; margin-top: 6px; letter-spacing: 1px;">${escapeHtml(typeof rawOpts === 'string' && rawOpts.includes('___') ? rawOpts : '__________________________________________________')}</div>`;
                         } else if (optList.length > 0) {
-                            optHtml = `<div class="field-options" style="display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: var(--fs-caption); margin-top: 6px;">${optList.map(o => `<span>[ ] ${escapeHtml(o)}</span>`).join('')}</div>`;
+                            optHtml = `<div class="field-options" style="display: flex; flex-wrap: wrap; gap: 10px 20px; font-size: var(--fs-body); margin-top: 8px;">${optList.map(o => `<span>[ ] ${escapeHtml(o)}</span>`).join('')}</div>`;
                         } else {
-                            optHtml = `<div class="field-writein" style="border-bottom: 1px solid #94a3b8; height: 22px; width: 100%; margin-top: 6px;"></div>`;
+                            optHtml = `<div class="field-writein" style="border-bottom: 1px solid #94a3b8; height: 26px; width: 100%; margin-top: 6px;"></div>`;
                         }
 
                         let noteHtml = '';
                         if (noteText) {
-                            noteHtml = `<div style="font-size: var(--fs-caption); color: #64748b; font-style: italic; margin-top: 5px; line-height: 1.4;">${escapeHtml(safeText(noteText))}</div>`;
+                            noteHtml = `<div style="font-size: var(--fs-small); color: #64748b; font-style: italic; margin-top: 6px; line-height: 1.5;">${escapeHtml(safeText(noteText))}</div>`;
                         }
 
                         let subHtml = '';
@@ -4402,22 +4418,22 @@ window.activeSection = activeSection;
                         if (false && (hasSubPrompt || hasSubOpts)) {
                             let subOptHtml = '';
                             if (subOptList.length > 0) {
-                                subOptHtml = `<div class="field-options" style="display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: var(--fs-caption); margin-top: 5px;">${subOptList.map(o => `<span>[ ] ${escapeHtml(o)}</span>`).join('')}</div>`;
+                                subOptHtml = `<div class="field-options" style="display: flex; flex-wrap: wrap; gap: 10px 20px; font-size: var(--fs-body); margin-top: 5px;">${subOptList.map(o => `<span>[ ] ${escapeHtml(o)}</span>`).join('')}</div>`;
                             } else {
-                                subOptHtml = `<div class="field-writein" style="border-bottom: 1px solid #94a3b8; height: 22px; width: 100%; margin-top: 5px;"></div>`;
+                                subOptHtml = `<div class="field-writein" style="border-bottom: 1px solid #94a3b8; height: 26px; width: 100%; margin-top: 5px;"></div>`;
                             }
 
                             subHtml = `
                                 <div style="margin-top: 8px; padding-top: 6px; border-top: 1px dashed #e2e8f0;">
-                                    ${hasSubPrompt ? `<label style="display: block; font-weight: 600; color: #334155; font-size: var(--fs-caption); line-height: 1.4;">${escapeHtml(safeText(rawSubPrompt))}</label>` : ''}
+                                    ${hasSubPrompt ? `<label style="display: block; font-weight: 600; color: #334155; font-size: var(--fs-subtitle); line-height: 1.5;">${escapeHtml(safeText(rawSubPrompt))}</label>` : ''}
                                     ${subOptHtml}
                                 </div>
                             `;
                         }
 
                         return `
-                            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px; margin-bottom: 8px; page-break-inside: avoid;">
-                                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-caption); line-height: 1.4;">${qNum}. ${escapeHtml(dLabel)}</label>
+                            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">${qNum}. ${escapeHtml(dLabel)}</label>
                                 ${optHtml}
                                 ${noteHtml}
                                 ${subHtml}
@@ -4439,7 +4455,7 @@ window.activeSection = activeSection;
                     <!-- PART: DEMOGRAPHICS -->
                     <div class="section-header">
                         <span>${escapeHtml(displayDemoTitle)}</span>
-                        <span style="font-size: var(--fs-caption); opacity: 0.85;">${rangeLabel}</span>
+                        <span style="font-size: var(--fs-small); opacity: 0.9;">${rangeLabel}</span>
                     </div>
                     ${demoRowsHtml}
                 `;
@@ -4483,9 +4499,9 @@ window.activeSection = activeSection;
                         const rawItem = slice[c];
                         const item = safeText(rawItem);
                         if (item) {
-                            tagsTableRows += `<td style="padding: 6px 8px; font-size: var(--fs-caption); color: #1e293b;">[ ] ${escapeHtml(item)}</td>`;
+                            tagsTableRows += `<td style="padding: 8px 10px; font-size: var(--fs-body); color: #1e293b;">[ ] ${escapeHtml(item)}</td>`;
                         } else {
-                            tagsTableRows += '<td style="padding: 6px 8px;"></td>';
+                            tagsTableRows += '<td style="padding: 8px 10px;"></td>';
                         }
                     }
                     tagsTableRows += '</tr>';
@@ -4524,44 +4540,44 @@ window.activeSection = activeSection;
                     <!-- PART: ARCHETYPE TAGS (SELF-IMAGE) -->
                     <div class="section-header">
                         <span>${escapeHtml(displayTagsTitle)}</span>
-                        <span style="font-size: var(--fs-caption); opacity: 0.85;">Q${startQ} ~ Q${endQ}</span>
+                        <span style="font-size: var(--fs-small); opacity: 0.9;">Q${startQ} ~ Q${endQ}</span>
                     </div>
 
-                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 14px; margin-bottom: 8px;">
-                        <p style="margin: 0 0 8px 0; font-size: var(--fs-caption); color: #334155; line-height: 1.5;">
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px 18px; margin-bottom: 12px;">
+                        <p style="margin: 0 0 10px 0; font-size: var(--fs-body); color: #334155; line-height: 1.6;">
                             ${isZh ? '以下標籤用於協助我們了解您的工作風格與自我認同。答案沒有對錯，請憑直覺選擇最符合您的描述。' : 'The following tags are used to help us understand your working style and self-identity. There are no right or wrong answers; please select the descriptions that fit you best based on your intuition.'}
                         </p>
-                        <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
+                        <table style="width: 100%; border-collapse: collapse; margin-bottom: 12px;">
                             <tbody>
                                 ${tagsTableRows}
                             </tbody>
                         </table>
-                        <div style="font-size: var(--fs-caption); color: #475569; margin-bottom: 12px;">
+                        <div style="font-size: var(--fs-body); color: #475569; margin-bottom: 14px;">
                             [ ] ${isZh ? '其他（請說明）' : 'Other (please specify)'}: __________________________________________________
                         </div>
 
-                        <div style="display: flex; flex-direction: column; gap: 8px; border-top: 1px dashed #cbd5e1; padding-top: 10px;">
+                        <div style="display: flex; flex-direction: column; gap: 10px; border-top: 1px dashed #cbd5e1; padding-top: 12px;">
                             <div>
-                                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-caption);">
+                                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
                                     ${qTag1}. ${escapeHtml(cleanQ8Prompt)}
                                 </label>
-                                <div style="font-size: var(--fs-caption); color: #2563eb; margin-top: 4px;">
+                                <div style="font-size: var(--fs-body); color: #2563eb; margin-top: 6px;">
                                     Tag 1: __________________________________________________
                                 </div>
                             </div>
                             <div>
-                                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-caption);">
+                                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
                                     ${qTag2}. ${escapeHtml(cleanQ9Prompt)}
                                 </label>
-                                <div style="font-size: var(--fs-caption); color: #2563eb; margin-top: 4px;">
+                                <div style="font-size: var(--fs-body); color: #2563eb; margin-top: 6px;">
                                     Tag 2: __________________________________________________
                                 </div>
                             </div>
                             <div>
-                                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-caption);">
+                                <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
                                     ${qTag3}. ${escapeHtml(cleanQ10Prompt)}
                                 </label>
-                                <div style="font-size: var(--fs-caption); color: #2563eb; margin-top: 4px;">
+                                <div style="font-size: var(--fs-body); color: #2563eb; margin-top: 6px;">
                                     Tag 3: __________________________________________________
                                 </div>
                             </div>
@@ -4713,15 +4729,15 @@ window.activeSection = activeSection;
                 sectionsHtml += `
                     <div class="section-header">
                         <span>${escapeHtml(displayDimTitle)}</span>
-                        <span style="font-size: var(--fs-caption); opacity: 0.85;">Q${startQ} ~ Q${endQ}</span>
+                        <span style="font-size: var(--fs-small); opacity: 0.9;">Q${startQ} ~ Q${endQ}</span>
                     </div>
 
                     <!-- Agent Tools Familiarity (Q11) -->
-                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px; margin-bottom: 8px;">
-                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-caption); line-height: 1.4;">
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
                             ${qFamiliarity}. ${escapeHtml(cleanQ11Prompt)}
                         </label>
-                        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; font-size: var(--fs-caption); margin-top: 6px; color: #334155;">
+                        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; font-size: var(--fs-body); margin-top: 8px; color: #334155;">
                             <span style="font-weight: 600; color: #64748b;">${isZh ? '極不熟悉' : 'Extremely Unfamiliar'}</span>
                             <span>[ ] 0%</span> <span>[ ] 20%</span> <span>[ ] 40%</span> <span>[ ] 60%</span> <span>[ ] 80%</span> <span>[ ] 100%</span>
                             <span style="font-weight: 600; color: #64748b;">${isZh ? '極為熟悉' : 'Extremely Familiar'}</span>
@@ -4729,11 +4745,11 @@ window.activeSection = activeSection;
                     </div>
 
                     <!-- Work Feeling Emoji Scale (Q12) -->
-                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px; margin-bottom: 8px;">
-                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-caption); line-height: 1.4;">
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
                             ${qEmoji}. ${escapeHtml(cleanQ12Prompt)}
                         </label>
-                        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; font-size: var(--fs-caption); margin-top: 6px; color: #334155;">
+                        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; font-size: var(--fs-body); margin-top: 8px; color: #334155;">
                             <span style="font-weight: 600; color: #64748b;">${isZh ? '極不滿意' : 'Extremely Unhappy'}</span>
                             <span>[ ] 😩</span> <span>[ ] 🙁</span> <span>[ ] 😐</span> <span>[ ] 🙂</span> <span>[ ] 😄</span>
                             <span style="font-weight: 600; color: #64748b;">${isZh ? '極為滿意' : 'Extremely Happy'}</span>
@@ -4741,31 +4757,31 @@ window.activeSection = activeSection;
                     </div>
 
                     <!-- Tools Efficiency Impact (Q13) -->
-                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px; margin-bottom: 8px;">
-                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-caption); line-height: 1.4;">
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
                             ${qImpact}. ${escapeHtml(cleanQ13Prompt)}
                         </label>
-                        <div style="display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: var(--fs-caption); margin-top: 6px;">
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: var(--fs-body); margin-top: 8px;">
                             ${q13OptionsList.map(opt => `<span>[ ] ${escapeHtml(opt)}</span>`).join('')}
                         </div>
                     </div>
 
                     <!-- System / Digital Tool Factors Matrix (Q14) -->
-                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px; margin-bottom: 8px;">
-                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-caption); line-height: 1.4;">
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
                             ${qSystemFactors}. ${escapeHtml(cleanQ14Prompt)}
                         </label>
-                        <table style="width: 100%; border-collapse: collapse; margin-top: 6px; font-size: var(--fs-caption);">
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 8px; font-size: var(--fs-body);">
                             <thead>
                                 <tr style="background: #f8fafc; border-bottom: 1.5px solid #cbd5e1; color: #475569;">
-                                    <th style="text-align: left; padding: 6px 8px; width: 45%;">${isZh ? '評估項目' : 'Item'}</th>
+                                    <th style="text-align: left; padding: 8px 10px; width: 45%;">${isZh ? '評估項目' : 'Item'}</th>
                                     ${matrixHeaderThs}
                                 </tr>
                             </thead>
                             <tbody>
                                 ${systemFactors.map(f => `
                                     <tr style="border-bottom: 1px solid #e2e8f0;">
-                                        <td style="padding: 6px 8px; color: #1e293b; font-weight: 500;">${escapeHtml(safeText(f))}</td>
+                                        <td style="padding: 8px 10px; color: #1e293b; font-weight: 500;">${escapeHtml(safeText(f))}</td>
                                         ${emptyMatrixCells}
                                     </tr>
                                 `).join('')}
@@ -4774,21 +4790,21 @@ window.activeSection = activeSection;
                     </div>
 
                     <!-- Professional Capabilities Matrix (Q15) -->
-                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px; margin-bottom: 8px;">
-                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-caption); line-height: 1.4;">
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
                             ${qCompetency}. ${escapeHtml(cleanQ15Prompt)}
                         </label>
-                        <table style="width: 100%; border-collapse: collapse; margin-top: 6px; font-size: var(--fs-caption);">
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 8px; font-size: var(--fs-body);">
                             <thead>
                                 <tr style="background: #f8fafc; border-bottom: 1.5px solid #cbd5e1; color: #475569;">
-                                    <th style="text-align: left; padding: 6px 8px; width: 45%;">${isZh ? '評估項目' : 'Item'}</th>
+                                    <th style="text-align: left; padding: 8px 10px; width: 45%;">${isZh ? '評估項目' : 'Item'}</th>
                                     ${matrixHeaderThs}
                                 </tr>
                             </thead>
                             <tbody>
                                 ${competencies.map(c => `
                                     <tr style="border-bottom: 1px solid #e2e8f0;">
-                                        <td style="padding: 6px 8px; color: #1e293b; font-weight: 500;">${escapeHtml(safeText(c))}</td>
+                                        <td style="padding: 8px 10px; color: #1e293b; font-weight: 500;">${escapeHtml(safeText(c))}</td>
                                         ${emptyMatrixCells}
                                     </tr>
                                 `).join('')}
@@ -4797,29 +4813,29 @@ window.activeSection = activeSection;
                     </div>
 
                     <!-- LINE / Personal Tools Reasons (Q16) -->
-                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px; margin-bottom: 8px;">
-                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-caption); line-height: 1.4;">
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
                             ${qLineReason}. ${escapeHtml(cleanQ16Prompt)}
                         </label>
-                        <div style="display: flex; flex-direction: column; gap: 5px; font-size: var(--fs-caption); margin-top: 6px;">
+                        <div style="display: flex; flex-direction: column; gap: 8px; font-size: var(--fs-body); margin-top: 8px;">
                             ${q16OptionsList.map(opt => `<span>[ ] ${escapeHtml(opt)}</span>`).join('')}
                         </div>
                     </div>
 
                     <!-- Customer Visit Scheduling (Q17) -->
-                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px; margin-bottom: 8px;">
-                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-caption); line-height: 1.4;">
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
                             ${qSchedule}. ${escapeHtml(cleanQ17Prompt)}
                         </label>
-                        <div style="display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: var(--fs-caption); margin-top: 6px;">
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: var(--fs-body); margin-top: 8px;">
                             ${q17OptionsList.map(opt => `<span>[ ] ${escapeHtml(opt)}</span>`).join('')}
                         </div>
                         ${(q17SubPrompt || q17SubOptionsList.length > 0) ? `
-                        <div style="margin-top: 8px; padding-top: 6px; border-top: 1px dashed #e2e8f0; font-size: var(--fs-caption); color: #475569;">
-                            <label style="display: block; font-weight: 600; color: #0284c7; margin-bottom: 4px;">
+                        <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed #e2e8f0; font-size: var(--fs-body); color: #475569;">
+                            <label style="display: block; font-weight: 600; color: #0284c7; margin-bottom: 4px; font-size: var(--fs-body);">
                                 ${escapeHtml(q17SubPrompt)}
                             </label>
-                            <div style="display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: var(--fs-caption); margin-top: 5px;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: var(--fs-body); margin-top: 6px;">
                                 ${q17SubOptionsList.map(opt => `<span>[ ] ${escapeHtml(opt)}</span>`).join('')}
                             </div>
                         </div>
@@ -4827,21 +4843,21 @@ window.activeSection = activeSection;
                     </div>
 
                     <!-- Paper Calendar Reason (Q18) -->
-                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px; margin-bottom: 8px;">
-                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-caption); line-height: 1.4;">
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
                             ${qDeskCalendar}. ${escapeHtml(cleanQ18Prompt)}
                         </label>
-                        <div style="display: flex; flex-direction: column; gap: 5px; font-size: var(--fs-caption); margin-top: 6px;">
+                        <div style="display: flex; flex-direction: column; gap: 8px; font-size: var(--fs-body); margin-top: 8px;">
                             ${q18OptionsList.map(opt => `<span>[ ] ${escapeHtml(opt)}</span>`).join('')}
                         </div>
                     </div>
 
                     <!-- Calendar Suggestions Adoption (Q19) -->
-                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px; margin-bottom: 8px;">
-                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-caption); line-height: 1.4;">
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
                             ${qCalendarSuggestions}. ${escapeHtml(cleanQ19Prompt)}
                         </label>
-                        <div style="display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: var(--fs-caption); margin-top: 6px;">
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: var(--fs-body); margin-top: 8px;">
                             ${q19OptionsList.map(opt => `<span>[ ] ${escapeHtml(opt)}</span>`).join('')}
                         </div>
                     </div>
@@ -4995,17 +5011,17 @@ window.activeSection = activeSection;
                     <!-- PART: DAILY WORK CONTENT & NEEDS -->
                     <div class="section-header">
                         <span>${escapeHtml(displayWorkTitle)}</span>
-                        <span style="font-size: var(--fs-caption); opacity: 0.85;">Q${startQ} ~ Q${endQ}</span>
+                        <span style="font-size: var(--fs-small); opacity: 0.9;">Q${startQ} ~ Q${endQ}</span>
                     </div>
 
-                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 14px; margin-bottom: 8px;">
-                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-caption); line-height: 1.4;">
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px 18px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
                             ${qWorkItems}. ${escapeHtml(cleanQ20Prompt)}
                         </label>
-                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; padding: 8px 10px; margin: 8px 0 10px 0; font-size: var(--fs-caption); color: #334155; line-height: 1.7;">
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; padding: 10px 14px; margin: 10px 0 12px 0; font-size: var(--fs-body); color: #334155; line-height: 1.7;">
                             ${dailyItemsRendered}
                         </div>
-                        <table class="table-matrix" style="width: 100%; margin: 8px auto;">
+                        <table class="table-matrix" style="width: 100%; margin: 10px auto;">
                             <thead>
                                 <tr>
                                     <th style="width: 25%; text-align: left;">${isZh ? '代碼' : 'Code'}</th>
@@ -5014,75 +5030,75 @@ window.activeSection = activeSection;
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td style="padding: 6px 10px;">[ _______ ]</td>
-                                    <td style="padding: 6px 10px; font-size: var(--fs-caption);">${percentageCheckboxes}</td>
+                                    <td style="padding: 8px 12px;">[ _______ ]</td>
+                                    <td style="padding: 8px 12px; font-size: var(--fs-body);">${percentageCheckboxes}</td>
                                 </tr>
                                 <tr>
-                                    <td style="padding: 6px 10px;">[ _______ ]</td>
-                                    <td style="padding: 6px 10px; font-size: var(--fs-caption);">${percentageCheckboxes}</td>
+                                    <td style="padding: 8px 12px;">[ _______ ]</td>
+                                    <td style="padding: 8px 12px; font-size: var(--fs-body);">${percentageCheckboxes}</td>
                                 </tr>
                                 <tr>
-                                    <td style="padding: 6px 10px;">[ _______ ]</td>
-                                    <td style="padding: 6px 10px; font-size: var(--fs-caption);">${percentageCheckboxes}</td>
+                                    <td style="padding: 8px 12px;">[ _______ ]</td>
+                                    <td style="padding: 8px 12px; font-size: var(--fs-body);">${percentageCheckboxes}</td>
                                 </tr>
                                 <tr>
-                                    <td style="padding: 6px 10px;">[ _______ ]</td>
-                                    <td style="padding: 6px 10px; font-size: var(--fs-caption);">${percentageCheckboxes}</td>
+                                    <td style="padding: 8px 12px;">[ _______ ]</td>
+                                    <td style="padding: 8px 12px; font-size: var(--fs-body);">${percentageCheckboxes}</td>
                                 </tr>
                                 <tr>
-                                    <td style="padding: 6px 10px;">[ _______ ]</td>
-                                    <td style="padding: 6px 10px; font-size: var(--fs-caption);">${percentageCheckboxes}</td>
+                                    <td style="padding: 8px 12px;">[ _______ ]</td>
+                                    <td style="padding: 8px 12px; font-size: var(--fs-body);">${percentageCheckboxes}</td>
                                 </tr>
                             </tbody>
                         </table>
-                        <div style="font-size: var(--fs-caption); color: #475569; margin-top: 8px;">
+                        <div style="font-size: var(--fs-body); color: #475569; margin-top: 10px;">
                             ${isZh ? '若選擇「j) 其他」，請說明工作項目：' : 'If selected “j) Other”, please specify work item:'} __________________________________________________
                         </div>
                     </div>
 
-                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px; margin-bottom: 8px;">
-                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-caption); line-height: 1.4;">
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
                             ${qFriction}. ${escapeHtml(cleanQ21Prompt)}
                         </label>
-                        <div style="border-bottom: 1px dashed #94a3b8; height: 22px; margin-top: 10px;"></div>
-                        <div style="border-bottom: 1px dashed #94a3b8; height: 22px; margin-top: 4px;"></div>
+                        <div style="border-bottom: 1px dashed #94a3b8; height: 26px; margin-top: 10px;"></div>
+                        <div style="border-bottom: 1px dashed #94a3b8; height: 26px; margin-top: 6px;"></div>
                     </div>
 
-                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px; margin-bottom: 8px;">
-                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-caption); line-height: 1.4;">
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
                             ${qOfficialSys}. ${escapeHtml(cleanQ22Prompt)} ${escapeHtml(q22TypeLabel)}
                         </label>
-                        <div style="display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: var(--fs-caption); margin-top: 6px;">
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: var(--fs-body); margin-top: 8px;">
                             ${officialSystems.filter(s => !s.toLowerCase().includes('other') && !s.includes('其他')).map(s => `<span>[ ] ${escapeHtml(s)}</span>`).join('')}
                             <span>[ ] ${isZh ? '其他正式系統（請說明）' : 'Other official system (please specify)'}: __________________________________________________</span>
                         </div>
                     </div>
 
-                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px; margin-bottom: 8px;">
-                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-caption); line-height: 1.4;">
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
                             ${qPersonalTools}. ${escapeHtml(cleanQ23Prompt)} ${escapeHtml(q23TypeLabel)}
                         </label>
-                        <div style="display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: var(--fs-caption); margin-top: 6px;">
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: var(--fs-body); margin-top: 8px;">
                             ${personalTools.filter(t => !t.toLowerCase().includes('other') && !t.includes('其他')).map(t => `<span>[ ] ${escapeHtml(t)}</span>`).join('')}
                             <span>[ ] ${isZh ? '其他個人工具（請說明）' : 'Other personal tool (please specify)'}: ___________________________________________</span>
                         </div>
                     </div>
 
-                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px; margin-bottom: 8px;">
-                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-caption); line-height: 1.4;">
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
                             ${qNeeds}. ${escapeHtml(cleanQ24Prompt)} ${escapeHtml(q24TypeLabel)}
                         </label>
-                        <div style="display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: var(--fs-caption); margin-top: 6px;">
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: var(--fs-body); margin-top: 8px;">
                             ${coreNeeds.filter(n => !n.toLowerCase().includes('other') && !n.includes('其他')).map(n => `<span>[ ] ${escapeHtml(n)}</span>`).join('')}
                             <span>[ ] ${isZh ? '其他（請說明）' : 'Other (please specify)'}: __________________________________________________</span>
                         </div>
                     </div>
 
-                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px; margin-bottom: 8px;">
-                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-caption); line-height: 1.4;">
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
                             ${qMotto}. ${escapeHtml(cleanQ25Prompt)}${q25TypeLabel ? ' ' + escapeHtml(q25TypeLabel) : ''}
                         </label>
-                        <div style="margin-top: 8px; font-size: var(--fs-caption); color: #475569;">
+                        <div style="margin-top: 10px; font-size: var(--fs-body); color: #475569;">
                             ${isZh ? '回覆：' : 'Reply: '}__________________________________________________________________________________________
                         </div>
                     </div>
@@ -5193,29 +5209,29 @@ window.activeSection = activeSection;
                         }
 
                         return `
-                            <div style="margin-top: 10px; padding: 10px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
-                                <strong style="display: block; font-size: var(--fs-caption); color: #0f172a; margin-bottom: 6px;">${letter}. ${isZh ? '行動' : 'Action'}: ${escapeHtml(cleanActName)}</strong>
-                                <div style="margin-bottom: 6px;">
-                                    <span style="font-size: var(--fs-caption); font-weight: 600; color: #475569;">a) ${isZh ? '執行時的實體／數位地點：' : 'Physical/Digital location when executing:'}</span>
-                                    <div style="font-size: var(--fs-caption); color: #334155; margin-top: 3px; display: flex; flex-wrap: wrap; gap: 6px 14px;">
+                            <div style="margin-top: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid;">
+                                <strong style="display: block; font-size: var(--fs-subtitle); color: #0f172a; margin-bottom: 8px;">${letter}. ${isZh ? '行動' : 'Action'}: ${escapeHtml(cleanActName)}</strong>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">a) ${isZh ? '執行時的實體／數位地點：' : 'Physical/Digital location when executing:'}</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
                                         ${renderOptionsWithOther(locOptions)}
                                     </div>
                                 </div>
-                                <div style="margin-bottom: 6px;">
-                                    <span style="font-size: var(--fs-caption); font-weight: 600; color: #475569;">b) ${isZh ? '協助完成此行動的工具或對象：' : 'Tools or people helping you complete this action:'}</span>
-                                    <div style="font-size: var(--fs-caption); color: #334155; margin-top: 3px; display: flex; flex-wrap: wrap; gap: 6px 12px;">
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">b) ${isZh ? '協助完成此行動的工具或對象：' : 'Tools or people helping you complete this action:'}</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
                                         ${renderOptionsWithOther(toolOptions)}
                                     </div>
                                 </div>
-                                <div style="margin-bottom: 6px;">
-                                    <span style="font-size: var(--fs-caption); font-weight: 600; color: #475569;">c) ${isZh ? '此行動中遭遇的痛點：' : 'Pain points encountered in this action:'}</span>
-                                    <div style="font-size: var(--fs-caption); color: #334155; margin-top: 3px; display: flex; flex-wrap: wrap; gap: 6px 14px;">
+                                <div style="margin-bottom: 8px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">c) ${isZh ? '此行動中遭遇的痛點：' : 'Pain points encountered in this action:'}</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
                                         ${renderOptionsWithOther(painOptions)}
                                     </div>
                                 </div>
-                                <div style="margin-bottom: 4px;">
-                                    <span style="font-size: var(--fs-caption); font-weight: 600; color: #475569;">d) ${isZh ? '補充考量：' : 'Additional context:'}</span>
-                                    <div style="font-size: var(--fs-caption); color: #334155; margin-top: 3px; display: flex; flex-wrap: wrap; gap: 6px 14px;">
+                                <div style="margin-bottom: 6px;">
+                                    <span style="font-size: var(--fs-body); font-weight: 600; color: #475569;">d) ${isZh ? '補充考量：' : 'Additional context:'}</span>
+                                    <div style="font-size: var(--fs-body); color: #334155; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px 16px;">
                                         ${renderOptionsWithOther(contextOptions)}
                                     </div>
                                 </div>
@@ -5225,18 +5241,18 @@ window.activeSection = activeSection;
 
                     const ratingLetter = String.fromCharCode(65 + actionItems.length);
                     return `
-                        <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 14px 18px; margin-bottom: 16px; page-break-inside: avoid;">
-                            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 8px;">
-                                <div style="display: flex; align-items: center; gap: 8px;">
-                                    <span style="background: #1e293b; color: #ffffff; font-size: var(--fs-caption); font-weight: 700; padding: 2px 8px; border-radius: 4px;">${isZh ? `階段 ${stepNum}` : `Stage ${stepNum}`}</span>
-                                    <strong style="font-size: var(--fs-body); color: #0f172a;">${escapeHtml(String(stTitle).replace(/^\s*(Stage|階段)\s*\d+\s*[:：.\-–]?\s*/i, '') || stTitle)}</strong>
+                        <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px 20px; margin-bottom: 18px; page-break-inside: avoid;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span style="background: #1e293b; color: #ffffff; font-size: var(--fs-small); font-weight: 700; padding: 3px 10px; border-radius: 4px;">${isZh ? `階段 ${stepNum}` : `Stage ${stepNum}`}</span>
+                                    <strong style="font-size: var(--fs-title); color: #0f172a;">${escapeHtml(String(stTitle).replace(/^\s*(Stage|階段)\s*\d+\s*[:：.\-–]?\s*/i, '') || stTitle)}</strong>
                                 </div>
-                                <span style="font-size: var(--fs-caption); color: #64748b;">${isZh ? '完成此階段通常依序執行的行動（最多3項）：' : 'To complete this stage, the sequential actions you typically perform are (up to 3):'}</span>
+                                <span style="font-size: var(--fs-small); color: #64748b;">${isZh ? '完成此階段通常依序執行的行動（最多3項）：' : 'To complete this stage, the sequential actions you typically perform are (up to 3):'}</span>
                             </div>
                             ${actionsRendered}
-                            <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed #cbd5e1;">
-                                <span style="font-size: var(--fs-caption); font-weight: 700; color: #1e293b;">${ratingLetter}. ${isZh ? '請為此階段的情緒體驗評分：' : 'Please rate your emotional experience for this stage:'}</span>
-                                <div style="display: flex; gap: 16px; font-size: var(--fs-caption); color: #1e293b; margin-top: 4px;">
+                            <div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #cbd5e1;">
+                                <span style="font-size: var(--fs-subtitle); font-weight: 700; color: #1e293b;">${ratingLetter}. ${isZh ? '請為此階段的情緒體驗評分：' : 'Please rate your emotional experience for this stage:'}</span>
+                                <div style="display: flex; gap: 18px; font-size: var(--fs-body); color: #1e293b; margin-top: 6px;">
                                     <span>[ ] 1😫</span>
                                     <span>[ ] 2 😮‍💨</span>
                                     <span>[ ] 3 😐</span>
@@ -5259,14 +5275,14 @@ window.activeSection = activeSection;
                     <!-- PART: JOURNEY STAGES -->
                     <div class="section-header">
                         <span>${escapeHtml(displayJourneyTitle)}</span>
-                        <span style="font-size: var(--fs-caption); opacity: 0.85;">Q${startQ} ~ Q${endQ}</span>
+                        <span style="font-size: var(--fs-small); opacity: 0.9;">Q${startQ} ~ Q${endQ}</span>
                     </div>
 
-                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px; margin-bottom: 14px;">
-                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-caption); line-height: 1.4;">
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 16px; page-break-inside: avoid;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); line-height: 1.5;">
                             ${qFocus}. ${qMap['Q26'] ? (isZh ? qMap['Q26'].promptZh : qMap['Q26'].prompt) : (isZh ? '請問您目前的工作歷程重心為何？' : 'Which journey is your primary focus at present?')}
                         </label>
-                        <div style="display: flex; flex-wrap: wrap; gap: 14px 24px; font-size: var(--fs-caption); margin-top: 6px;">
+                        <div style="display: flex; flex-wrap: wrap; gap: 14px 24px; font-size: var(--fs-body); margin-top: 8px;">
                             ${((qMap['Q26'] && (isZh ? qMap['Q26'].optionsZh : qMap['Q26'].options)) || (isZh
                                 ? ['個人保單銷售歷程 (Individual Policy Sales Journey)', '組織發展與團隊經營歷程 (Organisational Growth & Team Journey)']
                                 : ['Individual Policy Sales Journey', 'Organisational Growth & Team Journey']
@@ -5274,11 +5290,11 @@ window.activeSection = activeSection;
                         </div>
                     </div>
 
-                    <div style="margin-bottom: 10px;">
-                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-small); margin-bottom: 6px;">
+                    <div style="margin-bottom: 12px;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; font-size: var(--fs-subtitle); margin-bottom: 6px; line-height: 1.5;">
                             ${qStages}. ${qMap['Q27'] ? (isZh ? qMap['Q27'].promptZh : qMap['Q27'].prompt) : (isZh ? `階段歷程接觸點深度盤點（階段 1 至 階段 ${stages.length}）：` : `Stage Journey Touchpoint Deep-Dive (Stages 1 to ${stages.length}):`)}
                         </label>
-                        <div style="font-size: var(--fs-caption); color: #475569; margin: 0 0 8px 0; font-weight: 500;">
+                        <div style="font-size: var(--fs-body); color: #475569; margin: 0 0 10px 0; font-weight: 500;">
                             ${isZh ? '以下列出業務員六大核心任務。請依據您的實際作業經驗填寫下列項目組：' : 'Six core agent tasks are listed below. Please fill out the following item sets based on your actual operational experience.'}
                         </div>
                         ${stageBlocks}
@@ -5300,6 +5316,15 @@ window.activeSection = activeSection;
     <meta charset="utf-8">
     <title>${escapeHtml(title)}</title>
     <style>
+        :root {
+            --fs-display: 30px;
+            --fs-heading: 24px;
+            --fs-title: 20px;
+            --fs-subtitle: 17px;
+            --fs-body: 15px;
+            --fs-small: 14px;
+            --fs-caption: 13px;
+        }
         @page {
             size: A4 portrait;
             margin: 12mm 14mm 12mm 14mm;
@@ -5310,8 +5335,8 @@ window.activeSection = activeSection;
             background: #f1f5f9;
             margin: 0;
             padding: 0;
-            line-height: 1.5;
-            font-size: 11.5px;
+            line-height: 1.6;
+            font-size: var(--fs-body);
         }
         .print-toolbar {
             position: sticky;
@@ -5320,7 +5345,7 @@ window.activeSection = activeSection;
             right: 0;
             background: #0f172a;
             color: #ffffff;
-            padding: 10px 20px;
+            padding: 12px 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -5331,9 +5356,9 @@ window.activeSection = activeSection;
             background: #2563eb;
             color: #ffffff;
             border: none;
-            padding: 6px 14px;
+            padding: 7px 16px;
             border-radius: 6px;
-            font-size: 12px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             display: inline-flex;
@@ -5349,29 +5374,29 @@ window.activeSection = activeSection;
         }
         .btn-tb-secondary:hover { background: rgba(255,255,255,0.22); }
         .paper-container {
-            max-width: 820px;
-            margin: 20px auto;
+            max-width: 900px;
+            margin: 24px auto;
             background: #ffffff;
-            padding: 36px 40px;
+            padding: 40px 48px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.06);
             border-radius: 8px;
         }
         h1 {
-            font-size: 18px;
+            font-size: var(--fs-heading);
             font-weight: 800;
             color: #0f172a;
-            margin: 0 0 10px 0;
+            margin: 0 0 14px 0;
             line-height: 1.35;
             text-align: center;
         }
         .section-header {
             background: #1e293b;
             color: #ffffff;
-            padding: 7px 12px;
-            border-radius: 4px;
+            padding: 10px 16px;
+            border-radius: 6px;
             font-weight: 700;
-            font-size: 12.5px;
-            margin: 22px 0 10px 0;
+            font-size: var(--fs-title);
+            margin: 28px 0 14px 0;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -5380,19 +5405,21 @@ window.activeSection = activeSection;
         .table-matrix {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 8px;
-            font-size: 11px;
+            margin-top: 10px;
+            font-size: var(--fs-body);
         }
         .table-matrix th {
             background: #f1f5f9;
             color: #334155;
-            padding: 7px 8px;
+            padding: 9px 12px;
             border: 1px solid #cbd5e1;
             font-weight: 700;
+            font-size: var(--fs-body);
         }
         .table-matrix td {
             border: 1px solid #cbd5e1;
-            padding: 6px 8px;
+            padding: 8px 12px;
+            font-size: var(--fs-body);
         }
         @media print {
             .print-toolbar { display: none !important; }
@@ -5409,8 +5436,8 @@ window.activeSection = activeSection;
 <body>
     <div class="print-toolbar">
         <div style="display: flex; align-items: center; gap: 10px;">
-            <span style="font-weight: 700; font-size: 13px;">📋 ${isZh ? '問卷預覽與列印' : 'Questionnaire Preview & Export'}</span>
-            <span style="font-size: var(--fs-caption); color: #94a3b8;">${isZh ? '依據目前自訂架構動態生成（完全符合 V.1 原檔規格）' : 'Generated dynamically from active schema (Faithfully aligns with V.1)'}</span>
+            <span style="font-weight: 700; font-size: 15px;">📋 ${isZh ? '問卷預覽與列印' : 'Questionnaire Preview & Export'}</span>
+            <span style="font-size: var(--fs-small); color: #94a3b8;">${isZh ? '依據目前自訂架構動態生成（完全符合 V.1 原檔規格）' : 'Generated dynamically from active schema (Faithfully aligns with V.1)'}</span>
         </div>
         <div style="display: flex; align-items: center; gap: 8px;">
             <button type="button" class="btn-tb" onclick="window.print()">
@@ -5428,12 +5455,12 @@ window.activeSection = activeSection;
         <h1>${escapeHtml(title)}</h1>
 
         <!-- Briefing Instructions Box -->
-        <div style="background: #f8fafc; border-left: 4px solid #2563eb; border: 1px solid #e2e8f0; border-left-width: 4px; padding: 10px 14px; border-radius: 4px; margin-bottom: 16px; font-size: var(--fs-caption); color: #334155; line-height: 1.55;">
+        <div style="background: #f8fafc; border-left: 4px solid #2563eb; border: 1px solid #e2e8f0; border-left-width: 4px; padding: 14px 18px; border-radius: 6px; margin-bottom: 20px; font-size: var(--fs-body); color: #334155; line-height: 1.6;">
             ${escapeHtml(introText)}
         </div>
 
         <!-- Respondent Header Info -->
-        <div style="display: flex; justify-content: space-between; align-items: center; background: #ffffff; border: 1px dashed #cbd5e1; padding: 8px 14px; border-radius: 4px; margin-bottom: 16px; font-size: var(--fs-caption); color: #475569;">
+        <div style="display: flex; justify-content: space-between; align-items: center; background: #ffffff; border: 1px dashed #cbd5e1; padding: 10px 16px; border-radius: 6px; margin-bottom: 20px; font-size: var(--fs-body); color: #475569;">
             <span>${isZh ? '姓名' : 'Name'}: ______________________</span>
             <span>${isZh ? '業務員編號' : 'Agent Code'}: ______________________</span>
             <span>${isZh ? '所屬通訊處' : 'Branch / Office'}: ______________________</span>
@@ -5444,9 +5471,9 @@ window.activeSection = activeSection;
 
 
         <!-- Sign-off / Footer -->
-        <div style="text-align: center; color: #64748b; font-size: var(--fs-caption); border-top: 2px solid #e2e8f0; padding-top: 16px; margin-top: 20px;">
+        <div style="text-align: center; color: #64748b; font-size: var(--fs-body); border-top: 2px solid #e2e8f0; padding-top: 18px; margin-top: 24px;">
             <strong>${isZh ? '—— 問卷到此結束。再次感謝您的寶貴時間與協助！ ——' : '—— End of Questionnaire. Thank you once again for your cooperation and assistance! ——'}</strong>
-            <div style="margin-top: 6px; font-size: var(--fs-caption); color: #94a3b8;">
+            <div style="margin-top: 8px; font-size: var(--fs-small); color: #94a3b8;">
                 ${escapeHtml(title)} &bull; ${isZh ? '數位化架構問卷' : 'Digital Modular Architecture Questionnaire'}
             </div>
         </div>
@@ -5637,7 +5664,7 @@ window.activeSection = activeSection;
             const titleEl = document.querySelector('[data-i18n="portalTitle"]');
             if (titleEl) {
                 if (schema.id === 'agent') {
-                    titleEl.textContent = isZh ? t('portalTitle') : "Behaviour Segmentation & Persona Analytics";
+                    titleEl.textContent = isZh ? t('portalTitle') : "Behavioural Segmentation & Persona Analytics";
                 } else {
                     const sName = isZh ? (schema.nameZh || schema.name) : (schema.name || schema.nameZh || 'Sales Journey');
                     titleEl.textContent = `${sName} ${isZh ? '分析平台 (V.2)' : 'Analytics Platform (V.2)'}`;
@@ -5865,7 +5892,12 @@ window.activeSection = activeSection;
                 const profileKey = cl.key || ('c' + cl.id);
                 const pInfo = getPersonaDisplayInfo(profileKey);
                 const color = pInfo.color || CLUSTER_COLORS[cl.id % CLUSTER_COLORS.length];
-                const featTxt = cl.topFeatures.map(f => `${f.label}${(typeof currentLang !== 'undefined' && currentLang === 'zh') ? (f.direction === 'High' ? '偏高' : f.direction === 'Low' ? '偏低' : f.direction) : f.direction}`).join(', ') || ((typeof currentLang !== 'undefined' && currentLang === 'zh') ? '無明顯特徵' : 'No prominent features');
+                const featTxt = cl.topFeatures.map(f => {
+                    if (typeof currentLang !== 'undefined' && currentLang === 'zh') {
+                        return `${f.label}${(f.direction === 'High' || f.direction === '高') ? '偏高' : '偏低'}`;
+                    }
+                    return `${f.direction} ${f.label}`;
+                }).join(', ') || ((typeof currentLang !== 'undefined' && currentLang === 'zh') ? '無明顯特徵' : 'No prominent features');
                 const displayName = pInfo.name;
                 return `
                     <div class="glass-panel" style="padding: 14px; border-radius: 10px; border-left: 3px solid ${color};">
@@ -5881,6 +5913,9 @@ window.activeSection = activeSection;
             renderClusterRadar(clusters);
             renderClusterHeatmap(clusters);
             setClusterView(window.__clusterView || 'radar');
+            if (typeof initAnalyticsRadarChart === 'function') {
+                initAnalyticsRadarChart();
+            }
         }
 
         let clusterRadarChartInstance = null;
@@ -5959,22 +5994,24 @@ window.activeSection = activeSection;
                 const color = info.color || CLUSTER_COLORS[cl.id % CLUSTER_COLORS.length];
                 return `<th style="padding:8px 10px; text-align:center; font-weight:600; font-size:var(--fs-small); border-bottom:3px solid ${color}; white-space:nowrap;">${esc(info.name)}<div style="font-weight:400; color:var(--text-muted); font-size:var(--fs-caption);">n=${cl.members.length}</div></th>`;
             }).join('');
+            const isZh = (typeof currentLang !== 'undefined' && currentLang === 'zh');
             const cell = (v, ref) => {
                 const d = v - ref, a = Math.min(1, Math.abs(d) / 25) * 0.75;
                 const bg = d >= 0 ? `rgba(77,150,255,${a.toFixed(2)})` : `rgba(255,159,64,${a.toFixed(2)})`;
-                return `<td style="padding:8px 10px; text-align:center; font-size:var(--fs-body); font-variant-numeric:tabular-nums; background:${bg};" title="${d >= 0 ? '+' : ''}${d.toFixed(0)} vs all">${v.toFixed(0)}</td>`;
+                const titleStr = isZh ? `${d >= 0 ? '+' : ''}${d.toFixed(0)} 比全體` : `${d >= 0 ? '+' : ''}${d.toFixed(0)} vs all`;
+                return `<td style="padding:8px 10px; text-align:center; font-size:var(--fs-body); font-variant-numeric:tabular-nums; background:${bg};" title="${titleStr}">${v.toFixed(0)}</td>`;
             };
             const rows = feats.map((f, i) => `<tr><th style="padding:8px 12px 8px 0; text-align:left; font-weight:500; font-size:var(--fs-body); color:var(--text-primary);">${esc(f.label)}</th>`
                 + clusters.map(cl => cell(cl.avg[i] || 0, overall[i])).join('')
                 + `<td style="padding:8px 10px; text-align:center; font-size:var(--fs-body); color:var(--text-muted); border-left:1px solid rgba(255,255,255,0.1);">${overall[i].toFixed(0)}</td></tr>`).join('');
             host.innerHTML = `
                 <div style="font-size:var(--fs-small); color:var(--text-secondary); margin-bottom:10px; line-height:1.6;">
-                    How to read: each row is one measure, each column one cluster. The number is the cluster's average score (0&ndash;100).
-                    <span style="background:rgba(77,150,255,0.6); padding:1px 8px; border-radius:4px; color:#fff;">Blue</span> = higher than the overall average,
-                    <span style="background:rgba(255,159,64,0.6); padding:1px 8px; border-radius:4px; color:#fff;">Amber</span> = lower; the stronger the colour, the bigger the gap.
+                    ${isZh 
+                        ? '閱讀方式：每一橫列為一項衡量指標，每一直欄為一個分群。數值為該群之平均分數（0～100）。<span style="background:rgba(77,150,255,0.6); padding:1px 8px; border-radius:4px; color:#fff;">藍色</span>＝高於整體平均，<span style="background:rgba(255,159,64,0.6); padding:1px 8px; border-radius:4px; color:#fff;">琥珀色</span>＝低於整體平均；顏色越深代表差距越大。'
+                        : 'How to read: each row is one measure, each column one cluster. The number is the cluster\'s average score (0&ndash;100). <span style="background:rgba(77,150,255,0.6); padding:1px 8px; border-radius:4px; color:#fff;">Blue</span> = higher than the overall average, <span style="background:rgba(255,159,64,0.6); padding:1px 8px; border-radius:4px; color:#fff;">Amber</span> = lower; the stronger the colour, the bigger the gap.'}
                 </div>
                 <div style="overflow-x:auto;"><table style="border-collapse:collapse; width:100%; min-width:560px;">
-                    <thead><tr><th style="border-bottom:3px solid transparent;"></th>${head}<th style="padding:8px 10px; text-align:center; font-weight:600; font-size:var(--fs-small); color:var(--text-muted); border-bottom:3px solid rgba(255,255,255,0.2);">All<div style="font-weight:400; font-size:var(--fs-caption);">average</div></th></tr></thead>
+                    <thead><tr><th style="border-bottom:3px solid transparent;"></th>${head}<th style="padding:8px 10px; text-align:center; font-weight:600; font-size:var(--fs-small); color:var(--text-muted); border-bottom:3px solid rgba(255,255,255,0.2);">${isZh ? '全體<div style="font-weight:400; font-size:var(--fs-caption);">平均</div>' : 'All<div style="font-weight:400; font-size:var(--fs-caption);">average</div>'}</th></tr></thead>
                     <tbody>${rows}</tbody>
                 </table></div>`;
         }
@@ -6065,11 +6102,59 @@ window.activeSection = activeSection;
             
             const activeGroupAgents = getActiveGroupAgents();
             const total = activeGroupAgents.length;
+            const isZh = (typeof currentLang !== 'undefined' && currentLang === 'zh');
             
             if (total === 0) {
-                container.innerHTML = `<div style="text-align:center; padding:1.5rem; color:var(--text-muted); font-size:var(--fs-small);">${currentLang === 'zh' ? '此群體沒有人口統計資料' : 'No demographic data for this group'}</div>`;
+                container.innerHTML = `<div style="text-align:center; padding:1.5rem; color:var(--text-muted); font-size:var(--fs-small);">${isZh ? '此群體沒有人口統計資料' : 'No demographic data for this group'}</div>`;
                 return;
             }
+
+            const posMapZh = {
+                'Sales Agent': '業務代表',
+                'Senior Agent': '資深業務代表',
+                'Financial Advisor': '財務顧問',
+                'Senior Advisor': '資深財務顧問',
+                'Sales Manager': '業務經理',
+                'District Manager': '通訊處經理',
+                'Agency Director': '處經理',
+                'Team Leader': '團隊主管',
+                'Insurance Specialist': '保險專家',
+                'Account Executive': '客戶經理',
+                'Consultant': '顧問'
+            };
+            const locMapZh = {
+                'Taipei': '台北',
+                'New Taipei': '新北',
+                'Taichung': '台中',
+                'Kaohsiung': '高雄',
+                'Tainan': '台南',
+                'Taoyuan': '桃園',
+                'Hsinchu': '新竹',
+                'Keelung': '基隆',
+                'Chiayi': '嘉義',
+                'Changhua': '彰化',
+                'Pingtung': '屏東',
+                'Yilan': '宜蘭',
+                'Hualien': '花蓮',
+                'Taitung': '台東',
+                'Miaoli': '苗栗',
+                'Nantou': '南投',
+                'Yunlin': '雲林'
+            };
+            const ageMapZh = {
+                'Under 25': '25 歲以下',
+                '26-35': '26–35 歲',
+                '36-45': '36–45 歲',
+                '46-55': '46–55 歲',
+                '56+': '56 歲以上'
+            };
+            const clientMapZh = {
+                'Under 50': '50 位以下',
+                '51-100': '51–100 位',
+                '101-300': '101–300 位',
+                '301-500': '301–500 位',
+                '500+': '500 位以上'
+            };
             
             const locCounts = {};
             let locTotal = 0;
@@ -6113,10 +6198,11 @@ window.activeSection = activeSection;
             let locHTML = '';
             for (const [key, count] of Object.entries(locCounts).sort((x, y) => y[1] - x[1])) {
                 const pct = locTotal > 0 ? Math.round((count / locTotal) * 100) : 0;
+                const displayLoc = isZh ? (locMapZh[key] || key) : key;
                 locHTML += `
                     <div style="margin-bottom:6px;">
                         <div style="display:flex; justify-content:space-between; font-size:var(--fs-caption); margin-bottom:2px;">
-                            <span style="color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:130px;" title="${key}">${key}</span>
+                            <span style="color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:130px;" title="${displayLoc}">${displayLoc}</span>
                             <span style="font-weight:400; color:var(--text-secondary);">${pct}% (${cntLbl(count)})</span>
                         </div>
                         <div style="background:rgba(255,255,255,0.05); height:4px; border-radius:2px; overflow:hidden;">
@@ -6134,26 +6220,30 @@ window.activeSection = activeSection;
                     <span style="font-weight:400; color:var(--text-secondary);">${cntLbl(count)}</span>
                 </div>
             `).join('');
-            if (!officeHTML) officeHTML = `<div style="font-size:var(--fs-caption); color:var(--text-muted); text-align:center; padding-top:10px;">${currentLang === 'zh' ? '無資料' : 'No Data'}</div>`;
+            if (!officeHTML) officeHTML = `<div style="font-size:var(--fs-caption); color:var(--text-muted); text-align:center; padding-top:10px;">${isZh ? '無資料' : 'No Data'}</div>`;
             
             // 3. Position HTML
             const sortedPositions = Object.entries(positionCounts).sort((a,b)=>b[1]-a[1]);
-            let positionHTML = sortedPositions.map(([pos, count]) => `
+            let positionHTML = sortedPositions.map(([pos, count]) => {
+                const displayPos = isZh ? (posMapZh[pos] || pos) : pos;
+                return `
                 <div style="display:flex; justify-content:space-between; font-size:var(--fs-caption); padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.03);">
-                    <span style="color:var(--text-secondary);">👤 ${pos}</span>
+                    <span style="color:var(--text-secondary);">👤 ${displayPos}</span>
                     <span style="font-weight:400; color:var(--text-secondary);">${cntLbl(count)}</span>
                 </div>
-            `).join('');
-            if (!positionHTML) positionHTML = `<div style="font-size:var(--fs-caption); color:var(--text-muted); text-align:center; padding-top:10px;">${currentLang === 'zh' ? '無資料' : 'No Data'}</div>`;
+            `;
+            }).join('');
+            if (!positionHTML) positionHTML = `<div style="font-size:var(--fs-caption); color:var(--text-muted); text-align:center; padding-top:10px;">${isZh ? '無資料' : 'No Data'}</div>`;
             
             // 4. Age HTML
             const sortedAges = Object.entries(ageCounts).sort((a,b)=>b[1]-a[1]);
             let ageHTML = sortedAges.map(([age, count]) => {
                 const pct = ageTotal > 0 ? Math.round((count / ageTotal) * 100) : 0;
+                const displayAge = isZh ? (ageMapZh[age] || age) : age;
                 return `
                     <div style="margin-bottom:6px;">
                         <div style="display:flex; justify-content:space-between; font-size:var(--fs-caption); margin-bottom:2px;">
-                            <span style="color:var(--text-secondary);">${age}</span>
+                            <span style="color:var(--text-secondary);">${displayAge}</span>
                             <span style="font-weight:400; color:var(--text-secondary);">${pct}% (${cntLbl(count)})</span>
                         </div>
                         <div style="background:rgba(255,255,255,0.05); height:4px; border-radius:2px; overflow:hidden;">
@@ -6162,16 +6252,17 @@ window.activeSection = activeSection;
                     </div>
                 `;
             }).join('');
-            if (!ageHTML) ageHTML = `<div style="font-size:var(--fs-caption); color:var(--text-muted); text-align:center; padding-top:10px;">${currentLang === 'zh' ? '無資料' : 'No Data'}</div>`;
+            if (!ageHTML) ageHTML = `<div style="font-size:var(--fs-caption); color:var(--text-muted); text-align:center; padding-top:10px;">${isZh ? '無資料' : 'No Data'}</div>`;
 
             // 5. Clients HTML
             const sortedClients = Object.entries(clientCounts).sort((a,b)=>b[1]-a[1]);
             let clientHTML = sortedClients.map(([client, count]) => {
                 const pct = clientTotal > 0 ? Math.round((count / clientTotal) * 100) : 0;
+                const displayClient = isZh ? (clientMapZh[client] || client) : client;
                 return `
                     <div style="margin-bottom:6px;">
                         <div style="display:flex; justify-content:space-between; font-size:var(--fs-caption); margin-bottom:2px;">
-                            <span style="color:var(--text-secondary);">${client}</span>
+                            <span style="color:var(--text-secondary);">${displayClient}</span>
                             <span style="font-weight:400; color:var(--text-secondary);">${pct}% (${cntLbl(count)})</span>
                         </div>
                         <div style="background:rgba(255,255,255,0.05); height:4px; border-radius:2px; overflow:hidden;">
@@ -6180,7 +6271,8 @@ window.activeSection = activeSection;
                     </div>
                 `;
             }).join('');
-            if (!clientHTML) clientHTML = `<div style="font-size:var(--fs-caption); color:var(--text-muted); text-align:center; padding-top:10px;">${currentLang === 'zh' ? '無資料' : 'No Data'}</div>`;
+            if (!clientHTML) clientHTML = `<div style="font-size:var(--fs-caption); color:var(--text-muted); text-align:center; padding-top:10px;">${isZh ? '無資料' : 'No Data'}</div>`;
+            
             
             const isPersonaView = (container.id === 'demographic-panel-personas');
             
@@ -6590,6 +6682,7 @@ window.activeSection = activeSection;
         }
 
         function calculateKeywords(textList, isFreeText = false) {
+            const isZh = (typeof currentLang !== 'undefined' && currentLang === 'zh');
             const wordFreq = {};
             const stopwords = new Set([
                 'the', 'and', 'to', 'a', 'is', 'of', 'in', 'for', 'on', 'with', 'at', 'by', 'an', 'this', 'that', 'from', 
@@ -6602,7 +6695,7 @@ window.activeSection = activeSection;
                 'doesnt', 'didnt', 'isnt', 'arent', 'wasnt', 'werent', 'havent', 'hasnt', 'hadnt', 'wont', 'shouldnt', 'wouldnt', 'couldnt'
             ]);
 
-             const phraseMap = {
+             const phraseMapEn = {
                  "manually re-checking numbers": "Data Auto-Sync VS Manual Re-Checking",
                  "manually rechecking numbers": "Data Auto-Sync VS Manual Re-Checking",
                  "chasing a colleague for a password reset": "Self-Service Reset VS Password Reset Delays",
@@ -6664,6 +6757,88 @@ window.activeSection = activeSection;
                 "assistant account delegation": "Assistant Account Delegation"
             };
 
+            const phraseMapZh = {
+                // Conflicts & Pains
+                "手動重新核對本應自動同步的數字": "資料自動同步 vs 手動重核",
+                "手動重新核對": "資料自動同步 vs 手動重核",
+                "本應自動同步的數字": "資料自動同步 vs 手動重核",
+                "自動同步": "資料自動同步 vs 手動重核",
+                "請同事協助重設密碼": "自助重設密碼 vs 密碼延誤",
+                "重設密碼": "自助重設密碼 vs 密碼延誤",
+                "向客戶解釋系統錯誤": "穩定介面 vs 解釋系統錯誤",
+                "系統錯誤": "穩定介面 vs 解釋系統錯誤",
+                "重新上傳被退件卻未說明原因的文件": "一次送件過審 vs 退件重複上傳",
+                "退件卻未說明原因": "一次送件過審 vs 退件重複上傳",
+                "退件": "一次送件過審 vs 退件重複上傳",
+                "在三個不同分頁間來回切換": "單一入口整合 vs 多分頁切換",
+                "三個不同分頁": "單一入口整合 vs 多分頁切換",
+                "不同分頁間來回切換": "單一入口整合 vs 多分頁切換",
+                "分頁間來回切換": "單一入口整合 vs 多分頁切換",
+                "尋找正確的表單版本": "表單自動更新 vs 尋找表單延誤",
+                "正確的表單版本": "表單自動更新 vs 尋找表單延誤",
+                "重複輸入同一筆客戶資料兩次": "欄位自動填入 vs 重複輸入客戶資料",
+                "重複輸入同一筆客戶資料": "欄位自動填入 vs 重複輸入客戶資料",
+                "重複輸入": "欄位自動填入 vs 重複輸入客戶資料",
+                "手動轉換 pdf": "格式自動轉換 vs 手動轉 PDF",
+                "手動轉換": "格式自動轉換 vs 手動轉 PDF",
+                "反覆重新登入": "當場完成簽約 vs 反覆重新登入",
+                "重新登入": "當場完成簽約 vs 反覆重新登入",
+                "一次順暢無礙的拜訪": "順暢拜訪 vs 系統卡頓",
+                "等待頁面載入": "流暢響應 vs 頁面載入緩慢",
+                "速度很慢": "流暢響應 vs 系統速度緩慢",
+
+                // Gap / Core Conflicts options
+                "客戶名單建檔完成時": "即時跟進 vs 建檔延遲",
+                "分散在不同系統": "里程碑關懷 vs 系統分散",
+                "分析結果分散在不同系統": "整合分析 vs 跨系統彙整",
+                "在多個系統間來回切換": "單一查詢 vs 跨系統迷宮",
+                "系統操作的捷徑與技巧": "快速導覽 vs 技能落差",
+                "沒有明顯落差": "常規流程 vs 預期效率",
+                "目前工具大致符合": "常規流程 vs 預期效率",
+
+                // Pain Points options
+                "系統的行動版不夠好用": "行動版體驗不佳",
+                "通知／提醒容易被忽略": "通知提醒容易遺漏",
+                "需要重複輸入同一筆客戶資料": "重複鍵入相同客戶資料",
+                "搜尋篩選條件太少": "搜尋篩選條件不足",
+                "介面不夠直覺": "長輩介面不夠直覺",
+                "沒有明顯痛點": "無明顯痛點",
+
+                // Core Needs options
+                "開放 api／客製化整合功能": "開放 API／客製化整合",
+                "開放 api": "開放 API／客製化整合",
+                "一鍵自動產生報價": "一鍵自動產生報價",
+                "簡化系統介面操作": "簡化系統介面操作",
+                "保留櫃檯／紙本作業選項": "保留櫃檯／紙本作業",
+                "保留櫃檯": "保留櫃檯／紙本作業",
+                "延長線上簽名有效期限": "延長線上簽名有效期限",
+                "模糊關鍵字搜尋": "模糊關鍵字搜尋",
+                "優化行動 app 體驗": "優化行動 App 體驗",
+                "預設常見職業選項": "預設常見職業選項",
+                "縮短頁面載入時間": "縮短頁面載入時間",
+                "離線快取支援": "離線快取支援",
+                "快速登入／face id 與指紋登入": "快速登入 (Face ID / 指紋)",
+                "快速登入": "快速登入 (Face ID / 指紋)",
+                "便於紙本列印／大字體介面": "便於紙本列印／大字體介面",
+                "單一入口系統整合": "單一入口系統整合",
+                "名單自動分類／標籤": "名單自動分類／標籤",
+                "助理帳號權限代理": "助理帳號權限代理",
+
+                // Representative Quotes
+                "親自到場": "親自到場持續跟進",
+                "持續的小行動": "持續小行動勝過推銷",
+                "保單就是一份承諾": "信守保單承諾",
+                "系統應該為人服務": "系統應以人為本",
+                "多檢查一次": "寧願多檢查不讓客戶失望",
+                "速度很重要": "客戶信任重於速度",
+                "數字跟隨關係而來": "關係重於數字",
+                "用心": "用心對待如同家人",
+                "學一件新事物": "每天學習新事物",
+                "真誠傾聽": "傾聽是最好的話術"
+            };
+
+            const phraseMap = isZh ? phraseMapZh : phraseMapEn;
+
             textList.forEach(text => {
                 if (!text) return;
                 
@@ -6674,6 +6849,7 @@ window.activeSection = activeSection;
                         const matchedPhrase = phraseMap[key];
                         wordFreq[matchedPhrase] = (wordFreq[matchedPhrase] || 0) + 1;
                         matched = true;
+                        break;
                     }
                 }
                 
@@ -6681,15 +6857,26 @@ window.activeSection = activeSection;
                 // For verbatim free-text quotes, we tokenize word-by-word.
                 if (!matched) {
                     if (isFreeText) {
-                        const cleanItem = text.replace(/[.,\/#!$%\^&*\*;:{}=\-_`~()?"'’。，、；：「」（）！？]/g, ' ').toLowerCase();
-                        const tokens = cleanItem.split(/\s+/);
-                        tokens.forEach(tok => {
-                            const cleanTok = tok.trim();
-                            if (cleanTok && cleanTok.length > 2 && !stopwords.has(cleanTok)) {
-                                const cap = cleanTok === 'pdf' ? 'PDF' : cleanTok.charAt(0).toUpperCase() + cleanTok.slice(1);
-                                wordFreq[cap] = (wordFreq[cap] || 0) + 1;
-                            }
-                        });
+                        if (isZh && /[\u4e00-\u9fff]/.test(text)) {
+                            // Chinese free text fallback: extract meaningful phrases between delimiters
+                            const chunks = text.split(/[，。、；：「」（）！？\s]+/);
+                            chunks.forEach(chunk => {
+                                const c = chunk.trim();
+                                if (c && c.length >= 2 && c.length <= 15) {
+                                    wordFreq[c] = (wordFreq[c] || 0) + 1;
+                                }
+                            });
+                        } else {
+                            const cleanItem = text.replace(/[.,\/#!$%\^&*\*;:{}=\-_`~()?"'’。，、；：「」（）！？]/g, ' ').toLowerCase();
+                            const tokens = cleanItem.split(/\s+/);
+                            tokens.forEach(tok => {
+                                const cleanTok = tok.trim();
+                                if (cleanTok && cleanTok.length > 2 && !stopwords.has(cleanTok)) {
+                                    const cap = cleanTok === 'pdf' ? 'PDF' : cleanTok.charAt(0).toUpperCase() + cleanTok.slice(1);
+                                    wordFreq[cap] = (wordFreq[cap] || 0) + 1;
+                                }
+                            });
+                        }
                     } else {
                         const items = text.split(/[;；,，\n\r]+/);
                         items.forEach(item => {
@@ -6712,9 +6899,10 @@ window.activeSection = activeSection;
             const container = document.getElementById(containerId);
             if (!container) return;
             container.innerHTML = '';
+            const isZh = (typeof currentLang !== 'undefined' && currentLang === 'zh');
             
             if (keywords.length === 0) {
-                container.innerHTML = '<span style="font-size: var(--fs-caption); color: var(--text-muted);">Not enough data to calculate keywords</span>';
+                container.innerHTML = `<span style="font-size: var(--fs-caption); color: var(--text-muted);">${isZh ? '資料不足以計算關鍵字' : 'Not enough data to calculate keywords'}</span>`;
                 return;
             }
             
@@ -6881,16 +7069,19 @@ window.activeSection = activeSection;
         // Top 3 labels calculator
         function calculateTopGroupLabels(agents) {
             const labelCounts = {};
-            const rookieLabels = new Set(['Rookie Agent', '新進業務', '新手業務', '新進業務員', 'Insurance Newbie']);
+            const rookieLabels = new Set(['Rookie Agent', '新進業務', '新手業務', '新進業務員', 'Insurance Newbie', '菜鳥業務員', '菜鳥業務', '新進人員']);
+
+            // Helper to check rookie tenure / position (handling spaces and en-dashes)
+            const isRookie = (exp, pos) => {
+                const sExp = String(exp || '');
+                const sPos = String(pos || '');
+                const isRookieTenure = sExp.includes('Under 1') || sExp.includes('less than 1') || sExp.includes('未滿') || sExp.includes('1年以下');
+                const isRookieTitle = sPos.includes('New Agent') || sPos.includes('新進') || sPos.includes('菜鳥') || sPos.includes('新手');
+                return isRookieTenure || isRookieTitle;
+            };
 
             // Detect if this cohort represents experienced agents (majority with > 1 year experience or leadership positions)
-            const experiencedCount = agents.filter(a => {
-                const exp = a.Experience || '';
-                const pos = a.Position || '';
-                const isRookieTenure = exp === 'Under 1 year' || exp === '未滿1年' || exp === '1年以下';
-                const isRookieTitle = pos === 'New Agent' || pos === '新進業務員' || pos === '新進業務';
-                return !isRookieTenure || !isRookieTitle;
-            }).length;
+            const experiencedCount = agents.filter(a => !isRookie(a.Experience, a.Position)).length;
             const isExperiencedGroup = agents.length > 0 && (experiencedCount / agents.length > 0.6);
 
             agents.forEach(agent => {
@@ -6901,10 +7092,7 @@ window.activeSection = activeSection;
                     if (!clean) return;
                     // Do not associate rookie tags with experienced agents or experienced clusters
                     if (rookieLabels.has(clean)) {
-                        const exp = agent.Experience || '';
-                        const pos = agent.Position || '';
-                        const isAgentExperienced = (exp && exp !== 'Under 1 year' && exp !== '未滿1年' && exp !== '1年以下') ||
-                                                   (pos && pos !== 'New Agent' && pos !== '新進業務員' && pos !== '新進業務');
+                        const isAgentExperienced = !isRookie(agent.Experience, agent.Position);
                         if (isAgentExperienced || isExperiencedGroup) {
                             return;
                         }
@@ -7261,7 +7449,8 @@ window.activeSection = activeSection;
 
 
         function getClusterRepresentativeTitle(agents) {
-            if (!agents || agents.length === 0) return "Sales Agent";
+            const isZh = (typeof currentLang !== 'undefined' && currentLang === 'zh');
+            if (!agents || agents.length === 0) return isZh ? "業務專員" : "Sales Agent";
             
             // Check dominant tags first
             const labelCounts = {};
@@ -7278,17 +7467,17 @@ window.activeSection = activeSection;
             const sortedLabels = Object.entries(labelCounts).sort((a, b) => b[1] - a[1]);
             if (sortedLabels.length > 0) {
                 const topTag = sortedLabels[0][0].toLowerCase();
-                if (topTag.includes('rookie') || topTag.includes('newcomer') || topTag.includes('flexible')) {
-                    return "New Agent";
+                if (topTag.includes('rookie') || topTag.includes('newcomer') || topTag.includes('flexible') || topTag.includes('菜鳥') || topTag.includes('新進') || topTag.includes('新手')) {
+                    return isZh ? "新進業務員" : "New Agent";
                 }
-                if (topTag.includes('empathy') || topTag.includes('service') || topTag.includes('relationship')) {
-                    return "Experienced Agent";
+                if (topTag.includes('empathy') || topTag.includes('service') || topTag.includes('relationship') || topTag.includes('同理') || topTag.includes('服務') || topTag.includes('關係')) {
+                    return isZh ? "資深業務員" : "Experienced Agent";
                 }
-                if (topTag.includes('expert') || topTag.includes('professional') || topTag.includes('senior')) {
-                    return "Sales Supervisor";
+                if (topTag.includes('expert') || topTag.includes('professional') || topTag.includes('senior') || topTag.includes('專家') || topTag.includes('專業') || topTag.includes('資深')) {
+                    return isZh ? "業務主任" : "Sales Supervisor";
                 }
-                if (topTag.includes('optimizer') || topTag.includes('efficiency')) {
-                    return "Sales Manager";
+                if (topTag.includes('optimizer') || topTag.includes('efficiency') || topTag.includes('效率') || topTag.includes('優化')) {
+                    return isZh ? "業務經理" : "Sales Manager";
                 }
             }
             
@@ -7306,15 +7495,15 @@ window.activeSection = activeSection;
             const avgYears = count > 0 ? (totalYears / count) : 0;
             
             if (avgYears < 5.0) {
-                return "New Agent";
+                return isZh ? "新進業務員" : "New Agent";
             } else if (avgYears < 10.0) {
-                return "Experienced Agent";
+                return isZh ? "資深業務員" : "Experienced Agent";
             } else if (avgYears < 15.0) {
-                return "Sales Supervisor";
+                return isZh ? "業務主任" : "Sales Supervisor";
             } else if (avgYears < 20.0) {
-                return "Sales Manager";
+                return isZh ? "業務經理" : "Sales Manager";
             } else {
-                return "Agency Manager";
+                return isZh ? "處經理" : "Agency Manager";
             }
         }
 
@@ -7789,19 +7978,9 @@ window.activeSection = activeSection;
 
         // View toggle function
         function switchMainSection(section) {
+            if (section === 'about') { window.location.href = 'about.html'; return; }
+            if (section === 'faq') { window.location.href = 'faq.html'; return; }
             activeSection = section;
-            if (section === 'about' || section === 'faq') {
-                const tc = document.querySelector('.capsule-tabs-container'), sf = document.getElementById('sub-filters-container');
-                if (tc) tc.style.display = 'none';
-                if (sf) sf.style.display = 'none';
-                ['personas', 'journeys', 'analytics', 'about', 'faq'].forEach(v => {
-                    const b = document.getElementById(`btn-sec-${v}`), el = document.getElementById(`view-${v}`);
-                    if (b) b.classList.toggle('active', v === section);
-                    if (el) { el.classList.toggle('active', v === section); el.style.display = (v === section) ? 'block' : 'none'; }
-                });
-                window.scrollTo(0, 0);
-                return;
-            }
             ['about', 'faq'].forEach(v => { const ev = document.getElementById(`view-${v}`), eb = document.getElementById(`btn-sec-${v}`);
               if (ev) { ev.classList.remove('active'); ev.style.display = 'none'; } if (eb) eb.classList.remove('active'); });
             
@@ -7951,11 +8130,12 @@ window.activeSection = activeSection;
             // Fetch quotes
             const quotes = window.categorizedQuotes ? window.categorizedQuotes[cat] : [];
             
+            const isZh = (typeof currentLang !== 'undefined' && currentLang === 'zh');
             // Render word cloud (Left)
             const cloudContainer = document.getElementById('quote-category-cloud');
             if (cloudContainer) {
                 if (quotes.length === 0) {
-                    cloudContainer.innerHTML = `<div style="text-align:center; padding:1.5rem; color:var(--text-muted); font-size:var(--fs-small); width:100%;">No keywords</div>`;
+                    cloudContainer.innerHTML = `<div style="text-align:center; padding:1.5rem; color:var(--text-muted); font-size:var(--fs-small); width:100%;">${isZh ? '尚無關鍵字' : 'No keywords'}</div>`;
                 } else {
                     const textList = quotes.map(q => q.text);
                     const keywords = calculateKeywords(textList, true);
@@ -7968,7 +8148,7 @@ window.activeSection = activeSection;
             if (!listContainer) return;
             
             if (quotes.length === 0) {
-                listContainer.innerHTML = `<div style="text-align:center; padding:1.5rem; color:var(--text-muted); font-size:var(--fs-small); width:100%;">No verbatims available for this category</div>`;
+                listContainer.innerHTML = `<div style="text-align:center; padding:1.5rem; color:var(--text-muted); font-size:var(--fs-small); width:100%;">${isZh ? '此類別尚無原音摘要' : 'No verbatims available for this category'}</div>`;
                 return;
             }
             
@@ -7980,11 +8160,41 @@ window.activeSection = activeSection;
                     uniqueQuotes.push(q);
                 }
             });
+
+            const posMapZh = {
+                'Sales Agent': '業務代表',
+                'Senior Agent': '資深業務代表',
+                'Financial Advisor': '財務顧問',
+                'Senior Advisor': '資深財務顧問',
+                'Sales Manager': '業務經理',
+                'District Manager': '通訊處經理',
+                'Agency Director': '處經理',
+                'Team Leader': '團隊主管',
+                'Insurance Specialist': '保險專家',
+                'Account Executive': '客戶經理',
+                'Consultant': '顧問'
+            };
+            const expMapZh = {
+                'Under 1 year': '未滿 1 年',
+                '1-3 years': '1–3 年',
+                '3-5 years': '3–5 年',
+                '6-10 years': '6–10 年',
+                '11-15 years': '11–15 年',
+                '16-20 years': '16–20 年',
+                '21-25 years': '21–25 年',
+                '26-30 years': '26–30 年',
+                '30+ years': '30 年以上',
+                'Unknown Tenure': '從業年資不詳'
+            };
             
             listContainer.innerHTML = uniqueQuotes.map(q => {
                 const quoteText = q.text || "";
-                const expRange = q.agent.Experience || "Unknown Tenure";
-                const position = q.agent.Position || "Sales Agent";
+                let expRange = q.agent.Experience || (isZh ? "從業年資不詳" : "Unknown Tenure");
+                let position = q.agent.Position || (isZh ? "業務代表" : "Sales Agent");
+                if (isZh) {
+                    if (posMapZh[position]) position = posMapZh[position];
+                    if (expMapZh[expRange]) expRange = expMapZh[expRange];
+                }
                 return `
                     <div class="p-verbatim-item" style="padding: 12px 0; text-align: left;">
                         <p class="p-quote-text" style="font-size: var(--fs-body); line-height: 1.6; color: var(--text-primary); margin-bottom: 6px;">'${quoteText.replace(/[""'']/g, '')}'</p>
@@ -7996,7 +8206,7 @@ window.activeSection = activeSection;
             // Render opportunities (Bottom)
             const opportunitiesContainer = document.getElementById('quote-category-opportunities');
             if (opportunitiesContainer) {
-                const opportunitiesMap = {
+                const opportunitiesMapEn = {
                     sales: `
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                             <div>
@@ -8058,7 +8268,72 @@ window.activeSection = activeSection;
                         </div>
                     `
                 };
-                opportunitiesContainer.innerHTML = opportunitiesMap[cat] || `<div style="color: var(--text-muted);">Select a category to view optimisation opportunities</div>`;
+
+                const opportunitiesMapZh = {
+                    sales: `
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div>
+                                <strong style="color: var(--accent-yellow); font-size: var(--fs-small); display: block; margin-bottom: 6px;">💡 行銷話術數位化資料庫</strong>
+                                <p style="margin: 0; color: var(--text-secondary); font-size: var(--fs-small);">在 AP 系統內建「話術與行銷素材庫」，支援一鍵複製轉發至 LINE 等通訊軟體，協助業務員在拜訪或陌生開發時能即時傳送符合法遵且具吸引力的行銷內容。</p>
+                            </div>
+                            <div>
+                                <strong style="color: var(--accent-yellow); font-size: var(--fs-small); display: block; margin-bottom: 6px;">💡 情境式互動演練工具</strong>
+                                <p style="margin: 0; color: var(--text-secondary); font-size: var(--fs-small);">針對不同年資與新進業務員，設計模組化的拜訪情境模擬演練，協助快速掌握關鍵提問技巧與異議處理話術，提升實體外訪時的客戶信賴感。</p>
+                            </div>
+                        </div>
+                    `,
+                    relations: `
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div>
+                                <strong style="color: var(--accent-yellow); font-size: var(--fs-small); display: block; margin-bottom: 6px;">💡 週年與節慶關懷通知自動化</strong>
+                                <p style="margin: 0; color: var(--text-secondary); font-size: var(--fs-small);">整合自動化提醒引擎，於保單週年、客戶生日與重大節慶自動提示並提供批次發送功能，大幅降低手動經營既有客戶關係的時間成本。</p>
+                            </div>
+                            <div>
+                                <strong style="color: var(--accent-yellow); font-size: var(--fs-small); display: block; margin-bottom: 6px;">💡 轉介與世代傳承工具包</strong>
+                                <p style="margin: 0; color: var(--text-secondary); font-size: var(--fs-small);">為高年資業務員提供視覺化家庭關係網絡圖，協助進行家族資產傳承規劃與轉介拓展，減少重複建檔並自動連帶關係人資訊。</p>
+                            </div>
+                        </div>
+                    `,
+                    tools: `
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div>
+                                <strong style="color: var(--accent-yellow); font-size: var(--fs-small); display: block; margin-bottom: 6px;">💡 單一登入與行動 App 優化</strong>
+                                <p style="margin: 0; color: var(--text-secondary); font-size: var(--fs-small);">優化行動裝置登入體驗（支援 FaceID／指紋辨識快速登入），延長閒置逾時時限，減少因頻繁重複輸入密碼或雙重驗證中斷外訪作業。</p>
+                            </div>
+                            <div>
+                                <strong style="color: var(--accent-yellow); font-size: var(--fs-small); display: block; margin-bottom: 6px;">💡 低阻力的名單輸入與行事曆同步</strong>
+                                <p style="margin: 0; color: var(--text-secondary); font-size: var(--fs-small);">支援行動端快速新增客戶名單，簡化繁瑣的必填欄位，並建立官方系統行程與個人 Google 日曆雙向同步，終結手動重複謄寫的無效工時。</p>
+                            </div>
+                        </div>
+                    `,
+                    knowledge: `
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div>
+                                <strong style="color: var(--accent-yellow); font-size: var(--fs-small); display: block; margin-bottom: 6px;">💡 模糊搜尋商品條款資料庫</strong>
+                                <p style="margin: 0; color: var(--text-secondary); font-size: var(--fs-small);">將架構繁複且難以檢索的商品條款庫改建為支援自然語言與模糊關鍵字的智慧搜尋引擎，讓業務員外訪時能秒查條款與理賠規定。</p>
+                            </div>
+                            <div>
+                                <strong style="color: var(--accent-yellow); font-size: var(--fs-small); display: block; margin-bottom: 6px;">💡 即時視覺化保單檢視報告</strong>
+                                <p style="margin: 0; color: var(--text-secondary); font-size: var(--fs-small);">優化保單健檢報告格式，以圖表取代密集表格，並簡化試算流程，讓業務員一分鐘內產出直觀報表，顯著提升現場說服力。</p>
+                            </div>
+                        </div>
+                    `,
+                    other: `
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div>
+                                <strong style="color: var(--accent-yellow); font-size: var(--fs-small); display: block; margin-bottom: 6px;">💡 進度透明與穩定的電子簽署</strong>
+                                <p style="margin: 0; color: var(--text-secondary); font-size: var(--fs-small);">提高核保進度透明度，讓客戶與業務員可即時追蹤進度；優化遠距簽署連結時效，避免因連結過期導致簽署失敗或補件重工。</p>
+                            </div>
+                            <div>
+                                <strong style="color: var(--accent-yellow); font-size: var(--fs-small); display: block; margin-bottom: 6px;">💡 即時團隊績效儀表板</strong>
+                                <p style="margin: 0; color: var(--text-secondary); font-size: var(--fs-small);">為通訊處主管與業務經理自動彙總名單與外訪活動報表，取代繁重的紙本填報，並以即時數據輔助增員與團隊輔導決策。</p>
+                            </div>
+                        </div>
+                    `
+                };
+
+                const currentMap = isZh ? opportunitiesMapZh : opportunitiesMapEn;
+                opportunitiesContainer.innerHTML = currentMap[cat] || `<div style="color: var(--text-muted);">${isZh ? '請選擇類別以查看優化契機' : 'Select a category to view optimisation opportunities'}</div>`;
             }
         }
 
@@ -9248,14 +9523,20 @@ window.activeSection = activeSection;
 
             const schema = typeof getActiveJourneySchema === 'function' ? getActiveJourneySchema() : null;
             const metrics = schema ? schema.metrics : [
-                { key: 'Skill_Device', label: 'Device/System Familiarity' },
-                { key: 'Skill_Knowledge', label: 'Insurance Knowledge' },
-                { key: 'Skill_Sales_Pitch', label: 'Sales Pitch Skills' },
-                { key: 'Skill_Customer_Relations', label: 'Customer Relationship Mgmt' },
-                { key: 'Skill_Digital_Tools', label: 'Digital Tool Familiarity' }
+                { key: 'Skill_Device', label: 'Device/System Familiarity', labelZh: '裝置系統操作熟悉度' },
+                { key: 'Skill_Knowledge', label: 'Insurance Knowledge', labelZh: '專業保險產品條款知識' },
+                { key: 'Skill_Sales_Pitch', label: 'Sales Pitch Skills', labelZh: '銷售訪談溝通話術能力' },
+                { key: 'Skill_Customer_Relations', label: 'Customer Relationship Mgmt', labelZh: '客戶關係經營維護能力' },
+                { key: 'Skill_Digital_Tools', label: 'Digital Tool Familiarity', labelZh: '數位工具熟悉度' }
             ];
             const isZh = (currentLang === 'zh');
-            const clusterProfiles = window.__dynamicClusterProfiles || [];
+            if ((!window.__dynamicClusterProfiles || window.__dynamicClusterProfiles.length === 0) && typeof assignDynamicArchetypes === 'function' && typeof parsedData !== 'undefined' && parsedData.length >= 15) {
+                const sliderEl = document.getElementById('cluster-k-slider');
+                const sliderK = sliderEl ? (parseInt(sliderEl.value, 10) || 5) : 5;
+                assignDynamicArchetypes(parsedData, sliderK);
+            }
+            const allProfiles = window.__dynamicClusterProfiles || [];
+            const clusterProfiles = allProfiles.filter(cp => cp.key !== 'outlier' && cp.id >= 0);
 
             const averages = {};
             clusterProfiles.forEach(cp => {
@@ -9266,25 +9547,23 @@ window.activeSection = activeSection;
             let globalCount = 0;
 
             parsedData.forEach(d => {
-                if (!averages[d.archetype]) {
-                    averages[d.archetype] = { counts: 0, metricSums: new Array(metrics.length).fill(0) };
-                }
-
-                metrics.forEach((m, idx) => {
-                    let val = d[m.key];
-                    if (val === undefined || val === null || isNaN(parseFloat(val))) {
-                        if (m.key === 'Skill_Device' && d.Skill_Device_Familiarity !== undefined) {
-                            val = d.Skill_Device_Familiarity;
-                        } else {
-                            val = 50;
+                if (averages[d.archetype]) {
+                    metrics.forEach((m, idx) => {
+                        let val = d[m.key];
+                        if (val === undefined || val === null || isNaN(parseFloat(val))) {
+                            if (m.key === 'Skill_Device' && d.Skill_Device_Familiarity !== undefined) {
+                                val = d.Skill_Device_Familiarity;
+                            } else {
+                                val = 50;
+                            }
                         }
-                    }
-                    val = parseFloat(val) || 50;
-                    averages[d.archetype].metricSums[idx] += val;
-                    globalMetricSums[idx] += val;
-                });
-                averages[d.archetype].counts++;
-                globalCount++;
+                        val = parseFloat(val) || 50;
+                        averages[d.archetype].metricSums[idx] += val;
+                        globalMetricSums[idx] += val;
+                    });
+                    averages[d.archetype].counts++;
+                    globalCount++;
+                }
             });
 
             const globalMeans = globalMetricSums.map(sum => globalCount > 0 ? (sum / globalCount) : 50);
@@ -9295,34 +9574,31 @@ window.activeSection = activeSection;
             };
 
             const datasets = [];
-            const colours = {};
-            clusterProfiles.forEach(cp => { colours[cp.key] = cp.color; });
-
-            for (const key in averages) {
-                const a = averages[key];
-                if (a.counts > 0) {
+            clusterProfiles.forEach(cp => {
+                const a = averages[cp.key];
+                if (a && a.counts > 0) {
                     const stretchedData = a.metricSums.map((sum, idx) => {
                         const avg = sum / a.counts;
                         return stretch(avg, globalMeans[idx]);
                     });
                     datasets.push({
-                        label: getPersonaDisplayInfo(key).name,
+                        label: getPersonaDisplayInfo(cp.key).name,
                         data: stretchedData,
-                        borderColor: colours[key] || '#a8a8a8',
-                        backgroundColor: (colours[key] || '#a8a8a8') + '15',
+                        borderColor: cp.color || '#a8a8a8',
+                        backgroundColor: (cp.color || '#a8a8a8') + '15',
                         borderWidth: 2.5,
-                        pointBackgroundColor: colours[key] || '#a8a8a8'
+                        pointBackgroundColor: cp.color || '#a8a8a8'
                     });
                 }
-            }
+            });
 
             const legendContainer = document.getElementById('radarCustomLegend');
             if (legendContainer) {
-                legendContainer.innerHTML = Object.entries(colours).map(([key, colour]) => {
+                legendContainer.innerHTML = clusterProfiles.map(cp => {
                     return `
                         <div style="display: inline-flex; align-items: center; gap: 6px; color: var(--text-secondary); font-size: var(--fs-small); white-space: nowrap;">
-                            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: ${colour}; flex-shrink: 0;"></span>
-                            <span>${getPersonaDisplayInfo(key).name}</span>
+                            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: ${cp.color}; flex-shrink: 0;"></span>
+                            <span>${getPersonaDisplayInfo(cp.key).name}</span>
                         </div>
                     `;
                 }).join('');
@@ -9371,7 +9647,28 @@ window.activeSection = activeSection;
             const ctx = canvas.getContext('2d');
             if (analyticsAllWorkChartInstance) analyticsAllWorkChartInstance.destroy();
 
-            const labels = tasks.map(t => t.name);
+            const isZh = (typeof currentLang !== 'undefined' && currentLang === 'zh');
+            const TASK_NAME_ZH = {
+                'Customer Relationship Maintenance': '客戶關係維護',
+                'Customer Relations': '客戶關係維護',
+                'Client Relations': '客戶關係維護',
+                'Customer Meeting': '客戶拜訪會面',
+                'Customer Meetings': '客戶拜訪會面',
+                'Scheduling & Visits': '排程與拜訪',
+                'Scheduling & Meetings': '排程與拜訪',
+                'Administrative Work': '行政庶務處理',
+                'Admin Tasks': '行政庶務處理',
+                'Professional Knowledge Learning': '專業知識提升',
+                'Professional Knowledge': '專業知識提升',
+                'Product Knowledge': '專業知識提升',
+                'Sales Pitch & Prospecting': '銷售訪談與陌生開發',
+                'Prospecting & Pitching': '銷售訪談與陌生開發',
+                'After-sales Service': '售後保全服務',
+                'After-Sales Service': '售後保全服務',
+                'Policy Servicing': '售後保全服務'
+            };
+
+            const labels = tasks.map(t => isZh ? (TASK_NAME_ZH[t.name] || t.name) : t.name);
             const data = tasks.map(t => t.val);
 
             // Using beautiful distinct shades of violet/purple for task visualization
@@ -9381,10 +9678,11 @@ window.activeSection = activeSection;
             const legendContainer = document.getElementById('analyticsAllWorkLegend');
             if (legendContainer) {
                 legendContainer.innerHTML = tasks.map((t, idx) => {
+                    const taskDisplayName = isZh ? (TASK_NAME_ZH[t.name] || t.name) : t.name;
                     return `
                         <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
                             <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: ${colours[idx % colours.length]};"></span>
-                            <span style="font-weight: 500;">${t.name} (${t.val}%)</span>
+                            <span style="font-weight: 500;">${taskDisplayName} (${t.val}%)</span>
                         </div>
                     `;
                 }).join('');
@@ -9664,8 +9962,8 @@ window.activeSection = activeSection;
                 setTimeout(function () {
                     if (typeof window.openStartHereAuto === 'function') {
                         window.openStartHereAuto();
-                    } else if (typeof startTour === 'function') {
-                        startTour();
+                    } else if (typeof window.openStartHere === 'function') {
+                        window.openStartHere();
                     }
                 }, 250);
             });
@@ -9688,7 +9986,7 @@ window.activeSection = activeSection;
                         lblDontShow.textContent = isZh ? '不再顯示影片' : 'Don’t show the video again';
                     }
                     if (lblContinue) {
-                        lblContinue.textContent = isZh ? '開始教學導覽 →' : 'Start a tutorial →';
+                        lblContinue.textContent = isZh ? '探索平台 →' : 'Explore the platform →';
                     }
                     if (chk) {
                         chk.checked = (localStorage.getItem('quan_persona_dont_show_video') === 'true');
@@ -9719,9 +10017,11 @@ window.activeSection = activeSection;
             const isZh = (currentLang === 'zh');
             if (isZh && typeof PRE_LOADED_DATA_ZH !== 'undefined' && PRE_LOADED_DATA_ZH.length > 0) {
                 parsedData = PRE_LOADED_DATA_ZH;
+            } else if (!isZh && typeof PRE_LOADED_DATA !== 'undefined' && PRE_LOADED_DATA.length > 0) {
+                parsedData = PRE_LOADED_DATA;
             } else if (typeof PRE_LOADED_DATA !== 'undefined' && PRE_LOADED_DATA.length > 0) {
                 parsedData = PRE_LOADED_DATA;
-            } else if (typeof PRE_LOADED_DATA_ZH !== 'undefined' && PRE_LOADED_DATA_ZH.length > 0) {
+            } else if (isZh && typeof PRE_LOADED_DATA_ZH !== 'undefined' && PRE_LOADED_DATA_ZH.length > 0) {
                 parsedData = PRE_LOADED_DATA_ZH;
             } else {
                 loadDefaultMockData();
@@ -9732,13 +10032,73 @@ window.activeSection = activeSection;
                 runClusterDiscovery({ recluster: false, runKCheck: false });
             }
             updateAgentDropdown();
-            renderAll();
-            applyLanguage(currentLang || 'en');
+
             const urlParams = new URLSearchParams(window.location.search);
             const initialSection = urlParams.get('section');
-            if (initialSection && ['personas', 'journeys', 'analytics'].includes(initialSection)) {
-                switchMainSection(initialSection);
+            if (initialSection === 'about') { window.location.href = 'about.html'; return; }
+            if (initialSection === 'faq') { window.location.href = 'faq.html'; return; }
+
+            const hash = (window.location.hash || '').replace('#', '');
+            if (hash === 'about') { window.location.href = 'about.html'; return; }
+            if (hash === 'faq') { window.location.href = 'faq.html'; return; }
+
+            let targetSection = initialSection || (['personas', 'journeys', 'analytics'].includes(hash) ? hash : 'personas');
+            if (urlParams.get('startRoute') === 'quest' || urlParams.get('open') === 'schema-builder') {
+                targetSection = 'journeys';
             }
+
+            if (targetSection && targetSection !== 'personas' && ['journeys', 'analytics'].includes(targetSection)) {
+                switchMainSection(targetSection);
+            } else {
+                renderAll();
+            }
+
+            const preStyle = document.getElementById('qp-pre-active');
+            if (preStyle) preStyle.remove();
+
+            applyLanguage(currentLang || 'en');
+
+            if (urlParams.get('startRoute')) {
+                const routeName = urlParams.get('startRoute');
+                setTimeout(function () {
+                    if (typeof window.startRoute === 'function') window.startRoute(routeName);
+                }, 100);
+            } else if (urlParams.get('startTour') === '1' && typeof openStartHere === 'function') {
+                setTimeout(openStartHere, 100);
+            }
+            if (urlParams.get('open') === 'csv-guide' && typeof openCsvGuide === 'function') {
+                setTimeout(openCsvGuide, 50);
+            }
+            if (urlParams.get('open') === 'schema-builder' && typeof openSchemaBuilderModal === 'function') {
+                setTimeout(openSchemaBuilderModal, 50);
+            }
+            if (urlParams.get('downloadTemplate') === '1') {
+                setTimeout(function () {
+                    if (typeof openQuestionnaireTemplate === 'function') openQuestionnaireTemplate();
+                    else if (typeof downloadCsvTemplate === 'function') downloadCsvTemplate();
+                }, 50);
+            }
+            if (urlParams.get('restoreDefault') === '1') {
+                setTimeout(function () {
+                    if (typeof restoreOriginalDataset === 'function') restoreOriginalDataset();
+                }, 50);
+            }
+            // Check for pending CSV upload from static pages (About Us, FAQ)
+            try {
+                const pendingCsvText = sessionStorage.getItem('pending_uploaded_csv');
+                const pendingCsvName = sessionStorage.getItem('pending_uploaded_csv_name') || 'uploaded.csv';
+                if (pendingCsvText) {
+                    sessionStorage.removeItem('pending_uploaded_csv');
+                    sessionStorage.removeItem('pending_uploaded_csv_name');
+                    setTimeout(function () {
+                        try {
+                            const blob = new Blob([pendingCsvText], { type: 'text/csv' });
+                            const fileObj = new File([blob], pendingCsvName, { type: 'text/csv' });
+                            if (typeof processCSV === 'function') processCSV(fileObj);
+                        } catch (e) { console.error('Error processing pending CSV:', e); }
+                    }, 400);
+                }
+            } catch (e) {}
             // Reload the last uploaded CSV saved in this browser (kept until a new CSV replaces it)
             setTimeout(function () { if (typeof restoreSavedUploadedCsv === 'function') restoreSavedUploadedCsv(); }, 150);
         }
@@ -9758,7 +10118,11 @@ window.activeSection = activeSection;
         }
         window.chooseLandingLang = function (lang) {
             lang = (lang === 'zh') ? 'zh' : 'en';
-            try { localStorage.setItem('portal_lang', lang); } catch (e) {}
+            try {
+                localStorage.setItem('portal_lang', lang);
+                sessionStorage.setItem('quan_persona_entered', '1');
+                sessionStorage.setItem('quan_persona_landing_done', '1');
+            } catch (e) {}
             currentLang = lang; window.currentLang = lang;
             const gate = document.getElementById('lang-gate');
             if (gate) {
@@ -9782,8 +10146,8 @@ window.activeSection = activeSection;
                     setTimeout(function () {
                         if (typeof window.openStartHereAuto === 'function') {
                             window.openStartHereAuto();
-                        } else if (typeof startTour === 'function') {
-                            startTour();
+                        } else if (typeof window.openStartHere === 'function') {
+                            window.openStartHere();
                         }
                     }, 250);
                 });
@@ -9792,6 +10156,39 @@ window.activeSection = activeSection;
 
         // Auto-launch commercial video IMMEDIATELY on landing, then load data concurrently while video plays
         function launchLandingFlow() {
+            const hash = (window.location.hash || '').replace('#', '');
+            const urlParams = new URLSearchParams(window.location.search);
+            const ref = (document.referrer || '').toLowerCase();
+            const fromInternal = ref.includes('about') || ref.includes('faq');
+            const hasDirectTarget = ['personas', 'journeys', 'analytics'].includes(hash) ||
+                                  urlParams.has('section') || urlParams.has('open') || urlParams.has('startTour') || urlParams.has('startRoute') ||
+                                  urlParams.has('downloadTemplate') || urlParams.has('restoreDefault') || urlParams.has('uploaded') ||
+                                  urlParams.get('skipLanding') === '1';
+            let alreadyEntered = false;
+            try {
+                alreadyEntered = (sessionStorage.getItem('quan_persona_entered') === '1') ||
+                                 (sessionStorage.getItem('quan_persona_landing_done') === '1');
+            } catch (e) {}
+
+            if (window.__skipLandingGate || hasDirectTarget || fromInternal || alreadyEntered) {
+                window.__skipLandingGate = true;
+                window.__skipLandingVideo = true;
+                try {
+                    sessionStorage.setItem('quan_persona_entered', '1');
+                    sessionStorage.setItem('quan_persona_landing_done', '1');
+                } catch (e) {}
+                const gate = document.getElementById('lang-gate');
+                if (gate) {
+                    gate.classList.remove('show');
+                    gate.style.display = 'none';
+                }
+                document.body.style.overflow = '';
+                whenDataReady(function () {
+                    if (typeof initPlatformData === 'function') initPlatformData();
+                });
+                return;
+            }
+
             const initLang = detectInitialLanguage();
             if (initLang === 'zh') {
                 currentLang = 'zh';
@@ -9890,15 +10287,6 @@ window.activeSection = activeSection;
             peekT = setTimeout(() => { nav.classList.remove('intro'); nav.classList.add('quiet'); if (e.detail > 0 && document.activeElement && nav.contains(document.activeElement)) document.activeElement.blur(); }, 700);
         });
         nav.addEventListener('mouseleave', () => { if (!noHover) nav.classList.remove('quiet'); });
-        const st = window.startTour;
-        let wasPinned = false;
-        if (typeof st === 'function') window.startTour = function () {
-            nav.classList.remove('intro', 'tour-open', 'quiet');
-            wasPinned = nav.classList.contains('pinned');
-            if (wasPinned) { nav.classList.remove('pinned'); if (pin) pin.setAttribute('aria-pressed', 'false'); }
-            window.__railTourEnd = function () { if (wasPinned) { nav.classList.add('pinned'); if (pin) pin.setAttribute('aria-pressed', 'true'); wasPinned = false; } };
-            return st.apply(this, arguments);
-        };
     })();
     (function () {
         const tgl = document.getElementById('rail-toggle'), nav = document.getElementById('main-nav');
@@ -9946,28 +10334,6 @@ window.activeSection = activeSection;
         });
         const mq = window.matchMedia('(max-width: 900px)');
         (mq.addEventListener ? mq.addEventListener.bind(mq, 'change') : mq.addListener.bind(mq))(() => { setDrawer(false); setBrandRole(); });
-    })();
-    (function () {
-        // Guided tour started from About / FAQ: when it closes, return to the same page and scroll position (not the top)
-        const prev = window.startTour;
-        if (typeof prev !== 'function') return;
-        let saved = null, watching = false;
-        window.startTour = function () {
-            const sec = (typeof activeSection !== 'undefined') ? activeSection : null;
-            saved = (sec === 'about' || sec === 'faq') ? { sec: sec, y: window.scrollY || window.pageYOffset || 0 } : null;
-            const r = prev.apply(this, arguments);
-            const root = document.getElementById('tour-root');
-            if (root && !watching) {
-                watching = true;
-                new MutationObserver(function () {
-                    if (!saved || root.style.display !== 'none') return;
-                    const s = saved; saved = null;
-                    try { if (typeof activeSection !== 'undefined' && activeSection !== s.sec) switchMainSection(s.sec); } catch (e) {}
-                    window.scrollTo(0, s.y); setTimeout(function () { window.scrollTo(0, s.y); }, 60);
-                }).observe(root, { attributes: true, attributeFilter: ['style'] });
-            }
-            return r;
-        };
     })();
     (function () {
         // FAQ / About pages: the top bar title reads "Frequently Asked Questions" / "About Us" (常見問題 / 關於我們); other pages keep their own title
@@ -10057,13 +10423,13 @@ window.activeSection = activeSection;
         '💡 Real-Time Team Performance Dashboard': '💡 即時團隊績效儀表板',
         'Automatically aggregate lead and activity reports for office managers and supervisors, replacing heavy paper-based logging and assisting in recruiting and team coaching decisions with real-time data.': '自動彙整名單與活動報表給處經理與主管，取代繁重的紙本登錄，並以即時數據協助增員與團隊輔導決策。'
     };
-    var ROLES = { 'New Agent': '新進業務員', 'Sales Supervisor': '業務主任', 'Sales Manager': '業務經理', 'District Manager': '區經理', 'Agency Manager': '處經理', 'Director': '協理' };
+    var ROLES = { 'New Agent': '新進業務員', 'Experienced Agent': '資深業務員', 'Sales Supervisor': '業務主任', 'Sales Manager': '業務經理', 'District Manager': '區經理', 'Agency Manager': '處經理', 'Director': '協理', 'Sales Agent': '業務專員' };
     var R = [
         [/^(\d+)% Matched$/, '$1% 已對應'],
         [/^Unmatched \((\d+)\)$/, '未對應（$1）'],
         [/^⚠️ Match Rate: (\d+)%$/, '⚠️ 相符率：$1%'],
         [/^✅ Match Rate: (\d+)%$/, '✅ 相符率：$1%'],
-        [/^(職稱[：:]\s*)(New Agent|Sales Supervisor|Sales Manager|District Manager|Agency Manager|Director)$/, function (m, a, r) { return a + ROLES[r]; }]
+        [/^(職稱[：:]\s*)(New Agent|Experienced Agent|Sales Supervisor|Sales Manager|District Manager|Agency Manager|Director|Sales Agent)$/, function (m, a, r) { return a + ROLES[r]; }]
     ];
     var zh = function () { return typeof currentLang !== 'undefined' && currentLang === 'zh'; };
     var orig = new WeakMap(), busy = false, queued = false, mo = null;

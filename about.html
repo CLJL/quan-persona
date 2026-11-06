@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | quan-persona - Behavioural Segmentation &amp; Persona Analytics</title>
+    <meta name="description" content="quan-persona is an unsupervised machine learning platform that turns survey responses into evidence-based behavioural personas and customer journey maps. Local-first and privacy-preserving.">
+    <link rel="canonical" href="https://quan-persona.netlify.app/about">
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://quan-persona.netlify.app/about">
+    <meta property="og:title" content="About Us | quan-persona - Behavioural Segmentation &amp; Persona Analytics">
+    <meta property="og:description" content="Turn survey responses into data-driven personas and customer journey maps using unsupervised machine learning. Runs privately in your browser.">
+    <meta property="og:image" content="https://quan-persona.netlify.app/quan-persona-og-card.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="quan-persona logo with the title Behavioural Segmentation &amp; Persona Analytics">
+    <meta property="og:site_name" content="quan-persona">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="zh_TW">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://quan-persona.netlify.app/about">
+    <meta name="twitter:title" content="About Us | quan-persona - Behavioural Segmentation &amp; Persona Analytics">
+    <meta name="twitter:description" content="Turn survey responses into data-driven personas and customer journey maps using unsupervised machine learning.">
+    <meta name="twitter:image" content="https://quan-persona.netlify.app/quan-persona-og-card.png">
+    <meta name="twitter:image:alt" content="quan-persona logo with the title Behavioural Segmentation &amp; Persona Analytics">
+
+    <!-- Structured Data (Schema.org) for SEO and AEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "AboutPage",
+          "@id": "https://quan-persona.netlify.app/about",
+          "url": "https://quan-persona.netlify.app/about",
+          "name": "About Us - quan-persona",
+          "description": "About quan-persona: an unsupervised machine learning platform turning survey data into behavioural personas and customer journey maps.",
+          "isPartOf": {
+            "@type": "WebSite",
+            "@id": "https://quan-persona.netlify.app/#website",
+            "url": "https://quan-persona.netlify.app/",
+            "name": "quan-persona"
+          },
+          "inLanguage": ["en", "zh-Hant"]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://quan-persona.netlify.app/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "About Us",
+              "item": "https://quan-persona.netlify.app/about"
+            }
+          ]
+        },
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://quan-persona.netlify.app/#software",
+          "name": "quan-persona",
+          "applicationCategory": "DesignApplication",
+          "operatingSystem": "Web browser",
+          "url": "https://quan-persona.netlify.app/",
+          "description": "A behavioural segmentation and persona analytics platform that groups survey respondents using DBSCAN outlier filtering and K-means clustering.",
+          "author": {
+            "@type": "Person",
+            "name": "Jennie Lai",
+            "url": "https://www.linkedin.com/in/chen-ling-lai/",
+            "sameAs": [
+              "https://www.linkedin.com/in/chen-ling-lai/",
+              "https://github.com/CLJL/quan-persona"
+            ]
+          },
+          "featureList": [
+            "Unsupervised K-Means Behavioural Clustering",
+            "DBSCAN Outlier & Noise Cohort Detection",
+            "Customer Journey Mapping with Emotional Curves",
+            "Interactive Persona Dashboard",
+            "Client-Side Privacy Preserving Data Processing",
+            "Custom Survey Questionnaire Builder"
+          ]
+        }
+      ]
+    }
+    </script>
+
+    <link rel="icon" href="favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
+    <meta name="theme-color" content="#0E1016">
+    <link rel="preload" href="outfit.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="portal.css">
+</head>
+<body data-page="about">
+    <div class="container">
+        <!-- Brand Cell -->
+        <div class="brand" id="brand-cell" onclick="toggleRailDrawer(event)">
+            <img class="brand-mark" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgeG1sbnM6YzJwYT0iaHR0cDovL2MycGEub3JnL21hbmlmZXN0Ij48bWV0YWRhdGE+PGMycGE6bWFuaWZlc3Q+QUFBV2dtcDFiV0lBQUFBZWFuVnRaR015Y0dFQUVRQVFnQUFBcWdBNG0zRURZekp3WVFBQUFCWmNhblZ0WWdBQUFFZHFkVzFrWXpKdFlRQVJBQkNBQUFDcUFEaWJjUU4xY200Nll6SndZVHBqT1dNNU1qTXdNQzB4TTJVMExUUXpNek10WVRVMFpTMHhaVFExT1RZMFl6TXdOek1BQUFBRGwycDFiV0lBQUFBcGFuVnRaR015WVhNQUVRQVFnQUFBcWdBNG0zRURZekp3WVM1aGMzTmxjblJwYjI1ekFBQUFBTHhxZFcxaUFBQUFSR3AxYldSalltOXlBQkVBRUlBQUFLb0FPSnR4RTJNeWNHRXVhVzVuY21Wa2FXVnVkQzUyTXdBQUFBQVlZekp6YU1jMVZpZG5FRTJ6a0tYcGhUMmpweFVBQUFCd1kySnZjcU5wWkdNNlptOXliV0YwYldsdFlXZGxMM04yWnl0NGJXeHFhVzV6ZEdGdVkyVkpSSGdzZUcxd09tbHBaRG81TXpCbU1ESmtNUzA0WWpObUxUUTVOR010WWpaa05pMWpNemd6WkRkaU1XSXhabVJzY21Wc1lYUnBiMjV6YUdsd2FIQmhjbVZ1ZEU5bUFBQUI0bXAxYldJQUFBQkJhblZ0WkdOaWIzSUFFUUFRZ0FBQXFnQTRtM0VUWXpKd1lTNWhZM1JwYjI1ekxuWXlBQUFBQUJoak1uTm82RmNBWUduUGljN2tkUEpWcmtnZXZBQUFBWmxqWW05eW9tZGhZM1JwYjI1emdxSm1ZV04wYVc5dWEyTXljR0V1YjNCbGJtVmthbkJoY21GdFpYUmxjbk9oYTJsdVozSmxaR2xsYm5SemdhSmpkWEpzZUMxelpXeG1JMnAxYldKbVBXTXljR0V1WVhNelpYSjBhVzl1Y3k5ak1uQmhMbWx1WjNKbFpHbGxiblF1ZGpOa2FHRnphRmdnN3QzT0VpOUdFTGNSQ0VZTnRQMmhqSFN1c1VGTk10ODU2TzdsVkczOGpVbWtabUZqZEdsdmJuZ2RZMjl0TG1GdWRHaHliM0JwWXk1amJHRjFaR1V1Y0hKdmRtbGtaV1JxY0dGeVlXMWxkR1Z5YzZGNEgyTnZiUzVoYm5Sb2NtOXdhV011YjNKcFoybHVMV052Ym1acFpHVnVZMlZuZFc1cmJtOTNibXRrWlhOamNtbHdkR2x2Ym5obVEyeGhkV1JsSUhCeWIzWnBaR1ZrSUhSb2FYTWdabWxzWlNCaGRDQjBhR1VnY21WeGRXVnpkQ0J2WmlCaElIVnpaWElnWVc1a0lHMWhlU0JvWVhabElHTnlaV0YwWldRZ2IzSWdiVzlrYVdacFpXUWdkR2hsSUdacGJHVWdZMjl1ZEdWdWRITXViWE52Wm5SM1lYSmxRV2RsYm5TaFpHNWhiV1ZtUTJ4aGRXUmxjbUZzYkVGamRHbHZibk5KYm1Oc2RXUmxaUFVBQUFESWFuVnRZZ0FBQUVCcWRXMWtZMkp2Y2dBUkFCQ0FBQUNxQURpYmNRTmpNbkJoTG1oaGMyZ3VaR0YwWVFBQUFBQVlZekp6YUU4dGpnczZaN29WYjRQVWFEM1JqdFVBQUFDQVkySnZjcVZqWVd4blpuTm9ZVEkxTm1Od1lXUk5BQUFBQUFBQUFBQUFBQUFBQUdSb1lYTm9XQ0RYdEV2UEYxMHp0VTVLdFZDU2JZL2tpQU9RVzVHYTl6OEhpT1gwK3hjTDdHUnVZVzFsYm1wMWJXSm1JRzFoYm1sbVpYTjBhbVY0WTJ4MWMybHZibk9Cb21WemRHRnlkQmlXWm14bGJtZDBhQmtlQkFBQUFqNXFkVzFpQUFBQUoycDFiV1JqTW1Oc0FCRUFFSUFBQUtvQU9KdHhBMk15Y0dFdVkyeGhhVzB1ZGpJQUFBQUNEMk5pYjNLbFkyRnNaMlp6YUdFeU5UWnBjMmxuYm1GMGRYSmxlRTF6Wld4bUkycDFiV0ptUFM5ak1uQmhMM1Z5Ympwak1uQmhPbU01WXpreU16QXdMVEV6WlRRdE5ETXpNeTFoTlRSbExURmxORFU1TmpSak16QTNNeTlqTW5CaExuTnBaMjVoZEhWeVpXcHBibk4wWVc1alpVbEVlQ3g0YlhBNmFXbGtPalUxTVRVNE5UUXdMV0ptWlRFdE5EbGxZUzFoTlRGbExUazFOamhsWmpnd056TmtOWEpqY21WaGRHVmtYMkZ6YzJWeWRHbHZibk9Eb21OMWNteDRMWE5sYkdZamFuVnRZbVk5WXpKd1lTNWhjM05sY25ScGIyNXpMMk15Y0dFdWFXNW5jbVZrYVdWdWRDNTJNMlJvWVhOb1dDRHUzYzRTTDBZUXR4RUlSZzIwL2FHTWRLNnhRVTB5M3pubzd1VlViZnlOU2FKamRYSnNlQ3B6Wld4bUkycDFiV0ptUFdNeWNHRXVZWE56WlhKMGFXOXVjeTlqTW5CaExtRmpkR2x2Ym5NdWRqSmthR0Z6YUZnZ0V1Y21ReDBock5MV3d6ZGM5Q0hGSU5HSXB2Z1R1aGRZRU44NVhES2pOYUNpWTNWeWJIZ3BjMlZzWmlOcWRXMWlaajFqTW5CaExtRnpjMlZ5ZEdsdmJuTXZZekp3WVM1b1lYTm9MbVJoZEdGa2FHRnphRmdnVGN3N0dzQ3J1cm01MThURVJoZXNxWGorcUxRR0xRV2lERy9WMnNiQUZUWjBZMnhoYVcxZloyVnVaWEpoZEc5eVgybHVabStqWkc1aGJXVnZRVzUwYUhKdmNHbGpJRVpwYkdWelozWmxjbk5wYjI1bE1TNHdMakJyYzNCbFkxWmxjbk5wYjI1bE1pNDBMakFBQUJBNGFuVnRZZ0FBQUNocWRXMWtZekpqY3dBUkFCQ0FBQUNxQURpYmNRTmpNbkJoTG5OcFoyNWhkSFZ5WlFBQUFCQUlZMkp2Y3RLRVdRSVNvZ0VtR0NGWkFnb3dnZ0lHTUlJQmphQURBZ0VDQWhSQTVhQUs3c0k1MEw2NGcvb0dRZ1U5WjFVVEFEQUtCZ2dxaGtqT1BRUURBekJKTVJjd0ZRWURWUVFLRXc1QmJuUm9jbTl3YVdNc0lGQkNRekV1TUN3R0ExVUVBeE1sUVc1MGFISnZjR2xqSUVOdmJuUmxiblFnUTNKbFpHVnVkR2xoYkhNZ1VtOXZkQ0JEUVRBZUZ3MHlOakE0TURjeE9EUXpOVFphRncweU9EQTRNRFl4T1RRek5UWmFNRVF4RnpBVkJnTlZCQW9URGtGdWRHaHliM0JwWXl3Z1VFSkRNU2t3SndZRFZRUURFeUJCYm5Sb2NtOXdhV01nUTJ4aGRXUmxJRU52Ym5SbGJuUWdVMmxuYm1sdVp6QlpNQk1HQnlxR1NNNDlBZ0VHQ0NxR1NNNDlBd0VIQTBJQUJKaDZDbXZMVUJnRkZOVTB2VUtsT1Z0RTZkamQxN0w1U3V3WDBMZW1GaXNCTTNka2QvM2N5anhGQTNRbzVTNDZmWDAvaWhZMFZaN21mYjlLRjcwM3Q1T2pXREJXTUE0R0ExVWREd0VCL3dRRUF3SUhnREFWQmdOVkhTVUVEakFNQmdvckJnRUVBWVBvWGdJQk1Bd0dBMVVkRXdFQi93UUNNQUF3SHdZRFZSMGpCQmd3Rm9BVXpsSGlCSUZPWkZzaitPUEV6NW8rbk1IWFhNSXdDZ1lJS29aSXpqMEVBd01EWndBd1pBSXdNWE1kRko0QmV0TExWWTdPUnVFOW5vcWJiQVpPWm4vYUFyWHlUd0ZBWmZLclB6eEYydlBvSk5mMStVQ2RnMVhHQWpCd1gxemQ5V0dxWWtxbUw1U0ZxdzFReVNqcjF6SmZwSk05KzFyZER3U1BMTU9QT2pLdWlYam9VL3BVVWVHOVJ3bWhZM0JoWkZrTm5nQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUlpZUU5IcEZnYTQ5d0JaWWlDQWRyR3FYVjhYbzNpeEpGMmt2T3NQcURTQ09aWmFWbEtXZURrNTNaSGlsb3laQnJaSEhGclo0bk9RME5QMm51azVFMThwTnBZPTwvYzJwYTptYW5pZmVzdD48L21ldGFkYXRhPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJhIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwIiB5MT0iMjAiIHgyPSI2MCIgeTI9IjkwIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiM4ZjZiZmYiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM1YTNmZDgiLz48L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9ImIiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iNDAiIHkxPSIxMCIgeDI9IjkwIiB5Mj0iNjAiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzRkYTNmZiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzdhOGNmZiIvPjwvbGluZWFyR3JhZGllbnQ+CjxsaW5lYXJHcmFkaWVudCBpZD0iYyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIHgxPSIyMCIgeTE9IjkwIiB4Mj0iODAiIHkyPSI2MCI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjNGIyZmM0Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNmE1MmU4Ii8+PC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAiIHkxPSIwIiB4Mj0iMTAwIiB5Mj0iMTAwIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMzZmUwYjAiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxZmI5ODciLz48L2xpbmVhckdyYWRpZW50Pgo8bWFzayBpZD0ibSI+PHBvbHlnb24gcG9pbnRzPSI1MC4wMCw4LjAwIDg2LjM3LDI5LjAwIDg2LjM3LDcxLjAwIDUwLjAwLDkyLjAwIDEzLjYzLDcxLjAwIDEzLjYzLDI5LjAwIiBmaWxsPSIjZmZmIi8+PHBvbHlnb24gcG9pbnRzPSI1MC4wMCwyNy4wMCA2OS45MiwzOC41MCA2OS45Miw2MS41MCA1MC4wMCw3My4wMCAzMC4wOCw2MS41MCAzMC4wOCwzOC41MCIgZmlsbD0iIzAwMCIvPjxjaXJjbGUgY3g9IjgwIiBjeT0iODIiIHI9IjEzIiBmaWxsPSIjMDAwIi8+PC9tYXNrPgo8Y2xpcFBhdGggaWQ9ImsiPjxwb2x5Z29uIHBvaW50cz0iNTAuMDAsMzEuMDAgNjYuNDUsNDAuNTAgNjYuNDUsNTkuNTAgNTAuMDAsNjkuMDAgMzMuNTUsNTkuNTAgMzMuNTUsNDAuNTAiLz48L2NsaXBQYXRoPgo8L2RlZnM+CjxnIG1hc2s9InVybCgjbSkiPgo8cG9seWdvbiBwb2ludHM9IjgsMjAgNTAsNiA1MCw1MCA4LDYwIiBmaWxsPSJ1cmwoI2EpIi8+Cjxwb2x5Z29uIHBvaW50cz0iNTAsNiA5MiwyMCA5Miw2MCA1MCw1MCIgZmlsbD0idXJsKCNiKSIvPgo8cG9seWdvbiBwb2ludHM9IjgsNTAgNTAsNTAgOTIsNTAgOTIsMTAwIDgsMTAwIiBmaWxsPSJ1cmwoI2MpIi8+Cjxwb2x5Z29uIHBvaW50cz0iOCwyMCA4LDYwIDUwLDEwMCA4LDEwMCIgZmlsbD0idXJsKCNhKSIgb3BhY2l0eT0iLjU1Ii8+CjwvZz4KPGcgY2xpcC1wYXRoPSJ1cmwoI2spIiBmaWxsPSJ1cmwoI2QpIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjQyIiByPSI4LjUiLz48ZWxsaXBzZSBjeD0iNTAiIGN5PSI3MiIgcng9IjE3IiByeT0iMTUiLz48L2c+CjxjaXJjbGUgY3g9IjgwIiBjeT0iODIiIHI9IjgiIGZpbGw9InVybCgjZCkiLz4KPC9zdmc+" alt="quan-persona" width="48" height="48">
+            <span class="brand-name">quan-persona</span>
+        </div>
+        <div id="rail-backdrop" onclick="closeRailDrawer()"></div>
+
+        <!-- Top Bar -->
+        <header class="topbar">
+            <div class="topbar-context">
+                <h1 class="platform-title" data-i18n="portalTitle">About Us</h1>
+            </div>
+            <div class="topbar-actions">
+                <input type="file" id="file-input" accept=".csv" aria-label="Upload survey CSV file" style="display: none;" onchange="handleFileSelect(event)">
+                <button type="button" class="btn btn-secondary icon-btn" id="upload-csv-btn" onclick="document.getElementById('file-input').click()" aria-label="Upload CSV Document">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    <span class="tip" data-i18n="uploadCSV">Upload CSV Document</span>
+                </button>
+                <button type="button" class="btn btn-secondary icon-btn" id="download-questionnaire-btn" onclick="openQuestionnaireTemplate()" aria-label="Download Questionnaire Template">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    <span class="tip" data-i18n="questionnaireTemplate">Download Questionnaire Template</span>
+                </button>
+                <span class="topbar-sep" aria-hidden="true"></span>
+                <button type="button" class="btn btn-secondary icon-btn" id="btn-schema-builder" onclick="openSchemaBuilderModal()" aria-label="Customise Schema">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    <span class="tip" data-i18n="customizeSchema">Customise Schema</span>
+                </button>
+                <div class="menu-wrap" id="data-menu-wrap">
+                    <button type="button" class="btn btn-secondary icon-btn" id="data-menu-btn" aria-haspopup="true" aria-expanded="false" aria-label="Data" onclick="toggleDataMenu(event)">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+                        <span class="tip" data-i18n="dataMenu">Data</span>
+                    </button>
+                    <div class="menu-pop" id="data-menu" role="menu">
+                        <button type="button" class="menu-item" id="csv-guide-btn" role="menuitem" onclick="closeDataMenu(); openCsvGuide();">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+                            <span data-i18n="csvGuide">CSV Column Guide</span>
+                        </button>
+                        <div class="menu-divider"></div>
+                        <button type="button" class="menu-item menu-item-warn" id="restore-default-data-btn" role="menuitem" onclick="closeDataMenu(); restoreOriginalDataset();" title="Restore Questionnaire_Synthetic_Responses.csv master dataset">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                            <span data-i18n="restoreDefaultData">Restore Default Data</span>
+                        </button>
+                    </div>
+                </div>
+                <button type="button" id="tour-btn" class="btn btn-secondary icon-btn" onclick="openStartHere()" aria-label="Guided tour">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11.5 2.6 21 6.4 11.5 10.2 2 6.4"></polygon>
+                        <line x1="20.4" y1="7.1" x2="20.4" y2="10.4"></line>
+                        <circle cx="20.4" cy="11.6" r="1" fill="currentColor" stroke="none"></circle>
+                        <path d="M6.8 9v8.1M16.2 9v8.1"></path>
+                        <path d="M3.8 13v6.2c2.9-.8 5.5-.4 7.7 1.1 2.2-1.5 4.8-1.9 7.7-1.1V13"></path>
+                    </svg>
+                    <span class="tip" data-i18n="tourBtn">Tutorial</span>
+                </button>
+                <div class="menu-wrap" id="lang-menu-wrap">
+                    <button type="button" id="lang-toggle-btn" class="btn btn-secondary icon-btn" aria-haspopup="true" aria-expanded="false" aria-label="Language" onclick="toggleLangMenu(event)">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                        <span class="tip" data-i18n="langMenu">Language</span>
+                    </button>
+                    <div class="menu-pop" id="lang-menu" role="menu" style="min-width: 190px;">
+                        <button type="button" class="menu-item" role="menuitemradio" data-lang="en" onclick="chooseLang('en')"><span>English</span><span class="menu-check">✓</span></button>
+                        <button type="button" class="menu-item" role="menuitemradio" data-lang="zh" onclick="chooseLang('zh')"><span>繁體中文</span><span class="menu-check">✓</span></button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Rail -->
+        <nav class="main-navigator" id="main-nav" aria-label="Main">
+            <a href="index.html#personas" class="nav-tab-btn" id="btn-sec-personas">
+                <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                <span class="nav-label" data-i18n="navPersonas">Persona Dashboard</span>
+            </a>
+            <a href="index.html#journeys" class="nav-tab-btn" id="btn-sec-journeys">
+                <svg viewBox="0 0 24 24"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon><line x1="9" y1="3" x2="9" y2="18"></line><line x1="15" y1="6" x2="15" y2="21"></line></svg>
+                <span class="nav-label" data-i18n="navJourneys">Journey Map</span>
+            </a>
+            <a href="index.html#analytics" class="nav-tab-btn" id="btn-sec-analytics">
+                <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                <span class="nav-label" data-i18n="navAnalytics">Analytics &amp; DB</span>
+            </a>
+            <div class="rail-footer-group">
+                <div class="rail-divider rail-divider-top"></div>
+                <a href="about.html" class="nav-tab-btn active" id="btn-sec-about">
+                    <svg viewBox="0 0 24 24"><circle cx="8" cy="11.5" r="3"></circle><path d="M2.5 21.5c0-3.2 2.3-5.5 5.5-5.5s5.5 2.3 5.5 5.5"></path><path d="M17 2c3 0 5 1.6 5 4.2S20 10.4 17 10.4c-.6 0-1.2-.1-1.7-.2L12.5 12l.7-2.6C12.4 8.6 12 7.5 12 6.2 12 3.6 14 2 17 2z"></path><line x1="17" y1="4.6" x2="17.01" y2="4.6"></line><line x1="17" y1="6.7" x2="17.02" y2="8"></line></svg>
+                    <span class="nav-label" data-i18n="navAbout">About Us</span>
+                </a>
+                <a href="faq.html" class="nav-tab-btn" id="btn-sec-faq">
+                    <svg viewBox="0 0 24 24"><path d="M10.5 15.5H9.5L6 19v-3.5H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5"></path><line x1="7" y1="7.5" x2="14" y2="7.5"></line><line x1="7" y1="11" x2="10" y2="11"></line><circle cx="16.5" cy="16.5" r="5.5"></circle><circle cx="16.2" cy="16.1" r="2"></circle><line x1="17.7" y1="17.6" x2="18.9" y2="18.8"></line></svg>
+                    <span class="nav-label" data-i18n="navFaq">FAQ</span>
+                </a>
+                <button type="button" class="rail-pin" id="rail-pin" aria-pressed="false" onclick="toggleRailPin()">
+                    <svg viewBox="0 0 24 24"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path></svg>
+                    <span class="nav-label" data-i18n="railPin">Keep open</span>
+                </button>
+                <div class="rail-divider"></div>
+                <div class="rail-copyright-wrap" id="rail-copyright" tabindex="0" role="contentinfo" aria-label="Copyright">
+                    <div class="rail-copyright-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M14.83 14.83a4 4 0 1 1 0-5.66"></path></svg>
+                    </div>
+                    <div class="rail-copyright-info">
+                        <span class="rail-copyright-line" data-i18n="copyrightLine1">2026 quan-persona.</span>
+                        <span class="rail-copyright-line" data-i18n="copyrightLine2">All rights reserved.</span>
+                        <span class="rail-copyright-line" data-i18n="copyrightLine3">Client-Side Privacy</span>
+                        <span class="rail-copyright-line" data-i18n="copyrightLine4">Assured</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main id="main-content" style="display: contents;">
+            <div class="section-view active" id="view-about">
+                <div class="about-wrap">
+                    <div class="about-en">
+                        <div class="about-hero">
+                            <span class="about-badge">Beta</span>
+                            <h2>Turn survey responses into data-driven personas.</h2>
+                            <p class="about-lede">quan-persona is a behavioural segmentation and persona analytics platform. It uses unsupervised machine learning to group survey respondents by how they actually behave, then turns each group into a persona and a customer journey map.</p>
+                            <p class="about-lede">Use it to understand customer behaviour, employee experience, or where a service can improve, with evidence from your own data instead of assumptions.</p>
+                        </div>
+                        <h3>Why quan-persona</h3>
+                        <div class="about-grid">
+                            <div class="about-card"><b>Evidence-based segments</b><span>Groups come from real survey responses, not predefined profiles.</span></div>
+                            <div class="about-card"><b>Your own measurements</b><span>Configure the questionnaire, measures and analytical dimensions to fit your research question.</span></div>
+                            <div class="about-card"><b>Less manual analysis</b><span>Clustering and dashboards are generated automatically for compatible datasets.</span></div>
+                            <div class="about-card"><b>Interactive insight</b><span>Explore each segment's characteristics and distributions visually.</span></div>
+                            <div class="about-card"><b>Local by design</b><span>Your survey data is processed in your browser (see <a href="#about-privacy-en" class="about-link" onclick="document.getElementById('about-privacy-en')?.scrollIntoView({behavior:'smooth'}); return false;">Data privacy</a> below, or check the <a href="faq.html" class="about-link">FAQ</a>).</span></div>
+                        </div>
+                        <h3>How it works</h3>
+                        <div class="about-grid about-flow">
+                            <div class="about-card about-step"><div class="n">1</div><div><b>Design your questionnaire</b><span>In the Schema designer, define your research questions, behavioural dimensions and measurement criteria. Download the questionnaire and send it to respondents by email or through your survey platform.</span></div></div>
+                            <div class="about-card about-step"><div class="n">2</div><div><b>Upload and map your data</b><span>Import survey responses as a CSV. The portal matches columns to your schema, and you can correct the matching before analysis.</span></div></div>
+                            <div class="about-card about-step"><div class="n">3</div><div><b>Discover behavioural segments</b><span>DBSCAN first sets aside respondents who do not belong to sufficiently dense clusters as potential outliers or noise (the proportion varies based on data distribution and clustering parameters), then K-means groups the rest. You choose K from 3 to 8, and a K check reports how well each choice is supported. The same file always gives the same clusters.</span></div></div>
+                            <div class="about-card about-step"><div class="n">4</div><div><b>Explore your insights</b><span>Review the results in three views: Persona Dashboard, Journey Map, and Analytics &amp; DB.</span></div></div>
+                        </div>
+                        <h3>What you get</h3>
+                        <table class="about-table">
+                            <tr><th>Persona Dashboard</th><td>One page per segment: demographics, working day, tools, pain points, keywords and quotes. Edit it.</td></tr>
+                            <tr><th>Journey Map</th><td>Stage-by-stage satisfaction, actions, tools and pain points for a segment, with an optimisation opportunity for each stage.</td></tr>
+                            <tr><th>Analytics &amp; DB</th><td>Cluster discovery with radar and heat-map views, plus distributions and response charts for all respondents.</td></tr>
+                        </table>
+                        <h3>Who it's for</h3>
+                        <div class="who-grid">
+                            <div class="who-card" style="--c:#ff7a59"><div class="av"><div class="disc"><svg viewBox="0 0 200 200"><rect x="14" y="40" width="64" height="9" rx="4.5" fill="#ffb59f"/><rect x="14" y="58" width="44" height="9" rx="4.5" fill="#ff7a59" opacity=".8"/><rect x="122" y="30" width="62" height="9" rx="4.5" fill="#c9cdee" opacity=".7"/><rect x="136" y="48" width="48" height="9" rx="4.5" fill="#ffb59f"/><path d="M20 200c0-42 32-58 80-58s80 16 80 58z" fill="#e8613f"/><path d="M80 142l20 20 20-20z" fill="#fff" opacity=".9"/><rect x="86" y="112" width="28" height="34" rx="12" fill="#b57b55"/><ellipse cx="100" cy="88" rx="35" ry="40" fill="#c68a62"/><path d="M62 84c-6-34 14-52 40-52 28 0 44 18 36 52-4-14-8-22-14-26-10 6-30 8-48 0-8 6-12 14-14 26z" fill="#1c1410"/><circle cx="64" cy="48" r="9" fill="#1c1410"/><circle cx="82" cy="36" r="10" fill="#1c1410"/><circle cx="104" cy="32" r="10" fill="#1c1410"/><circle cx="126" cy="38" r="10" fill="#1c1410"/><circle cx="138" cy="54" r="8" fill="#1c1410"/><circle cx="86" cy="92" r="3.4" fill="#2a1a14"/><circle cx="114" cy="92" r="3.4" fill="#2a1a14"/><path d="M89 111q11 9 22 0" stroke="#7a3328" stroke-width="3.5" fill="none" stroke-linecap="round"/></svg></div><div class="bd"><svg viewBox="0 0 48 48"><path d="M10 44V6"/><path d="M10 8h26l-6 9 6 9H10"/></svg></div></div><b>Product Owners</b><span>Understand user and customer journeys, identify behavioural patterns, and uncover pain points along the customer journey.</span></div>
+                            <div class="who-card" style="--c:#8b5cf6"><div class="av"><div class="disc"><svg viewBox="0 0 200 200"><path d="M20 200c0-42 32-58 80-58s80 16 80 58z" fill="#4b34c9"/><path d="M78 142l22 26 22-26z" fill="#e9e4ff" opacity=".9"/><rect x="86" y="112" width="28" height="34" rx="12" fill="#e8b88f"/><ellipse cx="100" cy="86" rx="35" ry="40" fill="#f1c7a0"/><path d="M63 82c-4-34 18-52 40-52 24 0 40 18 34 52-6-14-14-24-34-24s-30 8-40 24z" fill="#1c1a26"/><g fill="none" stroke="#2a2440" stroke-width="4"><circle cx="85" cy="90" r="12"/><circle cx="117" cy="90" r="12"/><path d="M97 89h8"/></g><circle cx="85" cy="90" r="3.2" fill="#2a2440"/><circle cx="117" cy="90" r="3.2" fill="#2a2440"/><path d="M90 112q10 8 20 0" stroke="#a65f43" stroke-width="3.5" fill="none" stroke-linecap="round"/></svg></div><div class="bd"><svg viewBox="0 0 48 48"><circle cx="21" cy="21" r="12"/><path d="m30 30 12 12"/><path d="M15 21h12M21 15v12"/></svg></div></div><b>UX Researchers</b><span>Build evidence-based user segments and complement qualitative work with quantitative evidence.</span></div>
+                            <div class="who-card" style="--c:#3fe0b0"><div class="av"><div class="disc"><svg viewBox="0 0 200 200"><rect x="18" y="26" width="34" height="34" rx="5" fill="#ffd966" transform="rotate(-10 35 43)"/><rect x="150" y="38" width="32" height="32" rx="5" fill="#ff9fb8" transform="rotate(9 166 54)"/><rect x="146" y="100" width="28" height="28" rx="5" fill="#9ad7ff" transform="rotate(-6 160 114)"/><path d="M20 200c0-40 30-56 80-56s80 16 80 56z" fill="#1f9d82"/><rect x="86" y="112" width="28" height="34" rx="12" fill="#c98c60"/><circle cx="100" cy="36" r="17" fill="#2b1d17"/><path d="M62 86c-8-40 16-60 40-60 26 0 46 22 36 60-4-18-14-26-38-26s-34 10-38 26z" fill="#2b1d17"/><ellipse cx="100" cy="88" rx="34" ry="39" fill="#d9a074"/><path d="M64 84c8-22 22-26 38-26 20 0 32 8 36 26-12-12-24-16-38-16s-26 6-36 16z" fill="#2b1d17"/><circle cx="87" cy="92" r="3.4" fill="#2a1a14"/><circle cx="113" cy="92" r="3.4" fill="#2a1a14"/><path d="M90 111q10 9 20 0" stroke="#8d3f35" stroke-width="3.5" fill="none" stroke-linecap="round"/><circle cx="65" cy="100" r="5" fill="#f5c518"/><circle cx="135" cy="100" r="5" fill="#f5c518"/></svg></div><div class="bd"><svg viewBox="0 0 48 48"><circle cx="9" cy="36" r="4"/><circle cx="39" cy="12" r="4"/><path d="M13 36h14a8 8 0 0 0 0-16H21a8 8 0 0 1 0-16h14"/></svg></div></div><b>Service Designers</b><span>See where experiences differ and where a service can improve.</span></div>
+                            <div class="who-card" style="--c:#f5c518"><div class="av"><div class="disc"><svg viewBox="0 0 200 200"><path d="M14 200c0-42 34-58 86-58s86 16 86 58z" fill="#273360"/><path d="M80 142l20 30 20-30z" fill="#f4f4fb"/><path d="M96 150h8l5 40-9 8-9-8z" fill="#f5c518"/><path d="M62 146l24 34-28 20zM138 146l-24 34 28 20z" fill="#1d2748"/><rect x="86" y="112" width="28" height="34" rx="12" fill="#e9bf9a"/><ellipse cx="100" cy="86" rx="35" ry="40" fill="#f3d0b3"/><path d="M64 80c-2-34 20-50 42-50 22 0 36 16 30 48-8-12-22-20-40-18-14 2-24 8-32 20z" fill="#5a4a3c"/><circle cx="86" cy="92" r="3.4" fill="#2a1a14"/><circle cx="114" cy="92" r="3.4" fill="#2a1a14"/><path d="M88 111q12 10 24 0" stroke="#a65f43" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M80 84q6-5 12 0M108 84q6-5 12 0" stroke="#3b2e24" stroke-width="3" fill="none" stroke-linecap="round"/></svg></div><div class="bd"><svg viewBox="0 0 48 48"><path d="M6 40V8"/><path d="M6 40h36"/><path d="m12 32 9-10 8 6 12-16"/><circle cx="41" cy="12" r="2.5"/></svg></div></div><b>CX Consultants</b><span>Segment customers by behaviour and spot experience gaps.</span></div>
+                        </div>
+                        <h3 id="about-privacy-en">Data privacy</h3>
+                        <div class="about-privacy">
+                            <p>quan-persona is built to work local-first. Survey data is processed on your device, in your browser, and is not uploaded to a cloud server for analysis. Custom schemas you create are saved in your browser's local storage on that device.</p>
+                            <p>This keeps control of your data with you and reduces unnecessary exposure of sensitive survey information.</p>
+                            <p>Your uploaded dataset also stays in your browser on this device. Please do not upload your CSV files on a shared or public computer. If you have to, use Restore Default Data in the Data menu before you leave.</p>
+                            <p style="margin-top: 10px;"><a href="faq.html" class="about-link">Read more data privacy details in the FAQ &rarr;</a></p>
+                        </div>
+                        <h3>Now in Beta</h3>
+                        <div class="about-privacy">
+                            <p>quan-persona is open for Beta testing. Upload your own survey data, build your own measurement schema, and tell us what you find.</p>
+                            <div class="about-actions" style="margin-top: 14px; display: flex; gap: 24px; flex-wrap: wrap; align-items: center;">
+                                <a href="#" onclick="openStartHere(); return false;" class="about-link" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 1.0625rem; text-decoration: underline; text-underline-offset: 3px;">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;"><polygon points="11.5 2.6 21 6.4 11.5 10.2 2 6.4"></polygon><line x1="20.4" y1="7.1" x2="20.4" y2="10.4"></line><circle cx="20.4" cy="11.6" r="1" fill="currentColor" stroke="none"></circle><path d="M6.8 9v8.1M16.2 9v8.1"></path><path d="M3.8 13v6.2c2.9-.8 5.5-.4 7.7 1.1 2.2-1.5 4.8-1.9 7.7-1.1V13"></path></svg>
+                                    <span>Take the tutorial</span>
+                                </a>
+                                <a href="#" onclick="openCsvGuide(); return false;" class="about-link" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 1.0625rem; text-decoration: underline; text-underline-offset: 3px;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+                                    <span>CSV Column Guide</span>
+                                </a>
+                            </div>
+                        </div>
+                        <h3>Contact us</h3>
+                        <div class="about-privacy">
+                            <p>We welcome your feedback and enquiries. Report issues on GitHub, contact the author on LinkedIn, or review on Product Hunt.</p>
+                            <div class="about-actions">
+                                <a href="https://github.com/CLJL/quan-persona/issues" class="badge-action-btn" target="_blank" rel="noopener noreferrer" aria-label="Report an issue on GitHub" title="Report an issue on GitHub">
+                                    <span class="badge-action-left">
+                                        <span class="badge-action-brand">
+                                            <svg viewBox="0 0 31 31" width="31" height="31" aria-hidden="true"><circle cx="15.5" cy="15.5" r="15.5" fill="#FFFFFF"/><path fill="#221D21" fill-rule="evenodd" clip-rule="evenodd" d="M15.5 6C10.8 6 7 9.8 7 14.5c0 3.76 2.44 6.95 5.82 8.08.43.08.58-.18.58-.41 0-.2-.01-.74-.01-1.45-2.37.51-2.87-1.14-2.87-1.14-.39-.99-.94-1.25-.94-1.25-.77-.53.06-.52.06-.52.85.06 1.3.88 1.3.88.76 1.3 1.99.92 2.48.71.08-.55.3-.92.54-1.14-1.89-.22-3.87-.95-3.87-4.21 0-.93.33-1.69.88-2.29-.09-.22-.38-1.08.08-2.25 0 0 .72-.23 2.34.87.68-.19 1.41-.29 2.14-.29.73 0 1.46.1 2.14.29 1.62-1.1 2.34-.87 2.34-.87.46 1.17.17 2.03.08 2.25.55.6.87 1.36.87 2.29 0 3.27-1.99 3.99-3.88 4.2.31.26.58.78.58 1.58 0 1.14-.01 2.06-.01 2.34 0 .23.15.5.59.41A8.52 8.52 0 0 0 24 14.5C24 9.8 20.2 6 15.5 6z"/></svg>
+                                        </span>
+                                        <span class="badge-action-text">
+                                            <span class="badge-action-sub">Report an issue on</span>
+                                            <span class="badge-action-main">GitHub</span>
+                                        </span>
+                                    </span>
+                                    <span class="badge-action-icon" aria-hidden="true">
+                                        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><path d="M9.09 8.8a3.2 3.2 0 0 1 6 1.2c0 2.2-3.1 2.8-3.1 4.2"/><line x1="12" y1="17.2" x2="12.01" y2="17.2" stroke-width="3"/></svg>
+                                    </span>
+                                </a>
+                                <a href="https://www.linkedin.com/in/chen-ling-lai/" class="badge-action-btn" target="_blank" rel="noopener noreferrer" aria-label="Contact the author on LinkedIn" title="Contact the author on LinkedIn">
+                                    <span class="badge-action-left">
+                                        <span class="badge-action-brand">
+                                            <svg viewBox="0 0 31 31" width="31" height="31" aria-hidden="true"><circle cx="15.5" cy="15.5" r="15.5" fill="#FFFFFF"/><path fill="#221D21" d="M8.2 12.2h2.9v9.3H8.2v-9.3zM9.65 8c.95 0 1.7.75 1.7 1.7s-.75 1.7-1.7 1.7-1.7-.75-1.7-1.7S8.7 8 9.65 8zM13 12.2h2.8v1.3h.04c.39-.74 1.34-1.52 2.76-1.52 2.95 0 3.5 1.94 3.5 4.47v5.05h-2.9v-4.48c0-1.07-.02-2.45-1.49-2.45-1.49 0-1.72 1.17-1.72 2.37v4.56H13v-9.3z"/></svg>
+                                        </span>
+                                        <span class="badge-action-text">
+                                            <span class="badge-action-sub">Contact author on</span>
+                                            <span class="badge-action-main">LinkedIn</span>
+                                        </span>
+                                    </span>
+                                    <span class="badge-action-icon" aria-hidden="true">
+                                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                                    </span>
+                                </a>
+                                <a href="https://www.producthunt.com/products/quan-persona/reviews/new?utm_source=badge-product_review&utm_medium=badge&utm_source=badge-quan&#0045;persona" target="_blank" rel="noopener noreferrer" aria-label="Review quan-persona on Product Hunt"><img src="https://api.producthunt.com/widgets/embed-image/v1/product_review.svg?product_id=1348396&theme=dark" alt="quan&#0045;persona - Turn&#0032;survey&#0032;data&#0032;into&#0032;meaningful&#0032;behavioural&#0032;segments | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="about-zh" lang="zh-Hant">
+                        <div class="about-hero">
+                            <span class="about-badge">Beta</span>
+                            <h2>把問卷資料，變成有數據依據的人物誌。</h2>
+                            <p class="about-lede">quan-persona 是一個行為分群與人物誌分析平台。它運用非監督式機器學習，依受訪者實際的行為模式分群，再為每一群產出人物誌與顧客旅程地圖。</p>
+                            <p class="about-lede">無論你想了解顧客行為、員工體驗，或是找出服務可以改善的地方，都能用自己手上的資料說話，而不是憑感覺猜測。</p>
+                        </div>
+                        <h3>為什麼選擇 quan-persona</h3>
+                        <div class="about-grid">
+                            <div class="about-card"><b>以證據為基礎的分群</b><span>分群來自真實的問卷填答，不是事先設定好的樣板。</span></div>
+                            <div class="about-card"><b>自訂你的衡量架構</b><span>依研究問題，自行設定問卷題目、衡量指標與分析構面。</span></div>
+                            <div class="about-card"><b>減少人工分析</b><span>相容的資料集，系統會自動完成分群並產出儀表板。</span></div>
+                            <div class="about-card"><b>互動式洞察</b><span>用視覺化圖表，探索各群的特徵與分佈。</span></div>
+                            <div class="about-card"><b>資料留在本機</b><span>問卷資料在你的瀏覽器中處理（詳見下方<a href="#about-privacy-zh" class="about-link" onclick="document.getElementById('about-privacy-zh')?.scrollIntoView({behavior:'smooth'}); return false;">資料隱私</a>說明，或查看<a href="faq.html" class="about-link">常見問題</a>）。</span></div>
+                        </div>
+                        <h3>運作方式</h3>
+                        <div class="about-grid about-flow">
+                            <div class="about-card about-step"><div class="n">1</div><div><b>設計問卷</b><span>在 Schema 設計工具中，定義研究問題、行為構面與衡量標準。再下載問卷，透過電子郵件或問卷平台發送給受訪者。</span></div></div>
+                            <div class="about-card about-step"><div class="n">2</div><div><b>上傳並對應資料</b><span>匯入 CSV 格式的問卷資料，系統會依你的衡量架構自動比對欄位，分析前也可以自行調整對應。</span></div></div>
+                            <div class="about-card about-step"><div class="n">3</div><div><b>找出行為分群</b><span>先以 DBSCAN 依資料密度與分佈識別並排除離群值與雜訊點（比例依數據特徵與分群參數而異），再以 K-means 將其餘受訪者分群。K 值可在 3 到 8 之間自行選擇，並提供 K 值檢查，了解每個選擇的支持程度。同一份檔案，每次都會得到相同的分群結果。</span></div></div>
+                            <div class="about-card about-step"><div class="n">4</div><div><b>探索洞察</b><span>透過三個檢視來閱讀分析結果：人物誌看板、歷程地圖、數據分析與資料庫。</span></div></div>
+                        </div>
+                        <h3>你會得到什麼</h3>
+                        <table class="about-table">
+                            <tr><th>人物誌看板</th><td>每一群各有一頁：人口統計特徵、一天的工作內容、常用工具、痛點、關鍵字與心聲。可以編輯內容。</td></tr>
+                            <tr><th>歷程地圖</th><td>呈現該群在各個階段的滿意度、行動、工具與痛點，並為每個階段提出優化機會。</td></tr>
+                            <tr><th>數據分析與資料庫</th><td>分群探索（雷達圖與熱度圖）、所有受訪者的分佈與填答圖表。</td></tr>
+                        </table>
+                        <h3>適用對象</h3>
+                        <div class="who-grid">
+                            <div class="who-card" style="--c:#ff7a59"><div class="av"><div class="disc"><svg viewBox="0 0 200 200"><rect x="14" y="40" width="64" height="9" rx="4.5" fill="#ffb59f"/><rect x="14" y="58" width="44" height="9" rx="4.5" fill="#ff7a59" opacity=".8"/><rect x="122" y="30" width="62" height="9" rx="4.5" fill="#c9cdee" opacity=".7"/><rect x="136" y="48" width="48" height="9" rx="4.5" fill="#ffb59f"/><path d="M20 200c0-42 32-58 80-58s80 16 80 58z" fill="#e8613f"/><path d="M80 142l20 20 20-20z" fill="#fff" opacity=".9"/><rect x="86" y="112" width="28" height="34" rx="12" fill="#b57b55"/><ellipse cx="100" cy="88" rx="35" ry="40" fill="#c68a62"/><path d="M62 84c-6-34 14-52 40-52 28 0 44 18 36 52-4-14-8-22-14-26-10 6-30 8-48 0-8 6-12 14-14 26z" fill="#1c1410"/><circle cx="64" cy="48" r="9" fill="#1c1410"/><circle cx="82" cy="36" r="10" fill="#1c1410"/><circle cx="104" cy="32" r="10" fill="#1c1410"/><circle cx="126" cy="38" r="10" fill="#1c1410"/><circle cx="138" cy="54" r="8" fill="#1c1410"/><circle cx="86" cy="92" r="3.4" fill="#2a1a14"/><circle cx="114" cy="92" r="3.4" fill="#2a1a14"/><path d="M89 111q11 9 22 0" stroke="#7a3328" stroke-width="3.5" fill="none" stroke-linecap="round"/></svg></div><div class="bd"><svg viewBox="0 0 48 48"><path d="M10 44V6"/><path d="M10 8h26l-6 9 6 9H10"/></svg></div></div><b>產品負責人</b><span>了解使用者與顧客的歷程，找出行為模式並發掘顧客在旅程中遇到的痛點。</span></div>
+                            <div class="who-card" style="--c:#8b5cf6"><div class="av"><div class="disc"><svg viewBox="0 0 200 200"><path d="M20 200c0-42 32-58 80-58s80 16 80 58z" fill="#4b34c9"/><path d="M78 142l22 26 22-26z" fill="#e9e4ff" opacity=".9"/><rect x="86" y="112" width="28" height="34" rx="12" fill="#e8b88f"/><ellipse cx="100" cy="86" rx="35" ry="40" fill="#f1c7a0"/><path d="M63 82c-4-34 18-52 40-52 24 0 40 18 34 52-6-14-14-24-34-24s-30 8-40 24z" fill="#1c1a26"/><g fill="none" stroke="#2a2440" stroke-width="4"><circle cx="85" cy="90" r="12"/><circle cx="117" cy="90" r="12"/><path d="M97 89h8"/></g><circle cx="85" cy="90" r="3.2" fill="#2a2440"/><circle cx="117" cy="90" r="3.2" fill="#2a2440"/><path d="M90 112q10 8 20 0" stroke="#a65f43" stroke-width="3.5" fill="none" stroke-linecap="round"/></svg></div><div class="bd"><svg viewBox="0 0 48 48"><circle cx="21" cy="21" r="12"/><path d="m30 30 12 12"/><path d="M15 21h12M21 15v12"/></svg></div></div><b>UX 研究員</b><span>建立有證據支持的使用者分群，用量化資料補強質性研究。</span></div>
+                            <div class="who-card" style="--c:#3fe0b0"><div class="av"><div class="disc"><svg viewBox="0 0 200 200"><rect x="18" y="26" width="34" height="34" rx="5" fill="#ffd966" transform="rotate(-10 35 43)"/><rect x="150" y="38" width="32" height="32" rx="5" fill="#ff9fb8" transform="rotate(9 166 54)"/><rect x="146" y="100" width="28" height="28" rx="5" fill="#9ad7ff" transform="rotate(-6 160 114)"/><path d="M20 200c0-40 30-56 80-56s80 16 80 56z" fill="#1f9d82"/><rect x="86" y="112" width="28" height="34" rx="12" fill="#c98c60"/><circle cx="100" cy="36" r="17" fill="#2b1d17"/><path d="M62 86c-8-40 16-60 40-60 26 0 46 22 36 60-4-18-14-26-38-26s-34 10-38 26z" fill="#2b1d17"/><ellipse cx="100" cy="88" rx="34" ry="39" fill="#d9a074"/><path d="M64 84c8-22 22-26 38-26 20 0 32 8 36 26-12-12-24-16-38-16s-26 6-36 16z" fill="#2b1d17"/><circle cx="87" cy="92" r="3.4" fill="#2a1a14"/><circle cx="113" cy="92" r="3.4" fill="#2a1a14"/><path d="M90 111q10 9 20 0" stroke="#8d3f35" stroke-width="3.5" fill="none" stroke-linecap="round"/><circle cx="65" cy="100" r="5" fill="#f5c518"/><circle cx="135" cy="100" r="5" fill="#f5c518"/></svg></div><div class="bd"><svg viewBox="0 0 48 48"><circle cx="9" cy="36" r="4"/><circle cx="39" cy="12" r="4"/><path d="M13 36h14a8 8 0 0 0 0-16H21a8 8 0 0 1 0-16h14"/></svg></div></div><b>服務設計師</b><span>看出不同族群的體驗差異，找到服務可以改善之處。</span></div>
+                            <div class="who-card" style="--c:#f5c518"><div class="av"><div class="disc"><svg viewBox="0 0 200 200"><path d="M14 200c0-42 34-58 86-58s86 16 86 58z" fill="#273360"/><path d="M80 142l20 30 20-30z" fill="#f4f4fb"/><path d="M96 150h8l5 40-9 8-9-8z" fill="#f5c518"/><path d="M62 146l24 34-28 20zM138 146l-24 34 28 20z" fill="#1d2748"/><rect x="86" y="112" width="28" height="34" rx="12" fill="#e9bf9a"/><ellipse cx="100" cy="86" rx="35" ry="40" fill="#f3d0b3"/><path d="M64 80c-2-34 20-50 42-50 22 0 36 16 30 48-8-12-22-20-40-18-14 2-24 8-32 20z" fill="#5a4a3c"/><circle cx="86" cy="92" r="3.4" fill="#2a1a14"/><circle cx="114" cy="92" r="3.4" fill="#2a1a14"/><path d="M88 111q12 10 24 0" stroke="#a65f43" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M80 84q6-5 12 0M108 84q6-5 12 0" stroke="#3b2e24" stroke-width="3" fill="none" stroke-linecap="round"/></svg></div><div class="bd"><svg viewBox="0 0 48 48"><path d="M6 40V8"/><path d="M6 40h36"/><path d="m12 32 9-10 8 6 12-16"/><circle cx="41" cy="12" r="2.5"/></svg></div></div><b>CX 顧問</b><span>依行為特徵區分顧客，找出體驗落差。</span></div>
+                        </div>
+                        <h3 id="about-privacy-zh">資料隱私</h3>
+                        <div class="about-privacy">
+                            <p>quan-persona 採用本機優先的設計。問卷資料在你的裝置上、於瀏覽器內處理，不會上傳到雲端伺服器進行分析。你建立的自訂衡量架構，則儲存在該裝置瀏覽器的本機儲存空間。</p>
+                            <p>這讓資料的掌控權留在你手上，也降低敏感問卷資料不必要的外洩風險。</p>
+                            <p>你上傳的資料集也會保留在這台裝置的瀏覽器中。請勿在共用或公用電腦上上傳你的 CSV 檔案；若不得不使用，離開前請先使用「資料」選單中的「恢復預設數據」。</p>
+                            <p style="margin-top: 10px;"><a href="faq.html" class="about-link">在常見問題（FAQ）中閱讀更多資料與隱私說明 &rarr;</a></p>
+                        </div>
+                        <h3>現正開放 Beta 測試</h3>
+                        <div class="about-privacy">
+                            <p>quan-persona 正式開放 Beta 測試。歡迎上傳你自己的問卷資料、建立專屬的衡量架構，並告訴我們你的發現。</p>
+                            <div class="about-actions" style="margin-top: 14px; display: flex; gap: 24px; flex-wrap: wrap; align-items: center;">
+                                <a href="#" onclick="openStartHere(); return false;" class="about-link" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 1.0625rem; text-decoration: underline; text-underline-offset: 3px;">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;"><polygon points="11.5 2.6 21 6.4 11.5 10.2 2 6.4"></polygon><line x1="20.4" y1="7.1" x2="20.4" y2="10.4"></line><circle cx="20.4" cy="11.6" r="1" fill="currentColor" stroke="none"></circle><path d="M6.8 9v8.1M16.2 9v8.1"></path><path d="M3.8 13v6.2c2.9-.8 5.5-.4 7.7 1.1 2.2-1.5 4.8-1.9 7.7-1.1V13"></path></svg>
+                                    <span>開啟教學導覽</span>
+                                </a>
+                                <a href="#" onclick="openCsvGuide(); return false;" class="about-link" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 1.0625rem; text-decoration: underline; text-underline-offset: 3px;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+                                    <span>CSV 欄位說明</span>
+                                </a>
+                            </div>
+                        </div>
+                        <h3>聯絡我們</h3>
+                        <div class="about-privacy">
+                            <p>歡迎與我們聯繫與交流：在 GitHub 回報問題、在 LinkedIn 聯絡作者，或在 Product Hunt 留下評價。</p>
+                            <div class="about-actions">
+                                <a href="https://github.com/CLJL/quan-persona/issues" class="badge-action-btn" target="_blank" rel="noopener noreferrer" aria-label="在 GitHub 回報問題" title="在 GitHub 回報問題">
+                                    <span class="badge-action-left">
+                                        <span class="badge-action-brand">
+                                            <svg viewBox="0 0 31 31" width="31" height="31" aria-hidden="true"><circle cx="15.5" cy="15.5" r="15.5" fill="#FFFFFF"/><path fill="#221D21" fill-rule="evenodd" clip-rule="evenodd" d="M15.5 6C10.8 6 7 9.8 7 14.5c0 3.76 2.44 6.95 5.82 8.08.43.08.58-.18.58-.41 0-.2-.01-.74-.01-1.45-2.37.51-2.87-1.14-2.87-1.14-.39-.99-.94-1.25-.94-1.25-.77-.53.06-.52.06-.52.85.06 1.3.88 1.3.88.76 1.3 1.99.92 2.48.71.08-.55.3-.92.54-1.14-1.89-.22-3.87-.95-3.87-4.21 0-.93.33-1.69.88-2.29-.09-.22-.38-1.08.08-2.25 0 0 .72-.23 2.34.87.68-.19 1.41-.29 2.14-.29.73 0 1.46.1 2.14.29 1.62-1.1 2.34-.87 2.34-.87.46 1.17.17 2.03.08 2.25.55.6.87 1.36.87 2.29 0 3.27-1.99 3.99-3.88 4.2.31.26.58.78.58 1.58 0 1.14-.01 2.06-.01 2.34 0 .23.15.5.59.41A8.52 8.52 0 0 0 24 14.5C24 9.8 20.2 6 15.5 6z"/></svg>
+                                        </span>
+                                        <span class="badge-action-text">
+                                            <span class="badge-action-sub">在 GITHUB 回報問題</span>
+                                            <span class="badge-action-main">GitHub</span>
+                                        </span>
+                                    </span>
+                                    <span class="badge-action-icon" aria-hidden="true">
+                                        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><path d="M9.09 8.8a3.2 3.2 0 0 1 6 1.2c0 2.2-3.1 2.8-3.1 4.2"/><line x1="12" y1="17.2" x2="12.01" y2="17.2" stroke-width="3"/></svg>
+                                    </span>
+                                </a>
+                                <a href="https://www.linkedin.com/in/chen-ling-lai/" class="badge-action-btn" target="_blank" rel="noopener noreferrer" aria-label="在 LinkedIn 聯絡作者" title="在 LinkedIn 聯絡作者">
+                                    <span class="badge-action-left">
+                                        <span class="badge-action-brand">
+                                            <svg viewBox="0 0 31 31" width="31" height="31" aria-hidden="true"><circle cx="15.5" cy="15.5" r="15.5" fill="#FFFFFF"/><path fill="#221D21" d="M8.2 12.2h2.9v9.3H8.2v-9.3zM9.65 8c.95 0 1.7.75 1.7 1.7s-.75 1.7-1.7 1.7-1.7-.75-1.7-1.7S8.7 8 9.65 8zM13 12.2h2.8v1.3h.04c.39-.74 1.34-1.52 2.76-1.52 2.95 0 3.5 1.94 3.5 4.47v5.05h-2.9v-4.48c0-1.07-.02-2.45-1.49-2.45-1.49 0-1.72 1.17-1.72 2.37v4.56H13v-9.3z"/></svg>
+                                        </span>
+                                        <span class="badge-action-text">
+                                            <span class="badge-action-sub">在 LINKEDIN 聯絡作者</span>
+                                            <span class="badge-action-main">LinkedIn</span>
+                                        </span>
+                                    </span>
+                                    <span class="badge-action-icon" aria-hidden="true">
+                                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                                    </span>
+                                </a>
+                                <a href="https://www.producthunt.com/products/quan-persona/reviews/new?utm_source=badge-product_review&utm_medium=badge&utm_source=badge-quan&#0045;persona" target="_blank" rel="noopener noreferrer" aria-label="在 Product Hunt 留下評價"><img src="https://api.producthunt.com/widgets/embed-image/v1/product_review.svg?product_id=1348396&theme=dark" alt="quan&#0045;persona - Turn&#0032;survey&#0032;data&#0032;into&#0032;meaningful&#0032;behavioural&#0032;segments | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="journey_schemas_modular.js"></script>
+    <script src="portal-questionnaire-generator.js"></script>
+    <script src="portal-static.js"></script>
+</body>
+</html>
