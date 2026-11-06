@@ -9811,14 +9811,14 @@ window.activeSection = activeSection;
             const player = document.getElementById('commercial-video-player');
             if (!player) return;
             lang = (lang === 'zh') ? 'zh' : 'en';
-            // Do not pre-download the video on Data Saver; it still loads when the viewer opens it. Slow connections get the lighter copy (see index.html).
+            // Do not pre-download the video on Data Saver; it still loads when the viewer opens it.
             var _cn = navigator.connection;
             if (_cn && _cn.saveData) return;
             if (typeof window.__qpSetVideo === 'function') { window.__qpSetVideo(lang); return; }
             if (player.getAttribute('data-lang') === lang) return;
             Array.prototype.slice.call(player.querySelectorAll('source')).forEach(function (s) { s.remove(); });
             player.setAttribute('data-lang', lang);
-            player.preload = 'auto';
+            player.preload = 'metadata';
             player.src = commercialSrcFor(lang);
             if (typeof player.load === 'function') player.load();
         }
@@ -9895,7 +9895,9 @@ window.activeSection = activeSection;
                     }, 2500);
                 });
 
-                player.currentTime = 0;
+                if (player.currentTime !== 0) {
+                    try { player.currentTime = 0; } catch (e) {}
+                }
                 player.muted = false;
                 player.volume = 1.0;
                 const playPromise = player.play();
@@ -10120,8 +10122,6 @@ window.activeSection = activeSection;
             lang = (lang === 'zh') ? 'zh' : 'en';
             try {
                 localStorage.setItem('portal_lang', lang);
-                sessionStorage.setItem('quan_persona_entered', '1');
-                sessionStorage.setItem('quan_persona_landing_done', '1');
             } catch (e) {}
             currentLang = lang; window.currentLang = lang;
             const gate = document.getElementById('lang-gate');
@@ -10154,7 +10154,7 @@ window.activeSection = activeSection;
             }
         };
 
-        // Auto-launch commercial video IMMEDIATELY on landing, then load data concurrently while video plays
+        // Auto-launch commercial video on landing, then load data concurrently while video plays
         function launchLandingFlow() {
             const hash = (window.location.hash || '').replace('#', '');
             const urlParams = new URLSearchParams(window.location.search);
@@ -10164,19 +10164,19 @@ window.activeSection = activeSection;
                                   urlParams.has('section') || urlParams.has('open') || urlParams.has('startTour') || urlParams.has('startRoute') ||
                                   urlParams.has('downloadTemplate') || urlParams.has('restoreDefault') || urlParams.has('uploaded') ||
                                   urlParams.get('skipLanding') === '1';
-            let alreadyEntered = false;
+
+            let dontShow = false;
             try {
-                alreadyEntered = (sessionStorage.getItem('quan_persona_entered') === '1') ||
-                                 (sessionStorage.getItem('quan_persona_landing_done') === '1');
+                dontShow = (localStorage.getItem('quan_persona_dont_show_video') === 'true');
             } catch (e) {}
 
-            if (window.__skipLandingGate || hasDirectTarget || fromInternal || alreadyEntered) {
+            // Landing rule: only bypass the landing gate & video if:
+            // 1. User navigated with a direct section target / query action (e.g. #personas, ?section=journeys)
+            // 2. Navigated from internal portal pages (About Us, FAQ)
+            // 3. User explicitly checked "Don't show the video again"
+            if (window.__skipLandingGate || hasDirectTarget || fromInternal || dontShow) {
                 window.__skipLandingGate = true;
                 window.__skipLandingVideo = true;
-                try {
-                    sessionStorage.setItem('quan_persona_entered', '1');
-                    sessionStorage.setItem('quan_persona_landing_done', '1');
-                } catch (e) {}
                 const gate = document.getElementById('lang-gate');
                 if (gate) {
                     gate.classList.remove('show');
@@ -10195,13 +10195,27 @@ window.activeSection = activeSection;
                 window.currentLang = 'zh';
             }
 
-            let dontShow = false;
-            try {
-                dontShow = (localStorage.getItem('quan_persona_dont_show_video') === 'true');
-            } catch (e) {}
+            window.__skipLandingVideo = false;
 
-            window.__skipLandingVideo = dontShow;
-            showLangGate();
+            // If video has already been opened by early script or is currently open, keep it playing
+            const modal = document.getElementById('commercial-video-modal');
+            const isVideoActive = modal && (modal.classList.contains('active') || modal.style.display === 'flex');
+            if (isVideoActive || window.__commercialHasOpened) {
+                const gate = document.getElementById('lang-gate');
+                if (gate) {
+                    gate.classList.remove('show');
+                    gate.style.display = 'none';
+                }
+                return;
+            }
+
+            let savedLang = null;
+            try { savedLang = localStorage.getItem('portal_lang'); } catch (e) {}
+            if (savedLang) {
+                openCommercialModal(true);
+            } else {
+                showLangGate();
+            }
 
             Array.prototype.slice.call(document.querySelectorAll('#lang-gate .lang-gate-btn')).forEach(function (b) {
                 const l = b.getAttribute('data-lang');

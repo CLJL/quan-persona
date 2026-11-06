@@ -103,9 +103,9 @@
             { id: 'journey', section: 'personas', drawer: true, pad: 1, sel: '#btn-sec-journeys', wait: { section: 'journeys' },
               en: ['Open {navJourneys}', 'Click {navJourneys} in the left menu. It shows what each group does at every stage of the journey.'],
               zh: ['接著：開啟「{navJourneys}」', '點選左側選單的「{navJourneys}」，查看各群在旅程每個階段做了什麼。'] },
-            { id: 'weak', section: 'journeys', sel: () => (window.innerWidth <= 768 ? lowestDip() : null) || q1('#journey-svg'),
-              en: ['Find the weakest stage', 'The curve shows how satisfied this group is at each stage. The lowest dip is where to improve first, and the cards below it suggest actions.'],
-              zh: ['找出最需要改善的階段', '曲線代表這群人在各階段的滿意度；最低的谷底就是優先改善的地方，下方的卡片會提出改善建議。'] },
+            { id: 'weak', section: 'journeys', sel: () => q1('.j-graph-panel') || q1('.j-svg-container') || q1('#journey-svg'), pad: 4,
+              en: ['Emotional experience across the journey', 'The emojis and curve show how this group feels at each stage of the journey. Highs reflect satisfaction, while dips highlight friction and key opportunities.'],
+              zh: ['了解整個歷程的情緒體驗', '曲線與表情符號呈現該族群在歷程各階段的感受與滿意度；谷底代表痛點與最需優化的關鍵時刻。'] },
             { id: 'analytics', section: 'journeys', drawer: true, pad: 1, sel: '#btn-sec-analytics', wait: { section: 'analytics' },
               en: ['Then open {navAnalytics}', 'Click {navAnalytics} in the left menu to see how the groups were formed.'],
               zh: ['再來：開啟「{navAnalytics}」', '點選左側選單的「{navAnalytics}」，查看這些分群是怎麼形成的。'] },
@@ -117,24 +117,24 @@
               zh: ['完整流程你已經走過一遍', '人物誌、歷程地圖、數據分析。接下來，來看看怎麼設計問卷。'] }
         ],
         quest: [
-            { id: 'designer', sel: '#btn-schema-builder', wait: { click: '#btn-schema-builder' },
+            { id: 'designer', section: 'personas', sel: '#btn-schema-builder', wait: { click: '#btn-schema-builder' },
               en: ['Choose your questions', 'Click {customizeSchema} to open the questionnaire designer.'],
               zh: ['選擇要詢問的題目', '點選「{customizeSchema}」，開啟問卷設計工具。'] },
             { id: 'setup', designer: true, delay: 350, sel: designerWhole, also: designerApply, closeAdvances: true,
               en: ['Set your questions', 'Pick the background questions, rating items and journey stages in the Schema Designer, then click “{applySchema}.”'],
               zh: ['設定你的題目', '在問卷設計工具中挑選背景題、評分題與旅程階段，然後點選「{applySchema}」。'] },
-            { id: 'download', sel: '#download-questionnaire-btn', wait: { click: '#download-questionnaire-btn' },
+            { id: 'download', section: 'personas', sel: '#download-questionnaire-btn', wait: { click: '#download-questionnaire-btn' },
               en: ['Download the questionnaire', 'After successfully setting up your schema, click {questionnaireTemplate}. Then send the file to respondents by email or through your survey platform.'],
               zh: ['下載問卷', '問卷架構設定完成後，點選「{questionnaireTemplate}」，再透過電子郵件或你的問卷平台，把檔案發送給受訪者。'] },
-            { id: 'back', last: true, sel: '#upload-csv-btn', buttons: ['ownData'],
+            { id: 'back', section: 'personas', last: true, sel: '#upload-csv-btn', buttons: ['ownData'],
               en: ['When responses come back', 'Export data as a CSV file. Before uploading the CSV file to the dashboard, check that your survey data structure aligns with the {csvGuide}. Visit the next chapter to read the {csvGuide}.'],
               zh: ['回收問卷之後', '把資料匯出成 CSV 檔。上傳到儀表板之前，請先對照「{csvGuide}」，確認你的問卷資料結構與欄位相符。接下來的章節會帶你閱讀「{csvGuide}」。'] }
         ],
         own: [
-            { id: 'dataicon', sel: '#data-menu-btn', wait: { click: '#data-menu-btn' },
+            { id: 'dataicon', section: 'personas', sel: '#data-menu-btn', wait: { click: '#data-menu-btn' },
               en: ['Find the {dataMenu} icon at the top', 'Click the data icon to open the data menu.'],
               zh: ['在上方找到「{dataMenu}」圖示', '點選資料圖示，開啟資料選單。'] },
-            { id: 'menu', menu: true, delay: 200, sel: '#data-menu', also: '#data-menu-btn', wait: { click: '#csv-guide-btn' },
+            { id: 'menu', section: 'personas', menu: true, delay: 200, sel: '#data-menu', also: '#data-menu-btn', wait: { click: '#csv-guide-btn' },
               en: ['Find the {csvGuide} in the drop-down menu', 'Click {csvGuide} to access the page.'],
               zh: ['在下拉選單中找到「{csvGuide}」', '點選「{csvGuide}」，進入說明頁面。'] },
             { id: 'guide', guide: true, delay: 350, sel: '#csv-guide-body',
@@ -143,17 +143,17 @@
             { id: 'template', guide: true, delay: 350, sel: '#csv-guide-btn-template', wait: { click: '#csv-guide-btn-template' },
               en: ['Download the template', 'Click Download CSV Template and fill it with your survey responses.'],
               zh: ['下載範本', '點選「下載 CSV 範本」，並填入你的問卷回覆。'] },
-            { id: 'upload', sel: '#upload-csv-btn', wait: { change: '#file-input' },
+            { id: 'upload', section: 'personas', sel: '#upload-csv-btn', wait: { change: '#file-input' },
               en: ['Upload your file', 'Click the upload icon and choose your CSV file. It is processed in your browser.'],
               zh: ['上傳你的檔案', '點選上傳圖示並選擇你的 CSV 檔案；檔案只會在你的瀏覽器中處理。'] },
-            { id: 'match', last: true, mapping: true, delay: 450, sel: () => capTop(q1('#csv-mapping-scroll-body'), 300), buttons: ['toSample'],
+            { id: 'match', section: 'personas', last: true, mapping: true, delay: 450, sel: () => capTop(q1('#csv-mapping-scroll-body'), 300), buttons: ['toSample'],
               en: ['Check the column match', 'After you choose a file, a screen shows how your columns were matched. Check it, then apply.'],
               zh: ['確認欄位對應', '選好檔案後，畫面會顯示你的欄位對應結果，確認無誤後再套用。'] }
         ]
     };
 
     // ---------- DOM ----------
-    let root, chooser, spot, spot2, card, chip, panel;
+    let root, chooser, backdrop, spot, spot2, card, chip, panel;
     let route = null, ri = 0, raf = 0, advancing = false, flying = false;
     const opened = { guide: false, designer: false, mapping: false };   // modals the tutorial itself opened
     const T = () => TXT[isZh() ? 'zh' : 'en'];
@@ -165,12 +165,13 @@
         if (root) return;
         root = el('div', { id: 'qps-root' });
         chooser = el('div', { id: 'qps-chooser', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'qps-ch-title' });
+        backdrop = el('div', { id: 'qps-backdrop' });
         spot = el('div', { id: 'qps-spot' }); spot2 = el('div', { id: 'qps-spot2' }); card = el('div', { id: 'qps-card', role: 'dialog', 'aria-live': 'polite' });
         chip = el('button', { id: 'qps-chip', type: 'button', 'aria-expanded': 'false' });
         panel = el('div', { id: 'qps-panel' });
-        root.append(chooser, spot, spot2, card, panel, chip);
+        root.append(chooser, backdrop, spot, spot2, card, panel, chip);
         document.body.appendChild(root);
-        chooser.style.display = spot.style.display = spot2.style.display = card.style.display = panel.style.display = chip.style.display = 'none';
+        chooser.style.display = backdrop.style.display = spot.style.display = spot2.style.display = card.style.display = panel.style.display = chip.style.display = 'none';
         chip.onclick = () => togglePanel();
         window.addEventListener('resize', () => route && place());
         window.addEventListener('scroll', () => route && place(), true);
@@ -240,6 +241,7 @@
         if (fromId) { const i = route.findIndex(s => s.id === fromId); if (i >= 0) ri = i; }
         togglePanel(false); closeChooser(false);
         S.seen = true; save();
+        document.body.classList.add('qps-active');
         showStep();
     }
     function resolve(s) { try { return typeof s.sel === 'function' ? s.sel() : (s.sel ? document.querySelector(s.sel) : null); } catch (e) { return null; } }
@@ -255,23 +257,70 @@
             else if (isOpen('csv-mapping-modal') && window.closeCsvMappingModal) { closeCsvMappingModal(); opened.mapping = false; }
         } catch (e) {}
     }
-    function showStep() {
+    function showStep(idx) {
         if (!route) return;
-        const s = route[ri]; advancing = false; s.__seen = false;
+        advancing = true;
+        if (idx !== undefined) ri = idx;
+        if (ri >= route.length) { advancing = false; return closeRoute(); }
+        if (ri < 0) { advancing = false; endRoute(true); openStartHere(); return; }
+        const s = route[ri];
+        s.__seen = false;
         if (s.last && route.__name) mark(route.__name);   // reaching the final step = the route is finished
-        try { if (window.setRailDrawer) window.setRailDrawer(!!s.drawer, true); } catch (e) {}
-        if (s.section && typeof switchMainSection === 'function' && secNow() !== s.section) { try { switchMainSection(s.section); } catch (e) {} window.scrollTo(0, 0); }
-        setTimeout(() => {
-            if (!route) return;
-            syncModals(s);
-            try { if (s.menu) { if (window.openDataMenu) openDataMenu(); } else if (window.closeDataMenu) closeDataMenu(); } catch (e) {}
-            setTimeout(() => {
-                if (!route || route[ri] !== s) return;
-                const target = resolve(s);
-                if (shown(target)) { const r = target.getBoundingClientRect(); if (r.top < 70 || r.bottom > window.innerHeight - 20) { try { target.scrollIntoView({ block: r.height > window.innerHeight * 0.55 ? 'start' : 'center', behavior: 'auto' }); } catch (e) {} } }
-                renderCard(s); place(); tick();
-            }, s.delay || 0);
-        }, s.section ? 450 : 80);
+
+        // Keep transparent dark overlay active continuously: no uncovered frames or flickering
+        if (backdrop) backdrop.style.display = 'block';
+        if (spot) spot.style.display = 'none';
+        if (spot2) spot2.style.display = 'none';
+
+        // 1. Immediately switch main section to the required screen
+        if (s.section && typeof switchMainSection === 'function' && secNow() !== s.section) {
+            try { switchMainSection(s.section); } catch (e) {}
+            window.scrollTo(0, 0);
+        }
+
+        // 2. Immediately sync modals (open/close)
+        syncModals(s);
+
+        // 3. Immediately sync menus & rail drawer
+        try {
+            if (s.menu) {
+                if (window.openDataMenu) openDataMenu();
+            } else if (window.closeDataMenu) {
+                closeDataMenu();
+            }
+        } catch (e) {}
+        try {
+            if (window.setRailDrawer) window.setRailDrawer(!!s.drawer, true);
+        } catch (e) {}
+
+        // 4. Immediately render card content
+        renderCard(s);
+
+        // 5. Position spotlight and card once target is in DOM
+        const runPlace = () => {
+            if (!route || route[ri] !== s) return;
+            const target = resolve(s);
+            if (shown(target)) {
+                const r = target.getBoundingClientRect();
+                if (r.top < 70 || r.bottom > window.innerHeight - 20) {
+                    try {
+                        target.scrollIntoView({
+                            block: r.height > window.innerHeight * 0.55 ? 'start' : 'center',
+                            behavior: 'auto'
+                        });
+                    } catch (e) {}
+                }
+            }
+            place();
+            advancing = false;
+            tick();
+        };
+
+        if (s.delay) {
+            setTimeout(runPlace, Math.min(s.delay, 120));
+        } else {
+            requestAnimationFrame(runPlace);
+        }
     }
     function stepNo(i) { let n = 0; for (let k = 0; k <= i; k++) if (!route[k].sub) n++; return n; }
     function stepTotal() { return route.filter(q => !q.sub).length; }
@@ -301,11 +350,13 @@
         card.style.width = Math.min(420, vw - 24) + 'px';
         if (!shown(target) || s.center) {
             spot.style.display = 'none'; spot2.style.display = 'none';
+            if (backdrop) backdrop.style.display = 'block';
             const cH = card.offsetHeight;
             if (mobile) { card.style.left = '12px'; card.style.right = '12px'; card.style.width = 'auto'; card.style.top = 'auto'; card.style.bottom = '16px'; }
             else { card.style.right = 'auto'; card.style.left = Math.max(12, (vw - card.offsetWidth) / 2) + 'px'; card.style.top = Math.max(12, (vh - cH) / 2) + 'px'; card.style.bottom = 'auto'; }
             return;
         }
+        if (backdrop) backdrop.style.display = 'none';
         const t2 = s.also ? (typeof s.also === 'function' ? s.also() : q1(s.also)) : null;
         if (shown(t2)) { const r2 = t2.getBoundingClientRect(); Object.assign(spot2.style, { display: 'block', left: (r2.left - 4) + 'px', top: (r2.top - 4) + 'px', width: (r2.width + 8) + 'px', height: (r2.height + 8) + 'px' }); } else spot2.style.display = 'none';
         const r = target.getBoundingClientRect(), pad = (s.pad != null ? s.pad : 6);
@@ -340,14 +391,14 @@
         raf = requestAnimationFrame(loop);
     }
     function advance() {
-        if (!route || advancing) return; advancing = true;
+        if (!route || advancing) return;
         if (ri >= route.length - 1) return closeRoute();
-        ri++; setTimeout(showStep, 380);
+        showStep(ri + 1);
     }
     function goBack() {
         if (!route || advancing) return;
         if (ri === 0) { endRoute(true); openStartHere(); return; }
-        advancing = true; ri--; setTimeout(showStep, 200);
+        showStep(ri - 1);
     }
     function closeModalsWeOpened() {
         try {
@@ -359,7 +410,9 @@
     }
     function endRoute(silent) {
         cancelAnimationFrame(raf);
-        const had = !!route; route = null;
+        const had = !!route; route = null; advancing = false;
+        document.body.classList.remove('qps-active');
+        if (backdrop) backdrop.style.display = 'none';
         if (spot) spot.style.display = 'none'; if (spot2) spot2.style.display = 'none'; if (card) card.style.display = 'none';
         if (had) closeModalsWeOpened();
         try { if (had && window.closeDataMenu) closeDataMenu(); if (had && window.setRailDrawer) window.setRailDrawer(false, true); } catch (e) {}
@@ -369,7 +422,8 @@
         if (!route || flying) return;
         cancelAnimationFrame(raf);
         if (spot2) spot2.style.display = 'none';
-        flyTo(card, spot, () => endRoute());
+        const fade = (spot && spot.style.display !== 'none') ? spot : backdrop;
+        flyTo(card, fade, () => endRoute());
     }
     function onClick(e) {
         const t0 = e.target;

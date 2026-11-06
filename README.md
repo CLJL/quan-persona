@@ -58,10 +58,11 @@ The platform provides three synchronised viewpoints to inspect findings:
   - `🛡️ Retail Policyholder`: Customer self-service portals, onboarding friction, claim clarity, and digital trust.
   - `🏥 Hospital Patient Journey`: Clinical service pathways, consultation touchpoints, and discharge coordination.
   - `➕ Custom Schemas`: User-defined research architectures tailored to any B2B or B2C service context.
-- **Standalone Modular Schema Designer (`modular_questionnaire.html`)**:
+- **Modular Schema Designer & In-Portal Customiser**:
+  - Open the in-portal **Schema Builder** modal directly from the top toolbar (`Customise Schema`) or use the standalone designer ([`modular_questionnaire.html`](modular_questionnaire.html)).
   - Add, edit, or re-order stages, rating dimensions, skills, and qualitative prompts in English and Traditional Chinese.
   - Automatic calculation of measure coverage (ensuring questions properly map to WP, AR, PR, and SUP).
-  - One-click export of ready-to-field questionnaire documents and CSV column mapping guides.
+  - One-click generation of ready-to-field questionnaire documents and CSV column mapping guides.
 
 ---
 
@@ -101,11 +102,13 @@ Raw Survey Responses (CSV)
 ### Running Locally
 No Node.js, Python, or local web server is required.
 1. Download or clone this repository.
-2. Double-click [`index.html`](index.html) to open the platform directly in any modern browser (Chrome, Edge, Safari, Firefox).
-3. Click the **Tutorial** button in the navigation rail for an interactive guided tour.
+2. Double-click [`index.html`](index.html) to open the analytics platform directly in any modern browser (Chrome, Edge, Safari, Firefox).
+3. Open [`about.html`](about.html) for product philosophy, audience profiles, and methodology, or [`faq.html`](faq.html) for common questions and data governance details.
+4. Click the **Tutorial** button in the navigation rail for an interactive guided tour.
 
-### Exploring Data
+### Exploring Data & Fieldwork Templates
 - **Explore Pre-loaded Datasets**: Use the top-bar domain dropdown to instantly explore 2,500 synthetic agent responses or policyholder profiles.
+- **Download Questionnaire Templates**: Click the **Download Questionnaire Template** icon in the top toolbar to generate a ready-to-field, printable survey form matching your active schema in English or Traditional Chinese.
 - **Upload Custom Survey CSV**:
   1. Open the **CSV Column Guide** to review required headers or download the pre-formatted CSV template.
   2. Click **Upload CSV Document** (`.csv`) to trigger automated column fuzzy-matching.
@@ -117,8 +120,15 @@ No Node.js, Python, or local web server is required.
 
 ```text
 ├── index.html                                 # Core analytics platform (UI, clustering engine, visualisations)
+├── about.html                                 # Standalone About Us, methodology, and audience profile page
+├── faq.html                                   # Standalone Frequently Asked Questions & Data Privacy page
 ├── modular_questionnaire.html                 # Standalone modular schema & questionnaire designer
+├── Modular_Questionnaire_Template_EN.html     # Ready-to-print survey template (English)
+├── Modular_Questionnaire_Template_ZH.html     # Ready-to-print survey template (Traditional Chinese)
 ├── journey_schemas_modular.js                 # Schemas, question definitions, measure calculations
+├── portal-questionnaire-generator.js          # Dynamic survey template generator (EN/ZH)
+├── portal-static.js                           # Controller for standalone pages (nav, modals, i18n)
+├── portal-start.js, portal-start.css          # Onboarding tutorial overlay & step-by-step tour
 ├── survey_data_2500.js                        # Built-in synthetic dataset (Agent domain, English)
 ├── survey_data_zh_2500.js                     # Built-in synthetic dataset (Agent domain, Traditional Chinese)
 ├── policyholder_data_2500.js                  # Built-in synthetic dataset (Retail Policyholder domain)

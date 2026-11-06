@@ -2048,10 +2048,6 @@ const DEFAULT_JOURNEY_SCHEMAS = JSON.parse(JSON.stringify(JOURNEY_SCHEMAS));
 
 function getActiveJourneySchema() {
     if (typeof window !== 'undefined') {
-        if (currentJourneyDomain === 'agent' || !currentJourneyDomain) {
-            // Canonical Agent Journey: Always pristine original schema design
-            return JOURNEY_SCHEMAS.agent;
-        }
         if (window.__activeCustomSchema && (!currentJourneyDomain || window.__activeCustomSchema.id === currentJourneyDomain)) {
             return window.__activeCustomSchema;
         }
@@ -2059,32 +2055,32 @@ function getActiveJourneySchema() {
             const activeStored = localStorage.getItem('active_journey_schema');
             if (activeStored) {
                 const parsed = JSON.parse(activeStored);
-                if (parsed && (!currentJourneyDomain || parsed.id === currentJourneyDomain)) {
-                    if (parsed.id !== 'agent') {
-                        return parsed;
-                    }
+                if (parsed && parsed.id && (!currentJourneyDomain || parsed.id === currentJourneyDomain)) {
+                    return parsed;
                 }
             }
+            const activeDomain = currentJourneyDomain || (typeof window !== 'undefined' && localStorage.getItem('current_journey_domain')) || 'agent';
             const portalStored = localStorage.getItem('portal_custom_schemas');
             if (portalStored) {
                 const allCustom = JSON.parse(portalStored);
-                if (allCustom && allCustom[currentJourneyDomain]) {
-                    const parsed = allCustom[currentJourneyDomain];
-                    if (parsed && parsed.id !== 'agent') {
+                if (allCustom && allCustom[activeDomain]) {
+                    const parsed = allCustom[activeDomain];
+                    if (parsed && parsed.id) {
                         return parsed;
                     }
                 }
             }
-            const domainStored = localStorage.getItem(`custom_journey_schema_${currentJourneyDomain}`);
+            const domainStored = localStorage.getItem(`custom_journey_schema_${activeDomain}`);
             if (domainStored) {
                 const parsed = JSON.parse(domainStored);
-                if (parsed && parsed.id && parsed.id !== 'agent') {
+                if (parsed && parsed.id) {
                     return parsed;
                 }
             }
         } catch(e) {}
     }
-    return JOURNEY_SCHEMAS[currentJourneyDomain] || JOURNEY_SCHEMAS.agent;
+    const dom = currentJourneyDomain || 'agent';
+    return (typeof JOURNEY_SCHEMAS === 'object' && JOURNEY_SCHEMAS && (JOURNEY_SCHEMAS[dom] || JOURNEY_SCHEMAS.agent)) || {};
 }
 
 if (typeof window !== 'undefined') {

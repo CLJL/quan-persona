@@ -4,6 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Change Modular Questionnaire & Measurement Schema Designer | Modular Questionnaire</title>
+    <!-- Early language detection to prevent language flash (FOUC) -->
+    <script>
+    (function () {
+        try {
+            var p = new URLSearchParams(window.location.search).get('lang');
+            var s = p || localStorage.getItem('portal_lang');
+            var z = s ? (s === 'zh') : ((navigator.language || '').toLowerCase().indexOf('zh') === 0);
+            document.documentElement.setAttribute('data-lang', z ? 'zh' : 'en');
+            document.documentElement.lang = z ? 'zh-Hant' : 'en';
+            window.__initialLang = z ? 'zh' : 'en';
+            if (z) {
+                document.title = '自訂問卷與分析構面設計工具 | Modular Questionnaire';
+            }
+        } catch (e) {
+            window.__initialLang = 'en';
+        }
+    })();
+    </script>
     <script src="journey_schemas_modular.js?v=20261029_sup5"></script>
     <style>
         @font-face { font-family: 'Outfit'; font-style: normal; font-weight: 300 700; font-display: swap; src: url('outfit.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
@@ -996,17 +1014,19 @@
 
         /* Pinned Top Action Bar */
         .top-action-bar-pinned {
+            position: -webkit-sticky;
             position: sticky;
             top: 0;
             left: 0;
             right: 0;
             width: 100%;
-            z-index: 1000;
-            background: rgba(11, 15, 23, 0.95);
+            z-index: 10005;
+            background: #0b0f17;
+            background: rgba(11, 15, 23, 0.98);
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
             border-bottom: 1px solid var(--border-dim);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             box-sizing: border-box;
         }
         .top-action-bar-inner {
@@ -1050,6 +1070,30 @@
                 width: 100%;
                 justify-content: flex-end;
                 gap: 8px;
+            }
+        }
+        @media (max-width: 640px) {
+            .top-action-bar-inner {
+                padding: 8px 10px;
+                gap: 6px;
+            }
+            .top-action-bar-left {
+                display: none;
+            }
+            .top-action-bar-right {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                gap: 6px;
+            }
+            .top-action-bar-right .btn {
+                flex: 1 1 0;
+                padding: 6px 4px;
+                font-size: var(--fs-small);
+                min-height: 38px;
+                white-space: nowrap;
+                text-align: center;
+                justify-content: center;
             }
         }
 
@@ -1631,7 +1675,7 @@
     <div class="toast-banner" id="toast-banner">Schema saved successfully!</div>
 
     <script>
-        let currentLang = 'en';
+        let currentLang = window.__initialLang || 'en';
         let currentSchemaId = 'agent';
         let activeSchema = null;
 
@@ -3620,6 +3664,7 @@
                 localStorage.setItem(`custom_journey_schema_${updated.id}`, JSON.stringify(updated));
                 localStorage.setItem('active_journey_schema', JSON.stringify(updated));
                 localStorage.setItem('custom_journey_schema', JSON.stringify(updated));
+                localStorage.setItem('current_journey_domain', updated.id);
                 
                 const customSchemas = JSON.parse(localStorage.getItem('portal_custom_schemas') || '{}');
                 customSchemas[updated.id] = updated;
@@ -3635,6 +3680,7 @@
             try {
                 if (window.parent && window.parent !== window) {
                     window.parent.postMessage(msg, '*');
+                    window.parent.postMessage({ type: 'APPLY_SCHEMA', schema: updated }, '*');
                     if (typeof window.parent.applySchemaToPlatform === 'function') {
                         window.parent.applySchemaToPlatform(updated);
                     }
@@ -3646,6 +3692,7 @@
             try {
                 if (window.opener && window.opener !== window) {
                     window.opener.postMessage(msg, '*');
+                    window.opener.postMessage({ type: 'APPLY_SCHEMA', schema: updated }, '*');
                     if (typeof window.opener.applySchemaToPlatform === 'function') {
                         window.opener.applySchemaToPlatform(updated);
                     }
@@ -4332,15 +4379,14 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
-            const langParam = params.get('lang');
-            if (langParam === 'zh' || langParam === 'en') {
-                currentLang = langParam;
-                const btnEn = document.getElementById('btn-lang-en');
-                if (btnEn) btnEn.className = (langParam === 'en') ? 'lang-btn active' : 'lang-btn';
-                const btnZh = document.getElementById('btn-lang-zh');
-                if (btnZh) btnZh.className = (langParam === 'zh') ? 'lang-btn active' : 'lang-btn';
-                updateStaticLabels();
-            }
+            const langParam = params.get('lang') || localStorage.getItem('portal_lang');
+            const targetLang = (langParam === 'zh' || langParam === 'en') ? langParam : (window.__initialLang || 'en');
+            currentLang = targetLang;
+            const btnEn = document.getElementById('btn-lang-en');
+            if (btnEn) btnEn.className = (targetLang === 'en') ? 'lang-btn active' : 'lang-btn';
+            const btnZh = document.getElementById('btn-lang-zh');
+            if (btnZh) btnZh.className = (targetLang === 'zh') ? 'lang-btn active' : 'lang-btn';
+            updateStaticLabels();
             const schemaParam = params.get('schema') || 'agent';
             currentSchemaId = schemaParam;
             loadSchema(schemaParam);

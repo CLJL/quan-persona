@@ -102,7 +102,22 @@
     <link rel="manifest" href="site.webmanifest">
     <meta name="theme-color" content="#0E1016">
     <link rel="preload" href="outfit.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="portal.css">
+    <!-- Early language detection to prevent language flash (FOUC) -->
+    <script>
+    (function () {
+        try {
+            var p = new URLSearchParams(window.location.search).get('lang');
+            var s = p || localStorage.getItem('portal_lang');
+            var z = s ? (s === 'zh') : ((navigator.language || '').toLowerCase().indexOf('zh') === 0);
+            document.documentElement.setAttribute('data-lang', z ? 'zh' : 'en');
+            document.documentElement.lang = z ? 'zh-Hant' : 'en';
+            if (z) {
+                document.title = '關於我們 | quan-persona - 行為分群與人物誌分析平台';
+            }
+        } catch (e) {}
+    })();
+    </script>
+    <link rel="stylesheet" href="portal.css?v=20261106j">
 </head>
 <body data-page="about">
     <div class="container">
@@ -237,7 +252,7 @@
                         </div>
                         <h3>How it works</h3>
                         <div class="about-grid about-flow">
-                            <div class="about-card about-step"><div class="n">1</div><div><b>Design your questionnaire</b><span>In the Schema designer, define your research questions, behavioural dimensions and measurement criteria. Download the questionnaire and send it to respondents by email or through your survey platform.</span></div></div>
+                            <div class="about-card about-step"><div class="n">1</div><div><b>Design your questionnaire</b><span>In the <a href="#" onclick="openSchemaBuilderModal(); return false;" class="about-link" style="text-decoration: underline;">Schema designer</a>, define your research questions, behavioural dimensions and measurement criteria. <a href="#" onclick="openQuestionnaireTemplate(); return false;" class="about-link" style="text-decoration: underline;">Download the questionnaire</a> to send to respondents by email or through your survey platform.</span></div></div>
                             <div class="about-card about-step"><div class="n">2</div><div><b>Upload and map your data</b><span>Import survey responses as a CSV. The portal matches columns to your schema, and you can correct the matching before analysis.</span></div></div>
                             <div class="about-card about-step"><div class="n">3</div><div><b>Discover behavioural segments</b><span>DBSCAN first sets aside respondents who do not belong to sufficiently dense clusters as potential outliers or noise (the proportion varies based on data distribution and clustering parameters), then K-means groups the rest. You choose K from 3 to 8, and a K check reports how well each choice is supported. The same file always gives the same clusters.</span></div></div>
                             <div class="about-card about-step"><div class="n">4</div><div><b>Explore your insights</b><span>Review the results in three views: Persona Dashboard, Journey Map, and Analytics &amp; DB.</span></div></div>
@@ -269,6 +284,10 @@
                                 <a href="#" onclick="openStartHere(); return false;" class="about-link" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 1.0625rem; text-decoration: underline; text-underline-offset: 3px;">
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;"><polygon points="11.5 2.6 21 6.4 11.5 10.2 2 6.4"></polygon><line x1="20.4" y1="7.1" x2="20.4" y2="10.4"></line><circle cx="20.4" cy="11.6" r="1" fill="currentColor" stroke="none"></circle><path d="M6.8 9v8.1M16.2 9v8.1"></path><path d="M3.8 13v6.2c2.9-.8 5.5-.4 7.7 1.1 2.2-1.5 4.8-1.9 7.7-1.1V13"></path></svg>
                                     <span>Take the tutorial</span>
+                                </a>
+                                <a href="#" onclick="openQuestionnaireTemplate(); return false;" class="about-link" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 1.0625rem; text-decoration: underline; text-underline-offset: 3px;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                                    <span>Download Questionnaire Template</span>
                                 </a>
                                 <a href="#" onclick="openCsvGuide(); return false;" class="about-link" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 1.0625rem; text-decoration: underline; text-underline-offset: 3px;">
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line></svg>
@@ -330,7 +349,7 @@
                         </div>
                         <h3>運作方式</h3>
                         <div class="about-grid about-flow">
-                            <div class="about-card about-step"><div class="n">1</div><div><b>設計問卷</b><span>在 Schema 設計工具中，定義研究問題、行為構面與衡量標準。再下載問卷，透過電子郵件或問卷平台發送給受訪者。</span></div></div>
+                            <div class="about-card about-step"><div class="n">1</div><div><b>設計問卷</b><span>在 <a href="#" onclick="openSchemaBuilderModal(); return false;" class="about-link" style="text-decoration: underline;">Schema 設計工具</a>中，定義研究問題、行為構面與衡量標準。再<a href="#" onclick="openQuestionnaireTemplate(); return false;" class="about-link" style="text-decoration: underline;">下載問卷</a>，透過電子郵件或問卷平台發送給受訪者。</span></div></div>
                             <div class="about-card about-step"><div class="n">2</div><div><b>上傳並對應資料</b><span>匯入 CSV 格式的問卷資料，系統會依你的衡量架構自動比對欄位，分析前也可以自行調整對應。</span></div></div>
                             <div class="about-card about-step"><div class="n">3</div><div><b>找出行為分群</b><span>先以 DBSCAN 依資料密度與分佈識別並排除離群值與雜訊點（比例依數據特徵與分群參數而異），再以 K-means 將其餘受訪者分群。K 值可在 3 到 8 之間自行選擇，並提供 K 值檢查，了解每個選擇的支持程度。同一份檔案，每次都會得到相同的分群結果。</span></div></div>
                             <div class="about-card about-step"><div class="n">4</div><div><b>探索洞察</b><span>透過三個檢視來閱讀分析結果：人物誌看板、歷程地圖、數據分析與資料庫。</span></div></div>
@@ -362,6 +381,10 @@
                                 <a href="#" onclick="openStartHere(); return false;" class="about-link" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 1.0625rem; text-decoration: underline; text-underline-offset: 3px;">
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;"><polygon points="11.5 2.6 21 6.4 11.5 10.2 2 6.4"></polygon><line x1="20.4" y1="7.1" x2="20.4" y2="10.4"></line><circle cx="20.4" cy="11.6" r="1" fill="currentColor" stroke="none"></circle><path d="M6.8 9v8.1M16.2 9v8.1"></path><path d="M3.8 13v6.2c2.9-.8 5.5-.4 7.7 1.1 2.2-1.5 4.8-1.9 7.7-1.1V13"></path></svg>
                                     <span>開啟教學導覽</span>
+                                </a>
+                                <a href="#" onclick="openQuestionnaireTemplate(); return false;" class="about-link" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 1.0625rem; text-decoration: underline; text-underline-offset: 3px;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                                    <span>下載問卷範本</span>
                                 </a>
                                 <a href="#" onclick="openCsvGuide(); return false;" class="about-link" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 1.0625rem; text-decoration: underline; text-underline-offset: 3px;">
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line></svg>

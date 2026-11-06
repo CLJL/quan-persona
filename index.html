@@ -74,7 +74,24 @@
     <meta name="theme-color" content="#0E1016">
     <link rel="preload" href="outfit.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Externalised Stylesheet -->
-    <link rel="stylesheet" href="portal.css?v=20261105i">
+    <link rel="stylesheet" href="portal.css?v=20261106j">
+
+    <!-- Early language pre-activation to prevent FOUC / flash of English -->
+    <script>
+    (function () {
+        try {
+            var params = new URLSearchParams(window.location.search);
+            var langParam = params.get('lang');
+            var stored = langParam || localStorage.getItem('portal_lang');
+            var isZh = stored ? (stored === 'zh') : ((navigator.language || '').toLowerCase().indexOf('zh') === 0);
+            document.documentElement.setAttribute('data-lang', isZh ? 'zh' : 'en');
+            document.documentElement.lang = isZh ? 'zh-Hant' : 'en';
+            if (isZh) {
+                document.title = 'quan-persona - 行為分群與人物誌分析平台';
+            }
+        } catch (e) {}
+    })();
+    </script>
 
     <!-- Early section pre-activation: if URL targets a specific section or modal, prevent flash of default personas view -->
     <script>
@@ -748,19 +765,25 @@
                               params.has('section') || params.has('open') || params.has('startTour') || params.has('startRoute') ||
                               params.has('downloadTemplate') || params.has('restoreDefault') || params.has('uploaded') ||
                               params.get('skipLanding') === '1';
-        var alreadyEntered = false;
+
+        if (params.has('langGate') && g) {
+            var l0 = document.getElementById('lang-gate-logo'), m0 = document.querySelector('.brand-mark');
+            if (l0 && m0 && !l0.getAttribute('src')) l0.src = m0.src;
+            g.style.display = 'flex';
+            void g.offsetWidth;
+            g.classList.add('show');
+            document.body.style.overflow = 'hidden';
+            return;
+        }
+
+        var dontShowVideo = false;
         try {
-            alreadyEntered = (sessionStorage.getItem('quan_persona_entered') === '1') ||
-                             (sessionStorage.getItem('quan_persona_landing_done') === '1');
+            dontShowVideo = (localStorage.getItem('quan_persona_dont_show_video') === 'true');
         } catch (e) {}
 
-        if (hasDirectTarget || fromInternal || alreadyEntered) {
+        if (hasDirectTarget || fromInternal || dontShowVideo) {
             window.__skipLandingGate = true;
             window.__skipLandingVideo = true;
-            try {
-                sessionStorage.setItem('quan_persona_entered', '1');
-                sessionStorage.setItem('quan_persona_landing_done', '1');
-            } catch (e) {}
             if (g) {
                 g.classList.remove('show');
                 g.style.display = 'none';
@@ -769,8 +792,22 @@
             return;
         }
 
-        // First-time landing visitor: display language gate
-        if (g) {
+        // If user already has a saved language preference, open video directly in that language
+        var savedLang = null;
+        try {
+            savedLang = localStorage.getItem('portal_lang') || params.get('lang');
+        } catch (e) {}
+
+        if (savedLang) {
+            if (g) {
+                g.classList.remove('show');
+                g.style.display = 'none';
+            }
+            if (window.__qpEarlyOpen) {
+                window.__qpEarlyOpen(savedLang);
+            }
+        } else if (g) {
+            // First-time landing visitor without language choice: display language gate
             var l = document.getElementById('lang-gate-logo'), m = document.querySelector('.brand-mark');
             if (l && m && !l.getAttribute('src')) l.src = m.src;
             g.style.display = 'flex';
@@ -779,13 +816,20 @@
             document.body.style.overflow = 'hidden';
         }
         window.__pendingLang = null;
+        window.openLanguageGate = function () {
+            if (!g) return;
+            var l = document.getElementById('lang-gate-logo'), m = document.querySelector('.brand-mark');
+            if (l && m && !l.getAttribute('src')) l.src = m.src;
+            g.style.display = 'flex';
+            void g.offsetWidth;
+            g.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        };
         window.chooseLandingLang = function (lang) {
             lang = (lang === 'zh') ? 'zh' : 'en';
             window.__pendingLang = lang;
             try {
                 localStorage.setItem('portal_lang', lang);
-                sessionStorage.setItem('quan_persona_entered', '1');
-                sessionStorage.setItem('quan_persona_landing_done', '1');
             } catch (e) {}
             var skip = false; try { skip = localStorage.getItem('quan_persona_dont_show_video') === 'true'; } catch (e) {}
             // Before the app has loaded: close the language screen and start the video straight away; the app picks up the choice when it is ready
@@ -802,7 +846,7 @@
         <div class="commercial-modal-content" onclick="event.stopPropagation()">
             <button type="button" class="commercial-modal-close-btn" id="btn-close-commercial-modal" onclick="closeCommercialModal()" aria-label="Close" title="Close">&times;</button>
             <div class="commercial-video-wrapper">
-                <video id="commercial-video-player" controls playsinline preload="auto">
+                <video id="commercial-video-player" controls playsinline preload="metadata">
                     Your browser does not support the video tag.
                 </video>
                 <button type="button" class="commercial-play-gate-btn" id="commercial-play-btn" onclick="playCommercialWithSound(event)" aria-label="Play video with sound">
@@ -825,8 +869,7 @@
     </div>
 
     <script>
-    /* Landing speed: the intro video starts buffering on language choice or hover,
-       preventing network competition with the application modules during initial page parse. */
+    /* Full 1080p HD web-optimised video (fast-start stream with moov atom at beginning) */
     (function () {
         window.__qpVideoSrc = function (lang) {
             return (lang === 'zh')
@@ -846,12 +889,34 @@
             lang = (lang === 'zh') ? 'zh' : 'en';
             if (p.getAttribute('data-lang') === lang && p.src) return p;
             Array.prototype.slice.call(p.querySelectorAll('source')).forEach(function (x) { x.remove(); });
-            p.setAttribute('data-lang', lang); p.preload = 'auto'; p.src = window.__qpVideoSrc(lang); try { p.load(); } catch (e) {}
+            p.setAttribute('data-lang', lang); p.preload = 'metadata'; p.src = window.__qpVideoSrc(lang);
             return p;
         };
-        // Pre-warm the detected initial language video immediately on page parse so it buffers while user views the language gate
-        var initLang = guess();
-        window.__qpSetVideo(initLang);
+
+        // Landing check: only skip landing video/gate if user explicitly checked "Don't show video again"
+        // OR navigated with direct target/hash OR from internal portal pages (about/faq)
+        var hash = (window.location.hash || '').replace('#', '');
+        var urlParams = new URLSearchParams(window.location.search);
+        var ref = (document.referrer || '').toLowerCase();
+        var fromInternal = ref.indexOf('about') !== -1 || ref.indexOf('faq') !== -1;
+        var hasDirectTarget = ['personas', 'journeys', 'analytics'].indexOf(hash) !== -1 ||
+                              urlParams.has('section') || urlParams.has('open') || urlParams.has('startTour') || urlParams.has('startRoute') ||
+                              urlParams.has('downloadTemplate') || urlParams.has('restoreDefault') || urlParams.has('uploaded') ||
+                              urlParams.get('skipLanding') === '1';
+        var dontShowVideo = false;
+        try {
+            dontShowVideo = (localStorage.getItem('quan_persona_dont_show_video') === 'true');
+        } catch (e) {}
+
+        if (hasDirectTarget || fromInternal || dontShowVideo) {
+            window.__skipLandingGate = true;
+            window.__skipLandingVideo = true;
+            var gate = document.getElementById('lang-gate');
+            if (gate) { gate.style.display = 'none'; gate.classList.remove('show'); }
+        } else {
+            var initLang = guess();
+            window.__qpSetVideo(initLang);
+        }
 
         function spin(p) {
             var w = p.parentNode, sp = document.getElementById('commercial-loading');

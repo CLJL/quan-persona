@@ -52,6 +52,8 @@
 
     const isZh = () => {
         try {
+            const urlLang = new URLSearchParams(window.location.search).get('lang');
+            if (urlLang) return urlLang === 'zh';
             const stored = localStorage.getItem('portal_lang');
             if (stored) return stored === 'zh';
             const nav = (navigator.language || '').toLowerCase();
@@ -97,7 +99,6 @@
     window.chooseLang = function (lang) {
         try {
             localStorage.setItem('portal_lang', lang);
-            sessionStorage.setItem('quan_persona_entered', '1');
         } catch (e) {}
         applyLang(lang);
         const wrap = document.getElementById('lang-menu-wrap');
@@ -306,28 +307,75 @@
         window.downloadQuestionnaireTemplate();
     };
 
+    // Synchronize custom schemas and active journey schema on page load
+    try {
+        const storedDomain = localStorage.getItem('current_journey_domain');
+        if (storedDomain) {
+            window.currentJourneyDomain = storedDomain;
+            if (typeof currentJourneyDomain !== 'undefined') currentJourneyDomain = storedDomain;
+        }
+        const activeStored = localStorage.getItem('active_journey_schema');
+        if (activeStored) {
+            const parsed = JSON.parse(activeStored);
+            if (parsed && parsed.id) {
+                window.__activeCustomSchema = parsed;
+                if (typeof window.JOURNEY_SCHEMAS === 'object' && window.JOURNEY_SCHEMAS) {
+                    window.JOURNEY_SCHEMAS[parsed.id] = parsed;
+                }
+                if (typeof JOURNEY_SCHEMAS === 'object' && JOURNEY_SCHEMAS) {
+                    JOURNEY_SCHEMAS[parsed.id] = parsed;
+                }
+            }
+        }
+        const customSchemasRaw = localStorage.getItem('portal_custom_schemas');
+        if (customSchemasRaw) {
+            const parsedCustom = JSON.parse(customSchemasRaw);
+            if (parsedCustom && typeof parsedCustom === 'object') {
+                Object.keys(parsedCustom).forEach(k => {
+                    if (parsedCustom[k] && typeof window.JOURNEY_SCHEMAS === 'object' && window.JOURNEY_SCHEMAS) {
+                        window.JOURNEY_SCHEMAS[k] = parsedCustom[k];
+                    }
+                    if (parsedCustom[k] && typeof JOURNEY_SCHEMAS === 'object' && JOURNEY_SCHEMAS) {
+                        JOURNEY_SCHEMAS[k] = parsedCustom[k];
+                    }
+                });
+            }
+        }
+    } catch (e) {
+        console.warn('[portal-static] Error restoring custom schemas:', e);
+    }
+
     window.openSchemaBuilderModal = function () {
         let modal = document.getElementById('schema-builder-modal');
         if (!modal) {
             modal = document.createElement('div');
             modal.id = 'schema-builder-modal';
             modal.className = 'modal-overlay';
-            modal.style.cssText = 'z-index: 10005; padding: 0; display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center;';
+            modal.style.cssText = 'z-index: 10005; padding: 0; margin: 0; display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; overflow: hidden;';
             modal.onclick = function (e) {
                 if (e.target === this) window.closeSchemaBuilderModal();
             };
             modal.innerHTML =
-                '<div class="modal-content" onclick="event.stopPropagation()" style="width: 100vw; max-width: 100vw; height: 100vh; max-height: 100vh; padding: 0; border: none; border-radius: 0; background: #0b1120; box-shadow: none; display: flex; flex-direction: column; overflow: hidden; position: relative;">' +
-                    '<button type="button" class="btn btn-secondary" onclick="closeSchemaBuilderModal()" aria-label="Close" style="position: absolute; top: 12px; right: 16px; z-index: 100; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.1rem; padding: 0; border-radius: 50%; background: rgba(30, 34, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff;">&#10005;</button>' +
-                    '<iframe id="modular-questionnaire-iframe" src="about:blank" style="width: 100%; height: 100%; border: none; display: block;" title="Modular Questionnaire Designer"></iframe>' +
+                '<div class="modal-content" onclick="event.stopPropagation()" style="width: 100vw; max-width: 100vw; height: 100%; height: 100vh; height: 100dvh; max-height: 100%; max-height: 100vh; max-height: 100dvh; padding: 0; margin: 0; border: none; border-radius: 0; background: #0b1120; box-shadow: none; display: flex; flex-direction: column; overflow: hidden; position: fixed; inset: 0;">' +
+                    '<iframe id="modular-questionnaire-iframe" src="about:blank" style="width: 100%; height: 100%; min-height: 100%; border: none; display: block; flex: 1 1 100%;" title="Modular Questionnaire Designer"></iframe>' +
                 '</div>';
             document.body.appendChild(modal);
         }
         const zh = isZh();
         const lang = zh ? 'zh' : 'en';
+        let domain = 'agent';
+        try {
+            if (window.__activeCustomSchema && window.__activeCustomSchema.id) {
+                domain = window.__activeCustomSchema.id;
+            } else if (typeof getActiveJourneySchema === 'function' && getActiveJourneySchema() && getActiveJourneySchema().id) {
+                domain = getActiveJourneySchema().id;
+            } else {
+                domain = localStorage.getItem('current_journey_domain') || 'agent';
+            }
+        } catch(e) {}
         const iframe = document.getElementById('modular-questionnaire-iframe');
         if (iframe) {
-            iframe.src = 'modular_questionnaire.html?lang=' + lang + '&schema=agent&t=' + Date.now();
+            iframe.src = 'modular_questionnaire.html?lang=' + lang + '&schema=' + encodeURIComponent(domain) + '&t=' + Date.now();
         }
         modal.style.display = 'flex';
         modal.classList.add('active');
@@ -413,9 +461,42 @@
         }
     };
 
+    window.applySchemaToPlatform = function(schema) {
+        if (!schema || !schema.id) return;
+        if (typeof window.JOURNEY_SCHEMAS === 'object' && window.JOURNEY_SCHEMAS) {
+            window.JOURNEY_SCHEMAS[schema.id] = schema;
+        }
+        if (typeof JOURNEY_SCHEMAS === 'object' && JOURNEY_SCHEMAS) {
+            JOURNEY_SCHEMAS[schema.id] = schema;
+        }
+        window.currentJourneyDomain = schema.id;
+        if (typeof currentJourneyDomain !== 'undefined') currentJourneyDomain = schema.id;
+        window.__activeCustomSchema = schema;
+        try {
+            localStorage.setItem('active_journey_schema', JSON.stringify(schema));
+            localStorage.setItem('current_journey_domain', schema.id);
+            localStorage.setItem(`custom_journey_schema_${schema.id}`, JSON.stringify(schema));
+            let allCustom = {};
+            try {
+                const raw = localStorage.getItem('portal_custom_schemas');
+                if (raw) allCustom = JSON.parse(raw);
+            } catch(e) {}
+            allCustom[schema.id] = schema;
+            localStorage.setItem('portal_custom_schemas', JSON.stringify(allCustom));
+        } catch(e) {}
+        window.closeSchemaBuilderModal();
+    };
+
     window.addEventListener('message', function (e) {
-        if (e.data === 'closeSchemaBuilderModal' || (e.data && (e.data.type === 'closeSchemaBuilderModal' || e.data.type === 'CLOSE_SCHEMA_MODAL' || e.data.type === 'APPLY_SCHEMA'))) {
+        if (!e.data) return;
+        if (e.data === 'closeSchemaBuilderModal' || e.data.type === 'closeSchemaBuilderModal' || e.data.type === 'CLOSE_SCHEMA_MODAL') {
             window.closeSchemaBuilderModal();
+        } else if (e.data.type === 'SCHEMA_UPDATED' || e.data.type === 'APPLY_SCHEMA') {
+            if (e.data.schema) {
+                window.applySchemaToPlatform(e.data.schema);
+            } else {
+                window.closeSchemaBuilderModal();
+            }
         }
     });
 
@@ -578,7 +659,6 @@
     });
 
     function init() {
-        try { sessionStorage.setItem('quan_persona_entered', '1'); } catch (e) {}
         const lang = isZh() ? 'zh' : 'en';
         applyLang(lang);
         initRail();

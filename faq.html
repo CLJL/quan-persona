@@ -123,7 +123,7 @@
               "name": "Can I use my own questionnaire and measures?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes. In the Schema designer, define your research questions, behavioural dimensions and measurement criteria. Then download the questionnaire from the Data menu and send it to respondents by email or through your survey platform. quan-persona does not send or collect questionnaires itself: you bring the responses back as a CSV."
+                "text": "Yes. In the Schema designer, define your research questions, behavioural dimensions and measurement criteria. Then download the questionnaire using Download Questionnaire Template in the top toolbar and send it to respondents by email or through your survey platform. quan-persona does not send or collect questionnaires itself: you bring the responses back as a CSV."
               }
             },
             {
@@ -163,7 +163,22 @@
     <link rel="manifest" href="site.webmanifest">
     <meta name="theme-color" content="#0E1016">
     <link rel="preload" href="outfit.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="portal.css">
+    <!-- Early language detection to prevent language flash (FOUC) -->
+    <script>
+    (function () {
+        try {
+            var p = new URLSearchParams(window.location.search).get('lang');
+            var s = p || localStorage.getItem('portal_lang');
+            var z = s ? (s === 'zh') : ((navigator.language || '').toLowerCase().indexOf('zh') === 0);
+            document.documentElement.setAttribute('data-lang', z ? 'zh' : 'en');
+            document.documentElement.lang = z ? 'zh-Hant' : 'en';
+            if (z) {
+                document.title = '常見問題 (FAQ) | quan-persona - 行為分群與人物誌分析平台';
+            }
+        } catch (e) {}
+    })();
+    </script>
+    <link rel="stylesheet" href="portal.css?v=20261106j">
 </head>
 <body data-page="faq">
     <div class="container">
@@ -292,7 +307,7 @@
                             <details class="faq-item"><summary>How many respondents do I need?</summary><div class="faq-a">With fewer than 15 respondents the portal puts everyone in a single group, because that is too few for stable clustering. The K check needs at least 24 respondents. In general, more respondents give more stable groups. The K check runs automatically for up to 3,000 respondents.</div></details>
                             <details class="faq-item"><summary>How does it decide how many groups there are?</summary><div class="faq-a">DBSCAN first sets aside respondents who do not belong to sufficiently dense clusters as potential outliers or noise (the proportion varies depending on dataset characteristics and clustering parameters), then K-means groups the rest. You choose K from 3 to 8 with the slider, and the K check reports how well each choice is supported using a silhouette score and stability.</div></details>
                             <details class="faq-item"><summary>Will I get the same result every time?</summary><div class="faq-a">Yes. The same file always gives the same clusters.</div></details>
-                            <details class="faq-item"><summary>Can I use my own questionnaire and measures?</summary><div class="faq-a">Yes. In the <a href="#" onclick="openSchemaBuilderModal(); return false;" class="faq-link">Schema designer</a>, define your research questions, behavioural dimensions and measurement criteria. Then download the questionnaire from the Data menu and send it to respondents by email or through your survey platform. quan-persona does not send or collect questionnaires itself: you bring the responses back as a CSV.</div></details>
+                            <details class="faq-item"><summary>Can I use my own questionnaire and measures?</summary><div class="faq-a">Yes. In the <a href="#" onclick="openSchemaBuilderModal(); return false;" class="faq-link">Schema designer</a>, define your research questions, behavioural dimensions and measurement criteria. Then download the questionnaire using <a href="#" onclick="openQuestionnaireTemplate(); return false;" class="faq-link">Download Questionnaire Template</a> in the top toolbar and send it to respondents by email or through your survey platform. quan-persona does not send or collect questionnaires itself: you bring the responses back as a CSV.</div></details>
                             <details class="faq-item"><summary>Can I edit and export the personas?</summary><div class="faq-a">Yes. You can edit a persona's title, description, photo and quote. Persona export is currently not supported.</div></details>
                             <details class="faq-item"><summary>Which browsers does it work in?</summary><div class="faq-a">Any modern browser: Chrome, Edge, Safari and Firefox.</div></details>
                             <details class="faq-item"><summary>Is quan-persona open source?</summary><div class="faq-a">Yes. It is released under the MIT License.</div></details>
@@ -309,7 +324,7 @@
                             <details class="faq-item"><summary>需要多少位受訪者？</summary><div class="faq-a">受訪者少於 15 位時，平台會把所有人歸成同一群，因為樣本太少，無法穩定分群。K 值檢查至少需要 24 位受訪者。一般來說，受訪者越多，分群越穩定。受訪者在 3,000 位以內時，K 值檢查會自動執行。</div></details>
                             <details class="faq-item"><summary>平台怎麼決定要分成幾群？</summary><div class="faq-a">先以 DBSCAN 依資料密度與分佈識別並排除離群值與雜訊點（比例依數據特徵與分群參數而異），再以 K-means 將其餘受訪者分群。你可以用滑桿在 3 到 8 之間選擇 K 值，K 值檢查則會以輪廓係數與穩定度，說明每個選擇的支持程度。</div></details>
                             <details class="faq-item"><summary>每次分析的結果都一樣嗎？</summary><div class="faq-a">一樣。同一份檔案，每次都會得到相同的分群結果。</div></details>
-                            <details class="faq-item"><summary>可以用我自己的問卷與衡量指標嗎？</summary><div class="faq-a">可以。在 <a href="#" onclick="openSchemaBuilderModal(); return false;" class="faq-link">Schema 設計工具</a>中，定義你的研究問題、行為構面與衡量標準。接著從「資料」選單下載問卷，再透過電子郵件或問卷平台發送給受訪者。quan-persona 本身不負責發送或回收問卷，你需要把回收的答案整理成 CSV 帶回來。</div></details>
+                            <details class="faq-item"><summary>可以用我自己的問卷與衡量指標嗎？</summary><div class="faq-a">可以。在 <a href="#" onclick="openSchemaBuilderModal(); return false;" class="faq-link">Schema 設計工具</a>中，定義你的研究問題、行為構面與衡量標準。接著點擊頂端工具列的<a href="#" onclick="openQuestionnaireTemplate(); return false;" class="faq-link">「下載問卷範本」</a>圖示下載問卷，再透過電子郵件或問卷平台發送給受訪者。quan-persona 本身不負責發送或回收問卷，你需要把回收的答案整理成 CSV 帶回來。</div></details>
                             <details class="faq-item"><summary>可以編輯並匯出人物誌嗎？</summary><div class="faq-a">可以。你可以編輯人物誌的標題、描述、照片與代表性語錄。目前平台暫時不支援匯出人物誌功能。</div></details>
                             <details class="faq-item"><summary>支援哪些瀏覽器？</summary><div class="faq-a">任何新版瀏覽器都可以：Chrome、Edge、Safari 與 Firefox。</div></details>
                             <details class="faq-item"><summary>quan-persona 是開源的嗎？</summary><div class="faq-a">是的，採用 MIT 授權。</div></details>
