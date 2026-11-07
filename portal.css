@@ -711,20 +711,33 @@
             color: var(--text-secondary);
         }
 
+        .p-skill-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            width: 100%;
+        }
+
+        .p-skill-item span.lbl {
+            font-size: var(--fs-caption);
+            color: var(--text-secondary);
+        }
+
         .p-bar-container {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            width: 100%;
         }
 
         .p-bar-bg {
-            background: rgba(255, 255, 255, 0.05);
-            height: 3px;
+            background: rgba(255, 255, 255, 0.08);
+            height: 4px;
             border-radius: 2px;
-            width: 160px;
-            max-width: 160px;
+            width: 100%;
+            max-width: none;
             flex-grow: 1;
-            flex-shrink: 0;
+            flex-shrink: 1;
             position: relative;
         }
 
@@ -741,8 +754,8 @@
             position: absolute;
             right: -3px;
             top: -2.5px;
-            width: 8px;
-            height: 8px;
+            width: 9px;
+            height: 9px;
             border-radius: 50%;
             background: #fff;
             border: 1px solid rgba(0,0,0,0.3);
@@ -751,8 +764,9 @@
         .p-bar-val {
             font-size: var(--fs-caption);
             font-weight: bold;
-            min-width: 25px;
+            min-width: 32px;
             text-align: right;
+            flex-shrink: 0;
         }
 
         .p-donut-col {
@@ -765,6 +779,19 @@
             position: relative;
             height: 240px;
             width: 100%;
+        }
+
+        #personaDonutLegend,
+        #distDoughnutLegend,
+        #analyticsAllWorkLegend {
+            margin-left: 0 !important;
+            padding-left: 0 !important;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+            gap: 6px;
         }
 
         /* Needs & Pains sections */
@@ -1886,7 +1913,7 @@
                 overflow-x: auto !important;
                 -webkit-overflow-scrolling: touch !important;
                 padding-bottom: 14px !important;
-                margin-top: 15px !important;
+                margin-top: 8px !important;
                 scrollbar-width: thin;
                 scrollbar-color: rgba(245, 197, 24, 0.4) rgba(255, 255, 255, 0.05);
             }
@@ -2013,6 +2040,27 @@
             .p-skills-work-row {
                 grid-template-columns: 1fr !important;
                 gap: 1.5rem !important;
+                width: 100% !important;
+            }
+            .p-skills-col, .p-donut-col {
+                width: 100% !important;
+            }
+            .p-donut-chart-wrapper {
+                height: 220px !important;
+                width: 100% !important;
+            }
+            #personaDonutLegend,
+            #distDoughnutLegend,
+            #analyticsAllWorkLegend {
+                margin-left: 0 !important;
+                padding-left: 0 !important;
+                width: 100% !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                justify-content: flex-start !important;
+                text-align: left !important;
+                gap: 6px !important;
             }
             .p-verbatim-list {
                 height: auto !important;
@@ -2032,13 +2080,19 @@
                 gap: 10px !important;
             }
 
-            /* Journey Map: Horizontal scroll container */
+            /* Journey Map: Overview Panel & Horizontal scroll container */
+            .j-overview-panel {
+                grid-template-columns: 1fr !important;
+                gap: 12px !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
             .journey-scroll-container {
                 width: 100% !important;
                 overflow-x: auto !important;
                 -webkit-overflow-scrolling: touch !important;
                 padding-bottom: 12px !important;
-                margin-top: 15px !important;
+                margin-top: 8px !important;
                 scrollbar-width: thin;
                 scrollbar-color: rgba(245, 197, 24, 0.4) rgba(255, 255, 255, 0.05);
             }
@@ -2268,7 +2322,18 @@
             .glass-panel, .chart-card { min-width: 0 !important; max-width: 100% !important; box-sizing: border-box; }
             #analytics-radar-card > div[style*="space-between"] { flex-direction: column !important; align-items: stretch !important; }
             #radarCustomLegend { min-width: 0 !important; padding-left: 0 !important; flex-direction: row !important; flex-wrap: wrap !important; gap: 6px 12px !important; }
-            #distDoughnutLegend { flex-direction: row !important; flex-wrap: wrap !important; justify-content: center !important; }
+            #distDoughnutLegend,
+            #analyticsAllWorkLegend {
+                margin-left: 0 !important;
+                padding-left: 0 !important;
+                width: 100% !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                justify-content: flex-start !important;
+                text-align: left !important;
+                gap: 6px !important;
+            }
             #analytics-radar-card .chart-wrapper { height: 340px !important; min-width: 0; }
             #cluster-discovery-results .chart-wrapper { height: 380px !important; }
             #cluster-cards-grid { grid-template-columns: 1fr !important; }

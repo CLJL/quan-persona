@@ -280,6 +280,11 @@
         <!-- ==================== VIEW B: CUSTOMER JOURNEY MAP ==================== -->
         <div class="section-view" id="view-journeys">
             <div class="journey-layout">
+                <!-- Persona Info Row (Cluster Overview) -->
+                <div class="glass-panel j-overview-panel" id="journey-overview-box" style="margin-bottom: 14px;">
+                    <!-- Injected -->
+                </div>
+
                 <!-- Tablet Swipe Indicator Hint -->
                 <div class="journey-swipe-hint">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="display:inline-block;"><path d="M18 8L22 12L18 16"></path><path d="M6 8L2 12L6 16"></path><line x1="2" y1="12" x2="22" y2="12"></line></svg>
@@ -288,10 +293,6 @@
                 <!-- Scroll Wrapper for Timeline, Curve, and Footer -->
                 <div class="journey-scroll-container">
                     <div class="journey-scroll-inner">
-                        <!-- Persona Info Row -->
-                        <div class="glass-panel j-overview-panel" id="journey-overview-box" style="margin-bottom: 20px;">
-                            <!-- Injected -->
-                        </div>
                         <!-- Matrix cards stage mapping -->
                         <div class="j-matrix-grid" id="journey-matrix-box">
                             <!-- Injected -->
@@ -372,7 +373,7 @@
                             <div style="height: 200px; width: 200px; position: relative;">
                                 <canvas id="distDoughnutChart"></canvas>
                             </div>
-                            <div id="distDoughnutLegend" style="display: flex; flex-direction: column; gap: 6px; font-size: var(--fs-caption); justify-content: center;"></div>
+                            <div id="distDoughnutLegend" style="display: flex; flex-direction: column; gap: 6px; font-size: var(--fs-caption); justify-content: flex-start; align-items: flex-start; text-align: left;"></div>
                         </div>
                     </div>
 
@@ -394,7 +395,7 @@
                             <div style="height: 190px; width: 190px; position: relative;">
                                 <canvas id="analyticsAllWorkCanvas"></canvas>
                             </div>
-                            <div id="analyticsAllWorkLegend" style="display: flex; flex-direction: column; gap: 6px; font-size: var(--fs-caption); justify-content: center;"></div>
+                            <div id="analyticsAllWorkLegend" style="display: flex; flex-direction: column; gap: 6px; font-size: var(--fs-caption); justify-content: flex-start; align-items: flex-start; text-align: left;"></div>
                         </div>
                     </div>
 

@@ -7981,6 +7981,7 @@ window.activeSection = activeSection;
             if (section === 'about') { window.location.href = 'about.html'; return; }
             if (section === 'faq') { window.location.href = 'faq.html'; return; }
             activeSection = section;
+            window.activeSection = section;
             ['about', 'faq'].forEach(v => { const ev = document.getElementById(`view-${v}`), eb = document.getElementById(`btn-sec-${v}`);
               if (ev) { ev.classList.remove('active'); ev.style.display = 'none'; } if (eb) eb.classList.remove('active'); });
             
@@ -8631,7 +8632,7 @@ window.activeSection = activeSection;
                             <div class="p-donut-chart-wrapper" style="height: 150px; margin-top: 8px;">
                                 <canvas id="personaDonutCanvas"></canvas>
                             </div>
-                            <div id="personaDonutLegend" style="margin-top: auto; margin-left: 30px; margin-bottom: 4px; display: flex; flex-direction: column; gap: 6px; width: fit-content; align-items: flex-start;"></div>
+                            <div id="personaDonutLegend" style="margin-top: 10px; margin-left: 0; margin-bottom: 4px; display: flex; flex-direction: column; gap: 6px; width: 100%; align-items: flex-start; text-align: left;"></div>
                         </div>
                     </div>
 
@@ -9483,7 +9484,7 @@ window.activeSection = activeSection;
                     const val = data[idx] || 0;
                     const pct = total > 0 ? Math.round((val / total) * 100) : 0;
                     return `
-                        <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
+                        <div style="display: flex; align-items: center; gap: 8px; color: var(--text-secondary); width: 100%; justify-content: flex-start; text-align: left;">
                             <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: ${colours[idx]};"></span>
                             <span style="font-weight: 500;">${label} (${pct}%)</span>
                         </div>
@@ -9680,7 +9681,7 @@ window.activeSection = activeSection;
                 legendContainer.innerHTML = tasks.map((t, idx) => {
                     const taskDisplayName = isZh ? (TASK_NAME_ZH[t.name] || t.name) : t.name;
                     return `
-                        <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
+                        <div style="display: flex; align-items: center; gap: 8px; color: var(--text-secondary); width: 100%; justify-content: flex-start; text-align: left;">
                             <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: ${colours[idx % colours.length]};"></span>
                             <span style="font-weight: 500;">${taskDisplayName} (${t.val}%)</span>
                         </div>

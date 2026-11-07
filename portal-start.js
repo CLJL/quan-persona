@@ -6,7 +6,19 @@
     const isZh = () => (typeof currentLang !== 'undefined' && currentLang === 'zh') || (typeof detectInitialLanguage === 'function' && detectInitialLanguage() === 'zh');
     const lab = k => { try { return (typeof t === 'function') ? t(k) : k; } catch (e) { return k; } };
     const fill = s => s.replace(/\{(#?[\w-]+)\}/g, (m, k) => { if (k.charAt(0) === '#') { const e = document.getElementById(k.slice(1)); return e ? e.textContent.trim() : ''; } return lab(k); });
-    const secNow = () => (typeof activeSection !== 'undefined') ? activeSection : null;
+    const secNow = () => {
+        try {
+            const vA = document.getElementById('view-analytics');
+            if (vA && (vA.classList.contains('active') || (vA.style.display && vA.style.display !== 'none'))) return 'analytics';
+            const vJ = document.getElementById('view-journeys');
+            if (vJ && (vJ.classList.contains('active') || (vJ.style.display && vJ.style.display !== 'none'))) return 'journeys';
+            const vP = document.getElementById('view-personas');
+            if (vP && (vP.classList.contains('active') || (vP.style.display && vP.style.display !== 'none'))) return 'personas';
+        } catch (e) {}
+        if (typeof window !== 'undefined' && window.activeSection) return window.activeSection;
+        if (typeof activeSection !== 'undefined') return activeSection;
+        return null;
+    };
 
     // ---------- persisted state (per-viewer convenience only; every access is guarded) ----------
     let S = { done: {}, dismissed: false, seen: false, dontShowAgain: false };   // done: { sample, quest, own }
@@ -100,18 +112,12 @@
             { id: 'read3', section: 'personas', sel: quotesArea,
               en: ['What do they think', 'Their quotes. You can create a motto based on their quote.'],
               zh: ['他們怎麼想', '他們的心聲。你可以參考這些話，自己寫一句座右銘。'] },
-            { id: 'journey', section: 'personas', drawer: true, pad: 1, sel: '#btn-sec-journeys', wait: { section: 'journeys' },
-              en: ['Open {navJourneys}', 'Click {navJourneys} in the left menu. It shows what each group does at every stage of the journey.'],
-              zh: ['接著：開啟「{navJourneys}」', '點選左側選單的「{navJourneys}」，查看各群在旅程每個階段做了什麼。'] },
             { id: 'weak', section: 'journeys', sel: () => q1('.j-graph-panel') || q1('.j-svg-container') || q1('#journey-svg'), pad: 4,
-              en: ['Emotional experience across the journey', 'The emojis and curve show how this group feels at each stage of the journey. Highs reflect satisfaction, while dips highlight friction and key opportunities.'],
-              zh: ['了解整個歷程的情緒體驗', '曲線與表情符號呈現該族群在歷程各階段的感受與滿意度；谷底代表痛點與最需優化的關鍵時刻。'] },
-            { id: 'analytics', section: 'journeys', drawer: true, pad: 1, sel: '#btn-sec-analytics', wait: { section: 'analytics' },
-              en: ['Then open {navAnalytics}', 'Click {navAnalytics} in the left menu to see how the groups were formed.'],
-              zh: ['再來：開啟「{navAnalytics}」', '點選左側選單的「{navAnalytics}」，查看這些分群是怎麼形成的。'] },
+              en: ['Journey Map: emotional experience', 'The emojis and curve show how this group feels at each stage of the journey. Highs reflect satisfaction, while dips highlight friction and key opportunities.'],
+              zh: ['歷程地圖：整個歷程的情緒體驗', '曲線與表情符號呈現該族群在歷程各階段的感受與滿意度；谷底代表痛點與最需優化的關鍵時刻。'] },
             { id: 'k', section: 'analytics', sel: () => { const sl = document.getElementById('cluster-k-slider'); return sl ? sl.closest('label') || sl : null; }, wait: { change: '#cluster-k-slider' },
-              en: ['Try a different number of groups', 'Drag the slider (3 to 8). The groups, charts and tables are automatically recalculated in real time.'],
-              zh: ['試試不同的分群數量', '拖曳滑桿（3 到 8 組），分群、圖表與表格便會即時自動重新計算。'] },
+              en: ['Analytics & DB: try a different number of groups', 'Drag the slider (3 to 8). The groups, charts and tables are automatically recalculated in real time.'],
+              zh: ['數據分析與資料庫：試試不同的分群數量', '拖曳滑桿（3 到 8 組），分群、圖表與表格便會即時自動重新計算。'] },
             { id: 'end', center: true, last: true, buttons: ['toQuest'],
               en: ['You have seen the full loop', 'Personas, then Journey Map, then Analytics. Next, learn how to design a questionnaire.'],
               zh: ['完整流程你已經走過一遍', '人物誌、歷程地圖、數據分析。接下來，來看看怎麼設計問卷。'] }
@@ -299,21 +305,26 @@
         // 5. Position spotlight and card once target is in DOM
         const runPlace = () => {
             if (!route || route[ri] !== s) return;
-            const target = resolve(s);
-            if (shown(target)) {
-                const r = target.getBoundingClientRect();
-                if (r.top < 70 || r.bottom > window.innerHeight - 20) {
-                    try {
-                        target.scrollIntoView({
-                            block: r.height > window.innerHeight * 0.55 ? 'start' : 'center',
-                            behavior: 'auto'
-                        });
-                    } catch (e) {}
+            try {
+                const target = resolve(s);
+                if (shown(target)) {
+                    const r = target.getBoundingClientRect();
+                    if (r.top < 70 || r.bottom > window.innerHeight - 20) {
+                        try {
+                            target.scrollIntoView({
+                                block: r.height > window.innerHeight * 0.55 ? 'start' : 'center',
+                                behavior: 'auto'
+                            });
+                        } catch (e) {}
+                    }
                 }
+                place();
+            } catch (err) {
+                console.warn('qps runPlace error:', err);
+            } finally {
+                advancing = false;
+                tick();
             }
-            place();
-            advancing = false;
-            tick();
         };
 
         if (s.delay) {
