@@ -5968,16 +5968,43 @@ window.activeSection = activeSection;
                         ticks: { backdropColor: 'transparent', color: '#64748b', font: { size: 11 }, stepSize: 25 }
                     } },
                     plugins: {
-                        legend: { display: true, position: 'bottom', labels: { color: '#cbd5e1', font: { size: narrow ? 12 : 14 }, boxWidth: 12, padding: 14 } },
+                        legend: { display: false },
                         tooltip: { callbacks: { title: items => full[items[0].dataIndex] } }
                     }
                 }
             });
+
+            // Custom responsive HTML legend (2 left-aligned columns on mobile)
+            const legContainer = document.getElementById('clusterRadarLegend');
+            if (legContainer) {
+                legContainer.innerHTML = datasets.map((ds, idx) => {
+                    const color = ds.borderColor;
+                    return `
+                        <div class="cluster-radar-leg-item" id="cluster-radar-leg-${idx}" onclick="toggleClusterRadarDataset(${idx})">
+                            <span class="cluster-radar-leg-box" style="color: ${color}; background-color: ${color}22;"></span>
+                            <span style="font-weight: 500;">${ds.label}</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+
             const abbr = full.map((f, i) => short[i] !== f ? `<strong>${short[i].split(' ')[0]}</strong> = ${f}` : null).filter(Boolean).filter(x => /^<strong>(S\d|[A-Z]{2,4})<\/strong>/.test(x));
             const key = document.getElementById('clusterRadarKey');
             if (key) key.innerHTML = (isZh ? '如何閱讀：每個軸是一項指標（0–100），離中心越遠分數越高；比較各群線條的形狀即可看出差異。' : 'How to read: each axis is one measure (0&ndash;100); the further from the centre, the higher the score. Compare the shapes of the cluster lines to see how they differ.')
                 + (abbr.length ? '<br>' + abbr.join(' &nbsp;·&nbsp; ') : '');
         }
+
+        window.toggleClusterRadarDataset = function(idx) {
+            if (!clusterRadarChartInstance) return;
+            const meta = clusterRadarChartInstance.getDatasetMeta(idx);
+            meta.hidden = (meta.hidden === null) ? !clusterRadarChartInstance.data.datasets[idx].hidden : null;
+            clusterRadarChartInstance.update();
+            const el = document.getElementById(`cluster-radar-leg-${idx}`);
+            if (el) {
+                el.style.opacity = meta.hidden ? '0.35' : '1';
+                el.style.textDecoration = meta.hidden ? 'line-through' : 'none';
+            }
+        };
 
         // Cluster x feature heat-map (replaces the 17-axis radar, whose labels overlapped).
         // Each cell = the cluster's average on that feature (0-100). Colour = how far it sits
@@ -6087,25 +6114,20 @@ window.activeSection = activeSection;
             const panelAnalytics = document.getElementById('demographic-panel');
             const panelPersonas = document.getElementById('demographic-panel-personas');
             
-            let container = null;
-            if (activePersona === 'all') {
-                if (panelAnalytics) panelAnalytics.style.display = 'block';
-                if (panelPersonas) panelPersonas.style.display = 'none';
-                container = panelAnalytics;
-            } else {
-                if (panelAnalytics) panelAnalytics.style.display = 'none';
-                if (panelPersonas) panelPersonas.style.display = 'block';
-                container = panelPersonas;
-            }
+            const panels = [panelPersonas, panelAnalytics].filter(Boolean);
+            if (!panels.length) return;
             
-            if (!container) return;
+            if (panelPersonas) panelPersonas.style.display = 'block';
+            if (panelAnalytics) panelAnalytics.style.display = 'block';
             
             const activeGroupAgents = getActiveGroupAgents();
             const total = activeGroupAgents.length;
             const isZh = (typeof currentLang !== 'undefined' && currentLang === 'zh');
             
             if (total === 0) {
-                container.innerHTML = `<div style="text-align:center; padding:1.5rem; color:var(--text-muted); font-size:var(--fs-small);">${isZh ? '此群體沒有人口統計資料' : 'No demographic data for this group'}</div>`;
+                panels.forEach(container => {
+                    container.innerHTML = `<div style="text-align:center; padding:1.5rem; color:var(--text-muted); font-size:var(--fs-small);">${isZh ? '此群體沒有人口統計資料' : 'No demographic data for this group'}</div>`;
+                });
                 return;
             }
 
@@ -6274,37 +6296,22 @@ window.activeSection = activeSection;
             if (!clientHTML) clientHTML = `<div style="font-size:var(--fs-caption); color:var(--text-muted); text-align:center; padding-top:10px;">${isZh ? '無資料' : 'No Data'}</div>`;
             
             
-            const isPersonaView = (container.id === 'demographic-panel-personas');
-            
-            let headerHTML = '';
-            if (isPersonaView) {
-                headerHTML = `
-                    <div onclick="toggleDemographicsCollapse()" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; user-select:none;">
-                        <h3 style="margin:0; font-size:var(--fs-body); font-weight:600; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
-                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--colour-${activePersona});"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                            ${t('demographicProfile')}
-                        </h3>
-                        <div style="display:flex; align-items:center; gap:10px;">
-                            <span style="font-size:var(--fs-caption); color:var(--text-muted);">${t('sampleSize', {n: total})}</span>
-                            <span id="demographics-toggle-icon" style="font-size:var(--fs-caption); font-weight:bold; color:var(--colour-${activePersona}); padding:2px 8px; background:rgba(255,255,255,0.04); border-radius:4px; transition: all 0.2s;">${demographicsCollapsed ? t('expand') : t('collapse')}</span>
-                        </div>
-                    </div>
-                `;
-            } else {
-                headerHTML = `
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:6px;">
-                        <h3 style="margin:0; font-size:var(--fs-body); font-weight:600; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
-                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--colour-${activePersona});"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                            ${t('demographicProfile')}
-                        </h3>
+            const headerHTML = `
+                <div onclick="toggleDemographicsCollapse()" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; user-select:none; gap:12px;">
+                    <h3 style="margin:0; font-size:var(--fs-body); font-weight:600; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--colour-${activePersona}, var(--accent-yellow, #e5a93c));"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        ${t('demographicProfile')}
+                    </h3>
+                    <div style="display:flex; align-items:center; gap:10px; flex-shrink:0;">
                         <span style="font-size:var(--fs-caption); color:var(--text-muted);">${t('sampleSize', {n: total})}</span>
+                        <span class="demographics-toggle-icon" id="demographics-toggle-icon" style="font-size:var(--fs-caption); font-weight:600; color:var(--colour-${activePersona}, var(--accent-yellow, #e5a93c)); padding:3px 10px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:6px; transition:all 0.2s; white-space:nowrap; cursor:pointer;">${demographicsCollapsed ? t('expand') : t('collapse')}</span>
                     </div>
-                `;
-            }
+                </div>
+            `;
 
-            container.innerHTML = `
+            const renderedHtml = `
                 ${headerHTML}
-                <div id="demographics-collapse-content" style="display: ${(isPersonaView && demographicsCollapsed) ? 'none' : 'grid'}; grid-template-columns: repeat(4, 1fr); gap:12px; width:100%; margin-top: ${isPersonaView ? '12px' : '0'}; border-top: ${isPersonaView ? '1px solid rgba(255,255,255,0.08)' : 'none'}; padding-top: ${isPersonaView ? '12px' : '0'};">
+                <div class="demographics-collapse-content" id="demographics-collapse-content" style="display: ${demographicsCollapsed ? 'none' : 'grid'}; grid-template-columns: repeat(4, 1fr); gap:12px; width:100%; margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px;">
                     <!-- 1. Location -->
                     <div style="padding:8px; border-radius:6px; background:rgba(255,255,255,0.01); border:1px solid rgba(255,255,255,0.03);">
                         <h4 style="margin:0 0 8px 0; font-size:var(--fs-caption); color:var(--text-primary); font-weight:500;">${t('primaryLocation')}</h4>
@@ -6330,6 +6337,10 @@ window.activeSection = activeSection;
                     </div>
                 </div>
             `;
+
+            panels.forEach(container => {
+                container.innerHTML = renderedHtml;
+            });
         }
 
         // Generate 70 Default Mock records on startup to pre-populate charts
@@ -8093,18 +8104,19 @@ window.activeSection = activeSection;
         }
 
 
-        // Toggle demographics visibility on Persona tab
+        // Toggle demographics visibility
         function toggleDemographicsCollapse() {
             demographicsCollapsed = !demographicsCollapsed;
-            const content = document.getElementById('demographics-collapse-content');
-            const icon = document.getElementById('demographics-toggle-icon');
-            if (content) {
-                content.style.display = demographicsCollapsed ? 'none' : 'grid';
-            }
-            if (icon) {
-                icon.innerHTML = demographicsCollapsed ? 'Expand ▽' : 'Collapse △';
-            }
+            const contents = document.querySelectorAll('.demographics-collapse-content, #demographics-collapse-content');
+            const icons = document.querySelectorAll('.demographics-toggle-icon, #demographics-toggle-icon');
+            contents.forEach(c => {
+                c.style.display = demographicsCollapsed ? 'none' : 'grid';
+            });
+            icons.forEach(ic => {
+                ic.innerHTML = demographicsCollapsed ? t('expand') : t('collapse');
+            });
         }
+        window.toggleDemographicsCollapse = toggleDemographicsCollapse;
 
         // Switch active quote category and render list & word cloud on Analytics tab
         function switchQuoteCategory(cat) {
@@ -8632,7 +8644,7 @@ window.activeSection = activeSection;
                             <div class="p-donut-chart-wrapper" style="height: 150px; margin-top: 8px;">
                                 <canvas id="personaDonutCanvas"></canvas>
                             </div>
-                            <div id="personaDonutLegend" style="margin-top: 10px; margin-left: 0; margin-bottom: 4px; display: flex; flex-direction: column; gap: 6px; width: 100%; align-items: flex-start; text-align: left;"></div>
+                            <div id="personaDonutLegend" class="donut-chart-legend"></div>
                         </div>
                     </div>
 
@@ -9484,8 +9496,8 @@ window.activeSection = activeSection;
                     const val = data[idx] || 0;
                     const pct = total > 0 ? Math.round((val / total) * 100) : 0;
                     return `
-                        <div style="display: flex; align-items: center; gap: 8px; color: var(--text-secondary); width: 100%; justify-content: flex-start; text-align: left;">
-                            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: ${colours[idx]};"></span>
+                        <div style="display: flex; align-items: center; gap: 8px; color: var(--text-secondary);">
+                            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: ${colours[idx]}; flex-shrink: 0;"></span>
                             <span style="font-weight: 500;">${label} (${pct}%)</span>
                         </div>
                     `;
@@ -9681,8 +9693,8 @@ window.activeSection = activeSection;
                 legendContainer.innerHTML = tasks.map((t, idx) => {
                     const taskDisplayName = isZh ? (TASK_NAME_ZH[t.name] || t.name) : t.name;
                     return `
-                        <div style="display: flex; align-items: center; gap: 8px; color: var(--text-secondary); width: 100%; justify-content: flex-start; text-align: left;">
-                            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: ${colours[idx % colours.length]};"></span>
+                        <div style="display: flex; align-items: center; gap: 8px; color: var(--text-secondary);">
+                            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: ${colours[idx % colours.length]}; flex-shrink: 0;"></span>
                             <span style="font-weight: 500;">${taskDisplayName} (${t.val}%)</span>
                         </div>
                     `;
@@ -9952,10 +9964,44 @@ window.activeSection = activeSection;
                 footer.style.display = 'none';
             }
 
+            // Check if dataset is already loaded and platform is initialized
+            const isZh = (typeof currentLang !== 'undefined' && currentLang === 'zh') || (typeof detectInitialLanguage === 'function' && detectInitialLanguage() === 'zh');
+            const isDataLoaded = isZh ? (typeof PRE_LOADED_DATA_ZH !== 'undefined' && PRE_LOADED_DATA_ZH.length > 0)
+                                      : (typeof PRE_LOADED_DATA !== 'undefined' && PRE_LOADED_DATA.length > 0);
+            const needsLoading = !isDataLoaded || !window.__platformDataInitialized;
+
+            if (needsLoading) {
+                const title = isZh ? '正在載入問卷數據...' : 'Loading Survey Data...';
+                const msg = isZh ? '正在準備儀表板與分群數據，請稍候...' : 'Preparing dashboard and clustering data, please wait...';
+                if (typeof showCsvLoading === 'function') {
+                    showCsvLoading(title, msg);
+                } else {
+                    const overlay = document.getElementById('csv-loading-overlay');
+                    if (overlay) {
+                        const titleEl = document.getElementById('csv-loading-title');
+                        const msgEl = document.getElementById('csv-loading-message');
+                        if (titleEl) titleEl.textContent = title;
+                        if (msgEl) msgEl.textContent = msg;
+                        overlay.style.display = 'flex';
+                        void overlay.offsetWidth;
+                        overlay.style.opacity = '1';
+                    }
+                }
+            }
+
             // Ensure background data initialization has completed (it waits for the sample data if that is still loading)
             whenDataReady(function () {
                 if (typeof initPlatformData === 'function') {
                     initPlatformData();
+                }
+                if (typeof hideCsvLoading === 'function') {
+                    hideCsvLoading();
+                } else {
+                    const overlay = document.getElementById('csv-loading-overlay');
+                    if (overlay) {
+                        overlay.style.opacity = '0';
+                        setTimeout(() => { if (overlay && overlay.style.opacity === '0') overlay.style.display = 'none'; }, 260);
+                    }
                 }
 
                 // When users close the video, it goes directly to the tutorial:
@@ -10138,9 +10184,40 @@ window.activeSection = activeSection;
             if (!skip && !window.__qpCloseWanted) {
                 openCommercialModal(true);
             } else {
-                // Video skipped: proceed directly to portal
+                // Video skipped or early closed: proceed directly to portal
+                const isZh = (lang === 'zh');
+                const isDataLoaded = isZh ? (typeof PRE_LOADED_DATA_ZH !== 'undefined' && PRE_LOADED_DATA_ZH.length > 0)
+                                          : (typeof PRE_LOADED_DATA !== 'undefined' && PRE_LOADED_DATA.length > 0);
+                const needsLoading = !isDataLoaded || !window.__platformDataInitialized;
+                if (needsLoading) {
+                    const title = isZh ? '正在載入問卷數據...' : 'Loading Survey Data...';
+                    const msg = isZh ? '正在準備儀表板與分群數據，請稍候...' : 'Preparing dashboard and clustering data, please wait...';
+                    if (typeof showCsvLoading === 'function') {
+                        showCsvLoading(title, msg);
+                    } else {
+                        const overlay = document.getElementById('csv-loading-overlay');
+                        if (overlay) {
+                            const titleEl = document.getElementById('csv-loading-title');
+                            const msgEl = document.getElementById('csv-loading-message');
+                            if (titleEl) titleEl.textContent = title;
+                            if (msgEl) msgEl.textContent = msg;
+                            overlay.style.display = 'flex';
+                            void overlay.offsetWidth;
+                            overlay.style.opacity = '1';
+                        }
+                    }
+                }
                 whenDataReady(function () {
                     if (typeof initPlatformData === 'function') initPlatformData();
+                    if (typeof hideCsvLoading === 'function') {
+                        hideCsvLoading();
+                    } else {
+                        const overlay = document.getElementById('csv-loading-overlay');
+                        if (overlay) {
+                            overlay.style.opacity = '0';
+                            setTimeout(() => { if (overlay && overlay.style.opacity === '0') overlay.style.display = 'none'; }, 260);
+                        }
+                    }
                     currentLang = lang; window.currentLang = lang;
                     if (typeof applyLanguage === 'function') applyLanguage(lang);
                     if (typeof switchMainSection === 'function') switchMainSection('personas');
@@ -10174,8 +10251,7 @@ window.activeSection = activeSection;
             // Landing rule: only bypass the landing gate & video if:
             // 1. User navigated with a direct section target / query action (e.g. #personas, ?section=journeys)
             // 2. Navigated from internal portal pages (About Us, FAQ)
-            // 3. User explicitly checked "Don't show the video again"
-            if (window.__skipLandingGate || hasDirectTarget || fromInternal || dontShow) {
+            if (window.__skipLandingGate || hasDirectTarget || fromInternal) {
                 window.__skipLandingGate = true;
                 window.__skipLandingVideo = true;
                 const gate = document.getElementById('lang-gate');
@@ -10210,13 +10286,8 @@ window.activeSection = activeSection;
                 return;
             }
 
-            let savedLang = null;
-            try { savedLang = localStorage.getItem('portal_lang'); } catch (e) {}
-            if (savedLang) {
-                openCommercialModal(true);
-            } else {
-                showLangGate();
-            }
+            // Always show language selection gate on landing, regardless of prior choice
+            showLangGate();
 
             Array.prototype.slice.call(document.querySelectorAll('#lang-gate .lang-gate-btn')).forEach(function (b) {
                 const l = b.getAttribute('data-lang');
@@ -10305,6 +10376,7 @@ window.activeSection = activeSection;
     })();
     (function () {
         const tgl = document.getElementById('rail-toggle'), nav = document.getElementById('main-nav');
+        const noHover = window.matchMedia && window.matchMedia('(hover: none)').matches;
         function isMobile() {
             return window.matchMedia('(max-width: 900px)').matches;
         }
@@ -10312,6 +10384,14 @@ window.activeSection = activeSection;
             if (!isMobile()) on = false;
             document.body.classList.toggle('drawer-instant', !!instant);
             document.body.classList.toggle('drawer-open', !!on);
+            if (nav) {
+                nav.classList.toggle('drawer-open', !!on);
+                if (on) {
+                    nav.classList.remove('quiet');
+                } else if (noHover) {
+                    nav.classList.add('quiet');
+                }
+            }
             if (tgl && isMobile()) tgl.setAttribute('aria-expanded', on ? 'true' : 'false');
             if (typeof setBrandRole === 'function') setBrandRole();
         }

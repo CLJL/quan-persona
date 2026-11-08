@@ -35,7 +35,7 @@
             optC: ['Analyse my own survey data', 'Get the CSV template, upload your file and check how your columns match.'],
             step: 'Step', of: 'of', back: 'Back', next: 'Next', close: 'Close',
             ownData: 'Analyse my own data', toSample: 'Explore the sample data', toQuest: 'Design a questionnaire', finish: 'Finish',
-            chip: 'Getting started', show: 'Show me', review: 'Review', dontShow: "Don't show again",
+            chip: 'Getting started', show: 'Show me', review: 'Review', dontShow: "Don't show the tutorial again",
             items: { sample: 'Explore the sample data', quest: 'Design a questionnaire', own: 'Analyse my own survey data' }
         },
         zh: {
@@ -46,7 +46,7 @@
             optC: ['分析我自己的問卷資料', '取得 CSV 範本、上傳檔案，並確認欄位對應的結果。'],
             step: '步驟', of: '／', back: '上一步', next: '下一步', close: '關閉',
             ownData: '分析我的資料', toSample: '先看範例資料', toQuest: '設計問卷', finish: '完成',
-            chip: '新手上路', show: '帶我去', review: '複習', dontShow: '不再顯示',
+            chip: '新手上路', show: '帶我去', review: '複習', dontShow: '不再顯示教學',
             items: { sample: '先看範例資料', quest: '設計問卷', own: '分析我自己的問卷資料' }
         }
     };
@@ -87,13 +87,6 @@
             return virt(() => { const fr = f.getBoundingClientRect(); return { left: fr.right - 200, top: fr.top + 10, right: fr.right - 10, bottom: fr.top + 54, width: 190, height: 44 }; }, f);
         }
         return virt(() => { const r = rel(), fr = f.getBoundingClientRect(); return { left: fr.left + r.left, top: fr.top + r.top, right: fr.left + r.left + r.width, bottom: fr.top + r.top + r.height, width: r.width, height: r.height }; }, f);
-    }
-    function lowestDip() {   // the journey node that sits lowest on screen
-        const svg = $('journey-svg'); if (!svg) return null;
-        const nodes = [...svg.querySelectorAll('.journey-node')].filter(visible);
-        if (!nodes.length) return null;
-        let low = nodes[0]; nodes.forEach(n => { if (n.getBoundingClientRect().top > low.getBoundingClientRect().top) low = n; });
-        return virt(() => { const r = low.getBoundingClientRect(), c = 16, cx = r.left + r.width / 2, cy = r.top + r.height / 2; return { left: cx - c, top: cy - c, right: cx + c, bottom: cy + c, width: 2 * c, height: 2 * c }; }, low);
     }
 
     // ---------- routes ----------
@@ -218,18 +211,35 @@
 
     // ---------- chooser ----------
     function openStartHere() {
+        if (S.dontShowAgain) return;
         build(); endRoute(true); togglePanel(false);
         try { if (window.endTour) { const tr = $('tour-root'); if (tr && tr.style.display !== 'none') window.endTour(); } } catch (e) {}
         const x = T();
         const o = (key, rec) => { const n = { sample: 'A', quest: 'B', own: 'C' }[key]; return '<button type="button" class="qps-opt" data-route="' + key + '"><span class="qps-opt-t">' + x['opt' + n][0] + (rec ? '<span class="qps-rec">' + x.rec + '</span>' : '') + '</span><span class="qps-opt-b">' + x['opt' + n][1] + '</span></button>'; };
-        chooser.innerHTML = '<div class="qps-ch-card"><button type="button" class="qps-x qps-ch-x" data-act="close" aria-label="' + x.close + '">' + X_SVG + '</button><h2 id="qps-ch-title">' + x.chTitle + '</h2>' + o('sample', true) + o('quest') + o('own') + '</div>';
+        chooser.innerHTML = '<div class="qps-ch-card"><button type="button" class="qps-x qps-ch-x" data-act="close" aria-label="' + x.close + '">' + X_SVG + '</button><h2 id="qps-ch-title">' + x.chTitle + '</h2>' + o('sample', true) + o('quest') + o('own') +
+            '<div class="qps-ch-footer" style="margin-top:14px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:flex-end;">' +
+            '<label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none;font-size:0.92rem;color:#aab3c0;">' +
+            '<input type="checkbox" id="qps-ch-dont-show-chk" ' + (S.dontShowAgain ? 'checked' : '') + ' style="accent-color:#f5c518;cursor:pointer;width:16px;height:16px;margin:0;">' +
+            '<span>' + x.dontShow + '</span></label></div>' +
+            '</div>';
         chooser.style.display = 'flex';
         chooser.onclick = e => {
+            const chkTarget = e.target.closest('#qps-ch-dont-show-chk') || e.target.closest('label');
+            if (chkTarget) return;
             const opt = e.target.closest('.qps-opt'); const a = e.target.closest('[data-act]');
             if (opt) { closeChooser(false); startRoute(opt.getAttribute('data-route')); }
             else if (a && a.getAttribute('data-act') === 'close') closeChooser(true, true);
             else if (e.target === chooser) closeChooser(true, true);
         };
+        const chk = chooser.querySelector('#qps-ch-dont-show-chk');
+        if (chk) {
+            chk.onchange = () => {
+                S.dontShowAgain = chk.checked;
+                S.dismissed = chk.checked;
+                save();
+                refreshChip();
+            };
+        }
         S.seen = true; save();
         const first = chooser.querySelector('.qps-opt'); if (first) first.focus();
         refreshChip();
@@ -498,8 +508,8 @@
     }
     function refreshChip() {
         if (!chip) return; const x = T();
-        const hide = S.dontShowAgain || S.dismissed || !S.seen || blocked();
-        if (hide) { chip.style.display = 'none'; if (panel && (blocked() || S.dontShowAgain || S.dismissed)) panel.style.display = 'none'; return; }
+        const hide = S.dontShowAgain || blocked();
+        if (hide) { chip.style.display = 'none'; if (panel && (blocked() || S.dontShowAgain)) panel.style.display = 'none'; return; }
         const n = doneCount();
         chip.innerHTML = '<span class="qps-dot" aria-hidden="true"></span><span>' + x.chip + ' &middot; ' + n + '/' + ITEMS.length + '</span>';
         chip.style.display = 'inline-flex';
@@ -512,8 +522,8 @@
     }
 
     // ---------- public API and hooks ----------
-    // After the landing video: first-time viewers get the chooser; returning viewers just see the checklist chip
-    window.openStartHereAuto = function () { if (S.dontShowAgain) return; build(); if (!S.seen) openStartHere(); else refreshChip(); };
+    // After the landing video: show the tutorial chooser unless "Don't show the tutorial again" was ticked
+    window.openStartHereAuto = function () { if (S.dontShowAgain) return; build(); openStartHere(); };
     window.openStartHere = openStartHere;
     window.startRoute = startRoute;
     function init() {

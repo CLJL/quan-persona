@@ -74,7 +74,7 @@
     <meta name="theme-color" content="#0E1016">
     <link rel="preload" href="outfit.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Externalised Stylesheet -->
-    <link rel="stylesheet" href="portal.css?v=20261106j">
+    <link rel="stylesheet" href="portal.css?v=20261108l">
 
     <!-- Early language pre-activation to prevent FOUC / flash of English -->
     <script>
@@ -120,8 +120,8 @@
     <script src="journey_schemas_modular.js?v=20261105i" defer></script>
     <script src="portal_clustering.js?v=20261105i" defer></script>
     <script src="portal-csv.js?v=20261105i" defer></script>
-    <script src="portal-app.js?v=20261105i" defer></script>
-    <script src="portal-start.js?v=20261105i" defer></script>
+    <script src="portal-app.js?v=20261108l" defer></script>
+    <script src="portal-start.js?v=20261108l" defer></script>
 </head>
 <body>
     <noscript>
@@ -142,7 +142,7 @@
     <div class="container">
         
         <!-- Header -->
-        <div class="brand" id="brand-cell">
+        <div class="brand" id="brand-cell" onclick="toggleRailDrawer(event)">
             <img class="brand-mark" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgeG1sbnM6YzJwYT0iaHR0cDovL2MycGEub3JnL21hbmlmZXN0Ij48bWV0YWRhdGE+PGMycGE6bWFuaWZlc3Q+QUFBV2dtcDFiV0lBQUFBZWFuVnRaR015Y0dFQUVRQVFnQUFBcWdBNG0zRURZekp3WVFBQUFCWmNhblZ0WWdBQUFFZHFkVzFrWXpKdFlRQVJBQkNBQUFDcUFEaWJjUU4xY200Nll6SndZVHBqT1dNNU1qTXdNQzB4TTJVMExUUXpNek10WVRVMFpTMHhaVFExT1RZMFl6TXdOek1BQUFBRGwycDFiV0lBQUFBcGFuVnRaR015WVhNQUVRQVFnQUFBcWdBNG0zRURZekp3WVM1aGMzTmxjblJwYjI1ekFBQUFBTHhxZFcxaUFBQUFSR3AxYldSalltOXlBQkVBRUlBQUFLb0FPSnR4RTJNeWNHRXVhVzVuY21Wa2FXVnVkQzUyTXdBQUFBQVlZekp6YU1jMVZpZG5FRTJ6a0tYcGhUMmpweFVBQUFCd1kySnZjcU5wWkdNNlptOXliV0YwYldsdFlXZGxMM04yWnl0NGJXeHFhVzV6ZEdGdVkyVkpSSGdzZUcxd09tbHBaRG81TXpCbU1ESmtNUzA0WWpObUxUUTVOR010WWpaa05pMWpNemd6WkRkaU1XSXhabVJzY21Wc1lYUnBiMjV6YUdsd2FIQmhjbVZ1ZEU5bUFBQUI0bXAxYldJQUFBQkJhblZ0WkdOaWIzSUFFUUFRZ0FBQXFnQTRtM0VUWXpKd1lTNWhZM1JwYjI1ekxuWXlBQUFBQUJoak1uTm82RmNBWUduUGljN2tkUEpWcmtnZXZBQUFBWmxqWW05eW9tZGhZM1JwYjI1emdxSm1ZV04wYVc5dWEyTXljR0V1YjNCbGJtVmthbkJoY21GdFpYUmxjbk9oYTJsdVozSmxaR2xsYm5SemdhSmpkWEpzZUMxelpXeG1JMnAxYldKbVBXTXljR0V1WVhOelpYSjBhVzl1Y3k5ak1uQmhMbWx1WjNKbFpHbGxiblF1ZGpOa2FHRnphRmdnN3QzT0VpOUdFTGNSQ0VZTnRQMmhqSFN1c1VGTk10ODU2TzdsVkczOGpVbWtabUZqZEdsdmJuZ2RZMjl0TG1GdWRHaHliM0JwWXk1amJHRjFaR1V1Y0hKdmRtbGtaV1JxY0dGeVlXMWxkR1Z5YzZGNEgyTnZiUzVoYm5Sb2NtOXdhV011YjNKcFoybHVMV052Ym1acFpHVnVZMlZuZFc1cmJtOTNibXRrWlhOamNtbHdkR2x2Ym5obVEyeGhkV1JsSUhCeWIzWnBaR1ZrSUhSb2FYTWdabWxzWlNCaGRDQjBhR1VnY21WeGRXVnpkQ0J2WmlCaElIVnpaWElnWVc1a0lHMWhlU0JvWVhabElHTnlaV0YwWldRZ2IzSWdiVzlrYVdacFpXUWdkR2hsSUdacGJHVWdZMjl1ZEdWdWRITXViWE52Wm5SM1lYSmxRV2RsYm5TaFpHNWhiV1ZtUTJ4aGRXUmxjbUZzYkVGamRHbHZibk5KYm1Oc2RXUmxaUFVBQUFESWFuVnRZZ0FBQUVCcWRXMWtZMkp2Y2dBUkFCQ0FBQUNxQURpYmNSTmpNbkJoTG1oaGMyZ3VaR0YwWVFBQUFBQVlZekp6YUU4dGpnczZaN29WYjRQVWFEM1JqdFVBQUFDQVkySnZjcVZqWVd4blpuTm9ZVEkxTm1Od1lXUk5BQUFBQUFBQUFBQUFBQUFBQUdSb1lYTm9XQ0RYdEV2UEYxMHp0VTVLdFZDU2JZL2tpQU9RVzVHYTl6OEhpT1gwK3hjTDdHUnVZVzFsYm1wMWJXSm1JRzFoYm1sbVpYTjBhbVY0WTJ4MWMybHZibk9Cb21WemRHRnlkQmlXWm14bGJtZDBhQmtlQkFBQUFqNXFkVzFpQUFBQUoycDFiV1JqTW1Oc0FCRUFFSUFBQUtvQU9KdHhBMk15Y0dFdVkyeGhhVzB1ZGpJQUFBQUNEMk5pYjNLbFkyRnNaMlp6YUdFeU5UWnBjMmxuYm1GMGRYSmxlRTF6Wld4bUkycDFiV0ptUFM5ak1uQmhMM1Z5Ympwak1uQmhPbU01WXpreU16QXdMVEV6WlRRdE5ETXpNeTFoTlRSbExURmxORFU1TmpSak16QTNNeTlqTW5CaExuTnBaMjVoZEhWeVpXcHBibk4wWVc1alpVbEVlQ3g0YlhBNmFXbGtPalUxTVRVNE5UUXdMV0ptWlRFdE5EbGxZUzFoTlRGbExUazFOamhsWmpnd056TmtOWEpqY21WaGRHVmtYMkZ6YzJWeWRHbHZibk9Eb21OMWNteDRMWE5sYkdZamFuVnRZbVk5WXpKd1lTNWhjM05sY25ScGIyNXpMMk15Y0dFdWFXNW5jbVZrYVdWdWRDNTJNMlJvWVhOb1dDRHUzYzRTTDBZUXR4RUlSZzIwL2FHTWRLNnhRVTB5M3pubzd1VlViZnlOU2FKamRYSnNlQ3B6Wld4bUkycDFiV0ptUFdNeWNHRXVZWE56WlhKMGFXOXVjeTlqTW5CaExtRmpkR2x2Ym5NdWRqSmthR0Z6YUZnZ0V1Y21ReDBock5MV3d6ZGM5Q0hGSU5HSXB2Z1R1aGRZRU44NVhES2pOYUNpWTNWeWJIZ3BjMlZzWmlOcWRXMWlaajFqTW5CaExtRnpjMlZ5ZEdsdmJuTXZZekp3WVM1b1lYTm9MbVJoZEdGa2FHRnphRmdnVGN3N0dzQ3J1cm01MThURVJoZXNxWGorcUxRR0xRV2lERy9WMnNiQUZUWjBZMnhoYVcxZloyVnVaWEpoZEc5eVgybHVabStqWkc1aGJXVnZRVzUwYUhKdmNHbGpJRVpwYkdWelozWmxjbk5wYjI1bE1TNHdMakJyYzNCbFkxWmxjbk5wYjI1bE1pNDBMakFBQUJBNGFuVnRZZ0FBQUNocWRXMWtZekpqY3dBUkFCQ0FBQUNxQURpYmNRTmpNbkJoTG5OcFoyNWhkSFZ5WlFBQUFCQUlZMkp2Y3RLRVdRSVNvZ0VtR0NGWkFnb3dnZ0lHTUlJQmphQURBZ0VDQWhSQTVhQUs3c0k1MEw2NGcvb0dRZ1U5WjFVVEFEQUtCZ2dxaGtqT1BRUURBekJKTVJjd0ZRWURWUVFLRXc1QmJuUm9jbTl3YVdNc0lGQkNRekV1TUN3R0ExVUVBeE1sUVc1MGFISnZjR2xqSUVOdmJuUmxiblFnUTNKbFpHVnVkR2xoYkhNZ1VtOXZkQ0JEUVRBZUZ3MHlOakE0TURjeE9EUXpOVFphRncweU9EQTRNRFl4T1RRek5UWmFNRVF4RnpBVkJnTlZCQW9URGtGdWRHaHliM0JwWXl3Z1VFSkRNU2t3SndZRFZRUURFeUJCYm5Sb2NtOXdhV01nUTJ4aGRXUmxJRU52Ym5SbGJuUWdVMmxuYm1sdVp6QlpNQk1HQnlxR1NNNDlBZ0VHQ0NxR1NNNDlBd0VIQTBJQUJKaDZDbXZMVUJnRkZOVTB2VUtsT1Z0RTZkamQxN0w1U3V3WDBMZW1GaXNCTTNka2QvM2N5anhGQTNRbzVTNDZmWDAvaWhZMFZaN21mYjlLRjcwM3Q1T2pXREJXTUE0R0ExVWREd0VCL3dRRUF3SUhnREFWQmdOVkhTVUVEakFNQmdvckJnRUVBWVBvWGdJQk1Bd0dBMVVkRXdFQi93UUNNQUF3SHdZRFZSMGpCQmd3Rm9BVXpsSGlCSUZPWkZzaitPUEV6NW8rbk1IWFhNSXdDZ1lJS29aSXpqMEVBd01EWndBd1pBSXdNWE1kRko0QmV0TExWWTdPUnVFOW5vcWJiQVpPWm4vYUFyWHlUd0ZBWmZLclB6eEYydlBvSk5mMStVQ2RnMVhHQWpCd1gxemQ5V0dxWWtxbUw1U0ZxdzFReVNqcjF6SmZwSk05KzFyZER3U1BMTU9QT2pLdWlYam9VL3BVVWVHOVJ3bWhZM0JoWkZrTm5nQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUFpZUU5IcEZnYTQ5d0JaWWlDQWRyR3FYVjhYbzNpeEpGMmt2T3NQcURTQ09aWmFWbEtXZURrNTNaSGlsb3laQnJaSEhGclo0bk9RME5QMm51azVFMThwTnBZPTwvYzJwYTptYW5pZmVzdD48L21ldGFkYXRhPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJhIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwIiB5MT0iMjAiIHgyPSI2MCIgeTI9IjkwIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiM4ZjZiZmYiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM1YTNmZDgiLz48L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9ImIiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iNDAiIHkxPSIxMCIgeDI9IjkwIiB5Mj0iNjAiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzRkYTNmZiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzdhOGNmZiIvPjwvbGluZWFyR3JhZGllbnQ+CjxsaW5lYXJHcmFkaWVudCBpZD0iYyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIHgxPSIyMCIgeTE9IjkwIiB4Mj0iODAiIHkyPSI2MCI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjNGIyZmM0Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNmE1MmU4Ii8+PC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAiIHkxPSIwIiB4Mj0iMTAwIiB5Mj0iMTAwIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMzZmUwYjAiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxZmI5ODciLz48L2xpbmVhckdyYWRpZW50Pgo8bWFzayBpZD0ibSI+PHBvbHlnb24gcG9pbnRzPSI1MC4wMCw4LjAwIDg2LjM3LDI5LjAwIDg2LjM3LDcxLjAwIDUwLjAwLDkyLjAwIDEzLjYzLDcxLjAwIDEzLjYzLDI5LjAwIiBmaWxsPSIjZmZmIi8+PHBvbHlnb24gcG9pbnRzPSI1MC4wMCwyNy4wMCA2OS45MiwzOC41MCA2OS45Miw2MS41MCA1MC4wMCw3My4wMCAzMC4wOCw2MS41MCAzMC4wOCwzOC41MCIgZmlsbD0iIzAwMCIvPjxjaXJjbGUgY3g9IjgwIiBjeT0iODIiIHI9IjEzIiBmaWxsPSIjMDAwIi8+PC9tYXNrPgo8Y2xpcFBhdGggaWQ9ImsiPjxwb2x5Z29uIHBvaW50cz0iNTAuMDAsMzEuMDAgNjYuNDUsNDAuNTAgNjYuNDUsNTkuNTAgNTAuMDAsNjkuMDAgMzMuNTUsNTkuNTAgMzMuNTUsNDAuNTAiLz48L2NsaXBQYXRoPgo8L2RlZnM+CjxnIG1hc2s9InVybCgjbSkiPgo8cG9seWdvbiBwb2ludHM9IjgsMjAgNTAsNiA1MCw1MCA4LDYwIiBmaWxsPSJ1cmwoI2EpIi8+Cjxwb2x5Z29uIHBvaW50cz0iNTAsNiA5MiwyMCA5Miw2MCA1MCw1MCIgZmlsbD0idXJsKCNiKSIvPgo8cG9seWdvbiBwb2ludHM9IjgsNTAgNTAsNTAgOTIsNTAgOTIsMTAwIDgsMTAwIiBmaWxsPSJ1cmwoI2MpIi8+Cjxwb2x5Z29uIHBvaW50cz0iOCwyMCA4LDYwIDUwLDEwMCA4LDEwMCIgZmlsbD0idXJsKCNhKSIgb3BhY2l0eT0iLjU1Ii8+CjwvZz4KPGcgY2xpcC1wYXRoPSJ1cmwoI2spIiBmaWxsPSJ1cmwoI2QpIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjQyIiByPSI4LjUiLz48ZWxsaXBzZSBjeD0iNTAiIGN5PSI3MiIgcng9IjE3IiByeT0iMTUiLz48L2c+CjxjaXJjbGUgY3g9IjgwIiBjeT0iODIiIHI9IjgiIGZpbGw9InVybCgjZCkiLz4KPC9zdmc+" alt="" width="48" height="48">
             <span class="brand-name">quan-persona</span>
         </div>
@@ -356,6 +356,7 @@
                         </div>
                         <div id="clusterRadarPane" style="margin-bottom: 20px;">
                             <div class="chart-wrapper" style="height: 560px;"><canvas id="clusterRadarChart"></canvas></div>
+                            <div id="clusterRadarLegend" class="cluster-radar-legend" style="margin-top: 14px; margin-bottom: 8px;"></div>
                             <div id="clusterRadarKey" style="font-size:var(--fs-small); color:var(--text-secondary); line-height:1.7; margin-top:10px;"></div>
                         </div>
                         <div id="clusterHeatmap" style="display:none; margin-bottom: 20px;"></div>
@@ -369,11 +370,11 @@
                     <!-- Row 1, Col 1 (Left 1): Agent Experience Distribution -->
                     <div id="analytics-dist-card" class="glass-panel chart-card analytics-block-card" style="display: flex; flex-direction: column; height: 100%; box-sizing: border-box; padding: 20px;">
                         <h3 data-i18n="expDistTitle" style="margin: 0 0 1rem 0; border-left: 3px solid var(--accent-yellow); padding-left: 8px; font-size: var(--fs-subtitle);">Agent Experience Distribution</h3>
-                        <div style="display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap; width: 100%; flex-grow: 1;">
+                        <div class="analytics-donut-wrap">
                             <div style="height: 200px; width: 200px; position: relative;">
                                 <canvas id="distDoughnutChart"></canvas>
                             </div>
-                            <div id="distDoughnutLegend" style="display: flex; flex-direction: column; gap: 6px; font-size: var(--fs-caption); justify-content: flex-start; align-items: flex-start; text-align: left;"></div>
+                            <div id="distDoughnutLegend" class="donut-chart-legend"></div>
                         </div>
                     </div>
 
@@ -391,11 +392,11 @@
                     <!-- Row 2, Col 1 (Left 2): Daily Task Allocation (Overall Average) -->
                     <div id="analytics-work-card" class="glass-panel chart-card analytics-block-card" style="display: flex; flex-direction: column; height: 100%; box-sizing: border-box; padding: 20px;">
                         <h3 data-i18n="dailyWorkAvgTitle" style="margin: 0 0 1rem 0; border-left: 3px solid var(--accent-yellow); padding-left: 8px; font-size: var(--fs-subtitle);">Daily Task Allocation (Overall Average)</h3>
-                        <div style="display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap; width: 100%; flex-grow: 1;">
+                        <div class="analytics-donut-wrap">
                             <div style="height: 190px; width: 190px; position: relative;">
                                 <canvas id="analyticsAllWorkCanvas"></canvas>
                             </div>
-                            <div id="analyticsAllWorkLegend" style="display: flex; flex-direction: column; gap: 6px; font-size: var(--fs-caption); justify-content: flex-start; align-items: flex-start; text-align: left;"></div>
+                            <div id="analyticsAllWorkLegend" class="donut-chart-legend"></div>
                         </div>
                     </div>
 
@@ -777,12 +778,7 @@
             return;
         }
 
-        var dontShowVideo = false;
-        try {
-            dontShowVideo = (localStorage.getItem('quan_persona_dont_show_video') === 'true');
-        } catch (e) {}
-
-        if (hasDirectTarget || fromInternal || dontShowVideo) {
+        if (hasDirectTarget || fromInternal) {
             window.__skipLandingGate = true;
             window.__skipLandingVideo = true;
             if (g) {
@@ -793,22 +789,8 @@
             return;
         }
 
-        // If user already has a saved language preference, open video directly in that language
-        var savedLang = null;
-        try {
-            savedLang = localStorage.getItem('portal_lang') || params.get('lang');
-        } catch (e) {}
-
-        if (savedLang) {
-            if (g) {
-                g.classList.remove('show');
-                g.style.display = 'none';
-            }
-            if (window.__qpEarlyOpen) {
-                window.__qpEarlyOpen(savedLang);
-            }
-        } else if (g) {
-            // First-time landing visitor without language choice: display language gate
+        // Always show the language selection gate on landing, regardless of prior language choice
+        if (g) {
             var l = document.getElementById('lang-gate-logo'), m = document.querySelector('.brand-mark');
             if (l && m && !l.getAttribute('src')) l.src = m.src;
             g.style.display = 'flex';
@@ -833,12 +815,13 @@
                 localStorage.setItem('portal_lang', lang);
             } catch (e) {}
             var skip = false; try { skip = localStorage.getItem('quan_persona_dont_show_video') === 'true'; } catch (e) {}
-            // Before the app has loaded: close the language screen and start the video straight away; the app picks up the choice when it is ready
-            if (!skip && window.__qpEarlyOpen && window.__qpEarlyOpen(lang)) return;
-            if (g && skip) {
+            if (g) {
                 g.classList.remove('show');
                 setTimeout(function () { g.style.display = 'none'; }, 300);
             }
+            document.body.style.overflow = '';
+            // Before the app has loaded: start video straight away if not skipped; app picks up choice when ready
+            if (!skip && window.__qpEarlyOpen && window.__qpEarlyOpen(lang)) return;
         };
     })();
     </script>
@@ -909,7 +892,7 @@
             dontShowVideo = (localStorage.getItem('quan_persona_dont_show_video') === 'true');
         } catch (e) {}
 
-        if (hasDirectTarget || fromInternal || dontShowVideo) {
+        if (hasDirectTarget || fromInternal) {
             window.__skipLandingGate = true;
             window.__skipLandingVideo = true;
             var gate = document.getElementById('lang-gate');
@@ -959,6 +942,23 @@
             if (p) { try { p.pause(); } catch (e) {} }
             if (m) { m.classList.remove('active'); m.style.display = 'none'; }
             document.body.style.overflow = '';
+
+            // If users close the video window and data is still loading, show loading overlay so users know it's loading
+            var isZh = (window.__pendingLang === 'zh' || (!window.__pendingLang && (localStorage.getItem('portal_lang') === 'zh' || (navigator.language || '').toLowerCase().indexOf('zh') !== -1)));
+            var isDataLoaded = isZh ? (typeof PRE_LOADED_DATA_ZH !== 'undefined' && PRE_LOADED_DATA_ZH.length > 0)
+                                    : (typeof PRE_LOADED_DATA !== 'undefined' && PRE_LOADED_DATA.length > 0);
+            if (!isDataLoaded || !window.__platformDataInitialized) {
+                var overlay = document.getElementById('csv-loading-overlay');
+                if (overlay) {
+                    var titleEl = document.getElementById('csv-loading-title');
+                    var msgEl = document.getElementById('csv-loading-message');
+                    if (titleEl) titleEl.textContent = isZh ? '正在載入問卷數據...' : 'Loading Survey Data...';
+                    if (msgEl) msgEl.textContent = isZh ? '正在準備儀表板與分群數據，請稍候...' : 'Preparing dashboard and clustering data, please wait...';
+                    overlay.style.display = 'flex';
+                    void overlay.offsetWidth;
+                    overlay.style.opacity = '1';
+                }
+            }
         };
         Array.prototype.slice.call(document.querySelectorAll('#lang-gate .lang-gate-btn')).forEach(function (b) {
             ['pointerenter', 'touchstart', 'focus'].forEach(function (n) { b.addEventListener(n, function () { if (!window.__qpEarly) window.__qpSetVideo(b.getAttribute('data-lang')); }, { passive: true }); });
@@ -1015,9 +1015,9 @@
                 <button class="btn btn-secondary" onclick="closeCsvGuide()" aria-label="Close" style="flex-shrink: 0;">&#10005;</button>
             </div>
             <div id="csv-guide-body" style="flex: 1; overflow-y: auto; padding: 18px 24px;"></div>
-            <div style="flex-shrink: 0; padding: 14px 24px; border-top: 1px solid var(--panel-border); display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; background: rgba(15, 23, 42, 0.98);">
+            <div class="csv-guide-footer" style="flex-shrink: 0; padding: 14px 24px; border-top: 1px solid var(--panel-border); display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; background: rgba(15, 23, 42, 0.98);">
                 <button class="btn btn-secondary" id="csv-guide-btn-dict" onclick="downloadCsvDictionary()">Download Column Dictionary (CSV)</button>
-                <button class="btn btn-primary" id="csv-guide-btn-template" onclick="downloadCsvTemplate()">Download CSV Template</button>
+                <button class="btn btn-primary" id="csv-guide-btn-template" onclick="downloadCsvTemplate()">Download CSV Template (header + example row)</button>
             </div>
         </div>
     </div>

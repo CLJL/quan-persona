@@ -409,9 +409,9 @@
                         '<button class="btn btn-secondary" onclick="closeCsvGuide()" aria-label="Close" style="flex-shrink: 0; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.1rem; padding: 0;">&#10005;</button>' +
                     '</div>' +
                     '<div id="csv-guide-body" style="flex: 1; overflow-y: auto; padding: 18px 24px;"></div>' +
-                    '<div style="flex-shrink: 0; padding: 14px 24px; border-top: 1px solid var(--panel-border); display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; background: rgba(15, 23, 42, 0.98);">' +
+                    '<div class="csv-guide-footer" style="flex-shrink: 0; padding: 14px 24px; border-top: 1px solid var(--panel-border); display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; background: rgba(15, 23, 42, 0.98);">' +
                         '<button class="btn btn-secondary" id="csv-guide-btn-dict" onclick="downloadCsvDictionary()">Download Column Dictionary (CSV)</button>' +
-                        '<button class="btn btn-primary" id="csv-guide-btn-template" onclick="downloadCsvTemplate()">Download CSV Template</button>' +
+                        '<button class="btn btn-primary" id="csv-guide-btn-template" onclick="downloadCsvTemplate()">Download CSV Template (header + example row)</button>' +
                     '</div>' +
                 '</div>';
             document.body.appendChild(modal);
@@ -513,7 +513,8 @@
             optA: ['Explore the sample data', 'See personas, journey maps and clustering using the data that is already loaded.'],
             optB: ['Design a questionnaire', 'Choose your questions and download a questionnaire to send to respondents.'],
             optC: ['Analyse my own survey data', 'Get the CSV template, upload your file and check how your columns match.'],
-            close: 'Close'
+            close: 'Close',
+            dontShow: "Don't show the tutorial again"
         },
         zh: {
             chTitle: '想從哪裡開始？',
@@ -521,7 +522,8 @@
             optA: ['先看範例資料', '用已載入的資料，依序查看人物誌、歷程地圖與分群結果。'],
             optB: ['設計問卷', '選擇要詢問的題目，並下載問卷發送給受訪者。'],
             optC: ['分析我自己的問卷資料', '取得 CSV 範本、上傳檔案，並確認欄位對應的結果。'],
-            close: '關閉'
+            close: '關閉',
+            dontShow: '不再顯示教學'
         }
     };
 
@@ -547,6 +549,12 @@
                 '</button>';
         };
 
+        let dontShowAgain = false;
+        try {
+            const raw = localStorage.getItem('qp-start-v1');
+            if (raw) dontShowAgain = !!JSON.parse(raw).dontShowAgain;
+        } catch (e) {}
+
         chooser.innerHTML =
             '<div class="qps-ch-card">' +
                 '<button type="button" class="qps-x qps-ch-x" aria-label="' + dict.close + '">' + X_SVG + '</button>' +
@@ -554,6 +562,10 @@
                 optHtml(dict.optA, 'index.html?startRoute=sample#personas', true) +
                 optHtml(dict.optB, 'index.html?startRoute=quest#journeys', false) +
                 optHtml(dict.optC, 'index.html?startRoute=own', false) +
+                '<div class="qps-ch-footer" style="margin-top:14px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:flex-end;">' +
+                '<label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none;font-size:0.92rem;color:#aab3c0;">' +
+                '<input type="checkbox" id="qps-ch-dont-show-chk" ' + (dontShowAgain ? 'checked' : '') + ' style="accent-color:#f5c518;cursor:pointer;width:16px;height:16px;margin:0;">' +
+                '<span>' + dict.dontShow + '</span></label></div>' +
             '</div>';
 
         chooser.style.display = 'flex';
@@ -561,6 +573,19 @@
         const card = chooser.querySelector('.qps-ch-card');
         if (card) {
             card.onclick = function (e) { e.stopPropagation(); };
+        }
+        const chk = chooser.querySelector('#qps-ch-dont-show-chk');
+        if (chk) {
+            chk.onchange = function () {
+                try {
+                    let s = { done: {}, dismissed: false, seen: true, dontShowAgain: false };
+                    const raw = localStorage.getItem('qp-start-v1');
+                    if (raw) s = Object.assign(s, JSON.parse(raw));
+                    s.dontShowAgain = chk.checked;
+                    s.dismissed = chk.checked;
+                    localStorage.setItem('qp-start-v1', JSON.stringify(s));
+                } catch (e) {}
+            };
         }
         const closeBtn = chooser.querySelector('.qps-ch-x');
         if (closeBtn) {
@@ -600,9 +625,19 @@
     });
 
     const isMobile = () => window.innerWidth <= 900;
+    const noHover = window.matchMedia && window.matchMedia('(hover: none)').matches;
     function setDrawer(on) {
         if (!isMobile()) on = false;
         document.body.classList.toggle('drawer-open', !!on);
+        const nav = document.getElementById('main-nav');
+        if (nav) {
+            nav.classList.toggle('drawer-open', !!on);
+            if (on) {
+                nav.classList.remove('quiet');
+            } else if (noHover) {
+                nav.classList.add('quiet');
+            }
+        }
         const brand = document.getElementById('brand-cell');
         if (brand && isMobile()) brand.setAttribute('aria-expanded', on ? 'true' : 'false');
     }
