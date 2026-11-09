@@ -36,26 +36,26 @@
                small     12px  descriptions, helper text, notes, field labels, score-card labels (SUP / WP / AR / PR)
                caption   11px  chips, tags, units, hints, axis and legend text */
             --font-ui: 'Outfit', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang TC", "Microsoft JhengHei", "Noto Sans CJK TC", sans-serif;
-            --fs-caption: 0.8125rem;   /* tiny labels, chips, axis text */
-            --fs-small: 0.875rem;      /* descriptions, helper text, notes */
-            --fs-body: 0.9375rem;      /* body text, inputs, buttons */
-            --fs-subtitle: 1.0625rem;  /* card / section subtitles */
-            --fs-title: 1.25rem;       /* card titles */
-            --fs-heading: 1.5rem;      /* page headings */
+            --fs-caption: 0.875rem;    /* 14px */
+            --fs-small: 0.9375rem;     /* 15px */
+            --fs-body: 1rem;           /* 16px - aligned with main portal */
+            --fs-subtitle: 1.125rem;   /* 18px */
+            --fs-title: 1.25rem;       /* 20px */
+            --fs-heading: 1.5rem;      /* 24px */
             --fs-display: 1.9rem;      /* big numbers */
         }
         @media (max-width: 900px) {
             :root {
-                --fs-caption: 0.75rem;    /* 12px */
-                --fs-small: 0.8125rem;    /* 13px */
-                --fs-body: 0.875rem;      /* 14px */
-                --fs-subtitle: 1rem;      /* 16px */
-                --fs-title: 1.125rem;     /* 18px */
-                --fs-heading: 1.35rem;    /* 21.6px */
-                --fs-display: 1.65rem;    /* 26.4px */
+                --fs-caption: 0.8125rem;   /* 13px */
+                --fs-small: 0.875rem;      /* 14px */
+                --fs-body: 0.9375rem;      /* 15px */
+                --fs-subtitle: 1.0625rem;  /* 17px */
+                --fs-title: 1.2rem;        /* 19.2px */
+                --fs-heading: 1.4rem;      /* 22.4px */
+                --fs-display: 1.75rem;     /* 28px */
             }
         }
-        button, input, select, textarea { font-family: inherit; font-size: var(--fs-small); }
+        button, input, select, textarea { font-family: inherit; font-size: var(--fs-body); }
 
         :root {
             --bg-page: #0b0f17;
@@ -288,10 +288,10 @@
             margin: 0 0 4px 0;
         }
         .designer-desc {
-            font-size: var(--fs-small);
+            font-size: var(--fs-body);
             color: var(--text-muted);
             margin: 0;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
         /* Preset Row */
@@ -299,14 +299,14 @@
             background: var(--bg-card);
             border: 1px solid var(--border-dim);
             border-radius: 8px;
-            padding: 10px 16px;
+            padding: 12px 16px;
             margin: 18px 0;
             display: flex;
             align-items: center;
             gap: 12px;
         }
         .preset-label {
-            font-size: var(--fs-small);
+            font-size: var(--fs-body);
             color: var(--text-muted);
             font-weight: 600;
         }
@@ -314,9 +314,9 @@
             background: #111827;
             border: 1px solid rgba(255, 255, 255, 0.15);
             color: #fff;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: var(--fs-small);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: var(--fs-body);
             font-weight: 600;
             outline: none;
             cursor: pointer;
@@ -331,20 +331,20 @@
             margin-bottom: 16px;
         }
         .meta-label {
-            font-size: var(--fs-caption);
+            font-size: var(--fs-small);
             font-weight: 700;
             color: #94a3b8;
             letter-spacing: 0.05em;
             text-transform: uppercase;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
         .meta-input {
             width: 100%;
             background: var(--bg-input);
             border: 1px solid rgba(255, 255, 255, 0.12);
             color: #fff;
-            padding: 8px 12px;
-            border-radius: 6px;
+            padding: 10px 14px;
+            border-radius: 8px;
             font-size: var(--fs-body);
             font-family: inherit;
             outline: none;
@@ -360,11 +360,11 @@
             background: var(--bg-input);
             border: 1px solid rgba(255, 255, 255, 0.12);
             color: #cbd5e1;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: var(--fs-small);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: var(--fs-body);
             font-family: inherit;
-            line-height: 1.45;
+            line-height: 1.6;
             resize: vertical;
             outline: none;
         }
@@ -1346,14 +1346,15 @@
 
         /* readability for filling in data: everything the author types or picks aligns with portal design system */
         input[type="text"], textarea, select, .choice-input, .matrix-item-input, .q-type-select, .opt-kind-select,
-        .q-prompt-textarea, .q-prompt-textarea.q-prompt-2lines, .percent-select, .meta-input { font-size: var(--fs-small) !important; }
-        .sec-title-input { font-size: var(--fs-subtitle) !important; font-weight: 700 !important; }
-        .stage-title-input { font-size: var(--fs-body) !important; font-weight: 700 !important; }
-        .action-title-input { font-size: var(--fs-small) !important; font-weight: 600 !important; }
-        .matrix-scale-select { font-size: var(--fs-caption) !important; }
-        .tag-chip-input { font-size: var(--fs-small) !important; font-weight: 600 !important; }
-        .measure-note { font-size: var(--fs-caption) !important; }
-        .btn-pill, .btn-add-item, button { font-size: var(--fs-small); }
+        .q-prompt-textarea, .q-prompt-textarea.q-prompt-2lines, .percent-select, .meta-input { font-size: var(--fs-body) !important; }
+        .sec-title-input { font-size: var(--fs-title) !important; font-weight: 700 !important; }
+        .stage-title-input { font-size: var(--fs-subtitle) !important; font-weight: 700 !important; }
+        .action-title-input { font-size: var(--fs-body) !important; font-weight: 600 !important; }
+        .matrix-scale-select { font-size: var(--fs-small) !important; }
+        .tag-chip-input { font-size: var(--fs-body) !important; font-weight: 600 !important; }
+        .measure-note { font-size: var(--fs-small) !important; }
+        .btn-pill, .btn-add-item, button { font-size: var(--fs-body); }
+        .top-action-bar-right .btn { font-size: var(--fs-body) !important; font-weight: 600; padding: 8px 16px !important; min-height: 38px !important; }
         body { line-height: 1.5; }
         .q-prompt-textarea, .choice-input, .matrix-item-input, .q-type-select { line-height: 1.45; }
         .choice-input, .matrix-item-input { padding-top: 8px; padding-bottom: 8px; }
@@ -1396,7 +1397,7 @@
     <!-- MAIN DESIGNER SHELL (Strictly matching Design Patterns.png) -->
     <div class="designer-container" id="designer-view">
         <div class="designer-shell">
-            <p class="designer-desc" id="lbl-designer-desc" style="margin-bottom: 14px; font-size: var(--fs-small); color: var(--text-muted); line-height: 1.5;">
+            <p class="designer-desc" id="lbl-designer-desc" style="margin-bottom: 16px; font-size: var(--fs-body); color: var(--text-muted); line-height: 1.6;">
                 Configure background demographics, competency rating scales, and journey stages. When saved, all settings reflect directly across the platform and the downloadable questionnaire module.
             </p>
 
@@ -1409,8 +1410,8 @@
                     <option value="patient">🏥 Patient Care Journey</option>
                     <option value="new_blank">+ Create a New Schema</option>
                 </select>
-                <button type="button" class="btn btn-ghost" onclick="resetToDefaultSchema()" style="padding: 4px 12px; font-size: var(--fs-small); height: 32px; margin-left: 10px; border-color: rgba(255,255,255,0.2); color: #cbd5e1; display: inline-flex; align-items: center; gap: 6px;" title="Reset this preset to default">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+                <button type="button" class="btn btn-ghost" onclick="resetToDefaultSchema()" style="padding: 6px 14px; font-size: var(--fs-body); height: 36px; margin-left: 10px; border-color: rgba(255,255,255,0.2); color: #cbd5e1; display: inline-flex; align-items: center; gap: 6px;" title="Reset this preset to default">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
                     <span id="txt-btn-reset-top">Reset to Default</span>
                 </button>
             </div>

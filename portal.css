@@ -1663,32 +1663,33 @@
             color: #fff;
         }
         #csv-guide-modal #csv-guide-subtitle {
-            font-size: var(--fs-small) !important;
+            font-size: var(--fs-body) !important;
             color: #94a3b8 !important;
+            line-height: 1.45 !important;
         }
         #csv-guide-modal ul {
-            font-size: var(--fs-small) !important;
-            line-height: 1.55 !important;
+            font-size: var(--fs-body) !important;
+            line-height: 1.6 !important;
             color: #cbd5e1 !important;
         }
         #csv-guide-modal summary {
-            font-size: var(--fs-body) !important;
-            font-weight: 600 !important;
+            font-size: var(--fs-subtitle) !important;
+            font-weight: 700 !important;
             color: #fff;
         }
         #csv-guide-modal summary span {
-            font-size: var(--fs-caption) !important;
-            font-weight: 400 !important;
+            font-size: var(--fs-small) !important;
+            font-weight: 500 !important;
             color: #94a3b8;
         }
         #csv-guide-modal th {
-            font-size: var(--fs-caption) !important;
+            font-size: var(--fs-small) !important;
             font-weight: 600 !important;
             color: #94a3b8;
         }
         #csv-guide-modal td {
             font-size: var(--fs-small) !important;
-            line-height: 1.5 !important;
+            line-height: 1.55 !important;
         }
 
         /* ==================== COMMERCIAL VIDEO MODAL ==================== */
@@ -3121,35 +3122,41 @@ body:has(#view-faq.active) .capsule-tabs-container { display: none !important; }
 
     /* CSV Guide Modal Typography Consistency */
     #csv-guide-modal #csv-guide-title {
-        font-size: var(--fs-subtitle) !important;
+        font-size: var(--fs-title) !important;
         font-weight: 700 !important;
     }
     #csv-guide-modal #csv-guide-subtitle {
-        font-size: var(--fs-caption) !important;
+        font-size: var(--fs-body) !important;
         color: #94a3b8 !important;
+        line-height: 1.45 !important;
     }
     #csv-guide-modal ul {
-        font-size: var(--fs-small) !important;
-        line-height: 1.5 !important;
-        padding-left: 18px !important;
+        font-size: var(--fs-body) !important;
+        line-height: 1.6 !important;
+        padding-left: 20px !important;
         color: #cbd5e1 !important;
     }
+    #csv-guide-modal ul li {
+        margin-bottom: 6px !important;
+    }
     #csv-guide-modal summary {
-        font-size: var(--fs-body) !important;
+        font-size: var(--fs-subtitle) !important;
+        font-weight: 700 !important;
+        padding: 12px 14px !important;
+    }
+    #csv-guide-modal summary span {
+        font-size: var(--fs-small) !important;
+        font-weight: 500 !important;
+    }
+    #csv-guide-modal th {
+        font-size: var(--fs-small) !important;
         font-weight: 600 !important;
         padding: 10px 12px !important;
     }
-    #csv-guide-modal summary span {
-        font-size: var(--fs-caption) !important;
-        font-weight: 400 !important;
-    }
-    #csv-guide-modal th {
-        font-size: var(--fs-caption) !important;
-        font-weight: 600 !important;
-    }
     #csv-guide-modal td {
-        font-size: var(--fs-caption) !important;
-        line-height: 1.45 !important;
+        font-size: var(--fs-small) !important;
+        line-height: 1.55 !important;
+        padding: 10px 12px !important;
     }
 
     /* CSV Guide Modal Responsive & Synchronized Button Typography */
@@ -3177,11 +3184,11 @@ body:has(#view-faq.active) .capsule-tabs-container { display: none !important; }
     #csv-guide-btn-dict,
     #csv-guide-btn-template {
         width: 100% !important;
-        min-height: 44px !important;
-        font-size: var(--fs-small) !important;
+        min-height: 48px !important;
+        font-size: var(--fs-body) !important;
         font-weight: 600 !important;
         line-height: 1.35 !important;
-        padding: 10px 14px !important;
+        padding: 12px 16px !important;
         justify-content: center !important;
         text-align: center !important;
         box-sizing: border-box !important;
