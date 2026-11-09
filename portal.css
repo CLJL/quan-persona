@@ -544,17 +544,28 @@
         #lang-gate.show { opacity: 1; }
         .lang-gate-card { width: 100%; max-width: 560px; text-align: center; color: #e9ecef; }
         .lang-gate-logo { width: 72px; height: 72px; border-radius: 18px; display: block; margin: 0 auto 10px; }
-        .lang-gate-brand { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.2px; margin-bottom: 26px; color: #fff; }
-        .lang-gate-card h2 { font-size: 1.6rem; margin: 0 0 10px; color: #fff; line-height: 1.35; }
+        .lang-gate-brand { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.2px; margin-bottom: 24px; color: #fff; }
+        .lang-gate-card h2 { margin: 0 0 10px; line-height: 1.3; }
+        .lang-gate-title-en { display: block; font-size: 1.65rem; font-weight: 700; color: #ffffff; letter-spacing: -0.2px; }
+        .lang-gate-title-zh { display: block; font-size: 1.05rem; font-weight: 500; color: var(--text-secondary); margin-top: 4px; letter-spacing: 0.5px; }
         .lang-gate-sep { color: var(--accent-yellow); }
-        .lang-gate-sub { margin: 0 0 28px; color: var(--text-secondary); line-height: 1.7; font-size: 1rem; }
+        .lang-gate-sub { margin: 0 0 28px; line-height: 1.6; }
+        .lang-gate-sub-en { display: block; font-size: 0.95rem; color: var(--text-secondary); }
+        .lang-gate-sub-zh { display: block; font-size: 0.8125rem; color: var(--text-muted); margin-top: 3px; }
         .lang-gate-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-        .lang-gate-btn { cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 22px 14px; border-radius: 16px; color: #fff;
-            background: rgba(30, 34, 42, 0.75); border: 1px solid var(--panel-border); transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease; font-family: inherit; }
+        .lang-gate-btn { cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; padding: 20px 14px; border-radius: 16px; color: #fff;
+            background: rgba(30, 34, 42, 0.75); border: 1px solid var(--panel-border); transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease; font-family: inherit; min-height: 112px; }
         .lang-gate-btn:hover, .lang-gate-btn:focus-visible { border-color: var(--accent-yellow); background: rgba(245, 197, 24, 0.1); transform: translateY(-2px); outline: none; }
-        .lang-gate-main { font-size: 1.35rem; font-weight: 700; }
-        .lang-gate-note { font-size: 0.85rem; color: var(--text-secondary); }
-        @media (max-width: 520px) { .lang-gate-actions { grid-template-columns: 1fr; } .lang-gate-card h2 { font-size: 1.35rem; } }
+        .lang-gate-main { font-size: 1.35rem; font-weight: 700; color: #ffffff; letter-spacing: -0.2px; line-height: 1.25; }
+        .lang-gate-btn .lang-gate-sub-zh { display: inline-block; font-size: 0.9375rem; font-weight: 600; color: var(--accent-yellow); margin: 0; letter-spacing: 0.5px; }
+        .lang-gate-note { font-size: 0.8125rem; color: var(--text-secondary); margin-top: 2px; }
+        @media (max-width: 520px) {
+            .lang-gate-actions { grid-template-columns: 1fr; }
+            .lang-gate-title-en { font-size: 1.35rem; }
+            .lang-gate-title-zh { font-size: 0.9375rem; }
+            .lang-gate-main { font-size: 1.2rem; }
+            .lang-gate-btn { padding: 16px 12px; min-height: auto; }
+        }
         /* brand logo doubles as the rail control on phones/tablets */
         @media (max-width: 900px) { .brand[role="button"] { cursor: pointer; -webkit-tap-highlight-color: transparent; } }
         /* FAQ */
@@ -828,7 +839,7 @@
             width: fit-content !important;
             max-width: 100% !important;
             align-self: center !important;
-            margin: 0 !important;
+            margin: 0 auto !important;
             padding: 0 !important;
             display: inline-flex !important;
             flex-direction: column !important;
@@ -1645,6 +1656,41 @@
             color: #fff;
         }
 
+        /* ==================== CSV COLUMN GUIDE MODAL ==================== */
+        #csv-guide-modal #csv-guide-title {
+            font-size: var(--fs-title) !important;
+            font-weight: 700 !important;
+            color: #fff;
+        }
+        #csv-guide-modal #csv-guide-subtitle {
+            font-size: var(--fs-small) !important;
+            color: #94a3b8 !important;
+        }
+        #csv-guide-modal ul {
+            font-size: var(--fs-small) !important;
+            line-height: 1.55 !important;
+            color: #cbd5e1 !important;
+        }
+        #csv-guide-modal summary {
+            font-size: var(--fs-body) !important;
+            font-weight: 600 !important;
+            color: #fff;
+        }
+        #csv-guide-modal summary span {
+            font-size: var(--fs-caption) !important;
+            font-weight: 400 !important;
+            color: #94a3b8;
+        }
+        #csv-guide-modal th {
+            font-size: var(--fs-caption) !important;
+            font-weight: 600 !important;
+            color: #94a3b8;
+        }
+        #csv-guide-modal td {
+            font-size: var(--fs-small) !important;
+            line-height: 1.5 !important;
+        }
+
         /* ==================== COMMERCIAL VIDEO MODAL ==================== */
         .commercial-modal-content {
             width: 1040px;
@@ -2148,24 +2194,25 @@
             #analytics-dist-card > div[style*="flex-wrap"],
             #analytics-work-card > div[style*="flex-wrap"] {
                 display: flex !important;
-                flex-direction: row !important;
+                flex-direction: column !important;
                 align-items: center !important;
                 justify-content: center !important;
                 width: 100% !important;
-                gap: 20px !important;
+                gap: 16px !important;
+                margin: 0 auto !important;
             }
             .analytics-donut-wrap > div:first-child,
             #analytics-dist-card > div[style*="flex-wrap"] > div:first-child,
             #analytics-work-card > div[style*="flex-wrap"] > div:first-child {
                 flex: 0 0 auto !important;
                 align-self: center !important;
-                margin: 0 !important;
+                margin: 0 auto !important;
             }
             .donut-chart-legend,
             #personaDonutLegend,
             #distDoughnutLegend,
             #analyticsAllWorkLegend {
-                margin: 0 !important;
+                margin: 10px auto 0 auto !important;
                 padding: 0 !important;
                 width: fit-content !important;
                 max-width: 100% !important;
@@ -2193,16 +2240,20 @@
                 white-space: nowrap !important;
             }
             .cluster-radar-legend {
-                display: flex !important;
-                flex-wrap: wrap !important;
-                gap: 10px 20px !important;
+                display: grid !important;
+                grid-template-columns: repeat(2, max-content) !important;
+                column-gap: clamp(16px, 5vw, 28px) !important;
+                row-gap: 10px !important;
                 width: fit-content !important;
                 max-width: 100% !important;
                 align-items: center !important;
                 justify-content: center !important;
-                text-align: center !important;
+                justify-items: start !important;
+                text-align: left !important;
+                align-self: center !important;
                 margin: 14px auto 10px auto !important;
                 padding: 0 !important;
+                box-sizing: border-box !important;
             }
             .cluster-radar-leg-item {
                 width: auto !important;
@@ -2210,7 +2261,8 @@
                 justify-content: flex-start !important;
                 align-items: center !important;
                 text-align: left !important;
-                font-size: var(--fs-small) !important;
+                font-size: var(--fs-caption) !important;
+                white-space: nowrap !important;
             }
             .p-verbatim-list {
                 height: auto !important;
@@ -2523,15 +2575,16 @@
             #cluster-cards-grid { grid-template-columns: 1fr !important; }
             .cluster-radar-legend {
                 display: grid !important;
-                grid-template-columns: auto auto !important;
-                column-gap: clamp(16px, 6vw, 32px) !important;
+                grid-template-columns: repeat(2, max-content) !important;
+                column-gap: clamp(16px, 5vw, 28px) !important;
                 row-gap: 10px !important;
                 width: fit-content !important;
                 max-width: 100% !important;
                 margin: 14px auto 10px auto !important;
                 padding: 0 !important;
                 box-sizing: border-box !important;
-                align-items: start !important;
+                align-self: center !important;
+                align-items: center !important;
                 justify-items: start !important;
                 justify-content: center !important;
                 text-align: left !important;
@@ -2795,9 +2848,17 @@
         }
         @media (max-width: 900px) {
             :root { --topbar-h: 64px; --rail-w: 64px; }
-            .brand-mark { width: 38px; height: 38px; border-radius: 10px; }
-            .brand, body:has(.brand:hover) .brand, body:has(#main-nav:hover) .brand, body:has(#main-nav.intro) .brand, body:has(#main-nav.tour-open) .brand, body:has(#main-nav.pinned) .brand { width: var(--rail-w) !important; padding: 0 0 0 13px; gap: 12px; cursor: default; -webkit-tap-highlight-color: transparent; }
-            .brand-name { display: block !important; opacity: 0; }
+            .brand-mark { width: 38px; height: 38px; border-radius: 10px; pointer-events: none; }
+            .brand, #brand-cell, body:has(.brand:hover) .brand, body:has(#main-nav:hover) .brand, body:has(#main-nav.intro) .brand, body:has(#main-nav.tour-open) .brand, body:has(#main-nav.pinned) .brand {
+                width: var(--rail-w) !important;
+                padding: 0 0 0 13px;
+                gap: 12px;
+                cursor: pointer !important;
+                touch-action: manipulation !important;
+                pointer-events: auto !important;
+                -webkit-tap-highlight-color: transparent !important;
+            }
+            .brand-name { display: block !important; opacity: 0; pointer-events: none; }
             body.drawer-open .brand.brand, body.drawer-open #brand-cell, body:has(#main-nav.drawer-open) .brand { width: 264px !important; max-width: 86vw !important; border-bottom: 1px solid var(--panel-border); }
             body.drawer-open .brand-name, body:has(#main-nav.drawer-open) .brand-name { opacity: 1 !important; visibility: visible !important; display: block !important; transition-delay: 0.08s; }
             header.topbar { left: var(--rail-w) !important; }
@@ -3057,6 +3118,39 @@ body:has(#view-faq.active) .capsule-tabs-container { display: none !important; }
         z-index: 10000 !important;
     }
     #qps-chooser .qps-ch-card { padding: 20px; }
+
+    /* CSV Guide Modal Typography Consistency */
+    #csv-guide-modal #csv-guide-title {
+        font-size: var(--fs-subtitle) !important;
+        font-weight: 700 !important;
+    }
+    #csv-guide-modal #csv-guide-subtitle {
+        font-size: var(--fs-caption) !important;
+        color: #94a3b8 !important;
+    }
+    #csv-guide-modal ul {
+        font-size: var(--fs-small) !important;
+        line-height: 1.5 !important;
+        padding-left: 18px !important;
+        color: #cbd5e1 !important;
+    }
+    #csv-guide-modal summary {
+        font-size: var(--fs-body) !important;
+        font-weight: 600 !important;
+        padding: 10px 12px !important;
+    }
+    #csv-guide-modal summary span {
+        font-size: var(--fs-caption) !important;
+        font-weight: 400 !important;
+    }
+    #csv-guide-modal th {
+        font-size: var(--fs-caption) !important;
+        font-weight: 600 !important;
+    }
+    #csv-guide-modal td {
+        font-size: var(--fs-caption) !important;
+        line-height: 1.45 !important;
+    }
 
     /* CSV Guide Modal Responsive & Synchronized Button Typography */
     #csv-guide-modal .modal-content {

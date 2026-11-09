@@ -74,7 +74,7 @@
     <meta name="theme-color" content="#0E1016">
     <link rel="preload" href="outfit.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Externalised Stylesheet -->
-    <link rel="stylesheet" href="portal.css?v=20261108l">
+    <link rel="stylesheet" href="portal.css?v=20261109c">
 
     <!-- Early language pre-activation to prevent FOUC / flash of English -->
     <script>
@@ -119,9 +119,9 @@
     <script src="chart.min.js" defer></script>
     <script src="journey_schemas_modular.js?v=20261105i" defer></script>
     <script src="portal_clustering.js?v=20261105i" defer></script>
-    <script src="portal-csv.js?v=20261105i" defer></script>
-    <script src="portal-app.js?v=20261108l" defer></script>
-    <script src="portal-start.js?v=20261108l" defer></script>
+    <script src="portal-csv.js?v=20261109c" defer></script>
+    <script src="portal-app.js?v=20261109c" defer></script>
+    <script src="portal-start.js?v=20261109c" defer></script>
 </head>
 <body>
     <noscript>
@@ -199,9 +199,9 @@
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
                         <span class="tip" data-i18n="langMenu">Language</span>
                     </button>
-                    <div class="menu-pop" id="lang-menu" role="menu" style="min-width: 190px;">
+                    <div class="menu-pop" id="lang-menu" role="menu" style="min-width: 220px;">
                         <button type="button" class="menu-item" role="menuitemradio" data-lang="en" onclick="chooseLang('en')"><span>English</span><span class="menu-check">✓</span></button>
-                        <button type="button" class="menu-item" role="menuitemradio" data-lang="zh" onclick="chooseLang('zh')"><span>繁體中文</span><span class="menu-check">✓</span></button>
+                        <button type="button" class="menu-item" role="menuitemradio" data-lang="zh" onclick="chooseLang('zh')"><span>Traditional Chinese (繁體中文)</span><span class="menu-check">✓</span></button>
                     </div>
                 </div>
                 <button class="btn btn-secondary" onclick="downloadActivePersona()" id="download-btn-header" style="display: none;">
@@ -354,9 +354,9 @@
                             <button type="button" class="btn btn-secondary cluster-view-btn" id="cluster-view-radar" onclick="setClusterView('radar')" data-i18n="clusterViewRadar">Radar</button>
                             <button type="button" class="btn btn-secondary cluster-view-btn" id="cluster-view-table" onclick="setClusterView('table')" data-i18n="clusterViewTable">Table</button>
                         </div>
-                        <div id="clusterRadarPane" style="margin-bottom: 20px;">
-                            <div class="chart-wrapper" style="height: 560px;"><canvas id="clusterRadarChart"></canvas></div>
-                            <div id="clusterRadarLegend" class="cluster-radar-legend" style="margin-top: 14px; margin-bottom: 8px;"></div>
+                        <div id="clusterRadarPane" style="display: flex; flex-direction: column; align-items: center; width: 100%; margin-bottom: 20px;">
+                            <div class="chart-wrapper" style="height: 560px; width: 100%;"><canvas id="clusterRadarChart"></canvas></div>
+                            <div id="clusterRadarLegend" class="cluster-radar-legend"></div>
                             <div id="clusterRadarKey" style="font-size:var(--fs-small); color:var(--text-secondary); line-height:1.7; margin-top:10px;"></div>
                         </div>
                         <div id="clusterHeatmap" style="display:none; margin-bottom: 20px;"></div>
@@ -745,11 +745,25 @@
         <div class="lang-gate-card">
             <img class="lang-gate-logo" id="lang-gate-logo" alt="quan-persona">
             <div class="lang-gate-brand">quan-persona</div>
-            <h2 id="lang-gate-title">Choose your language<span class="lang-gate-sep"> · </span>選擇語言</h2>
-            <p class="lang-gate-sub">The introduction video will play in your language.<br>介紹影片將以你選擇的語言播放。</p>
+            <h2 id="lang-gate-title">
+                <span class="lang-gate-title-en">Choose your language</span>
+                <span class="lang-gate-title-zh">選擇語言</span>
+            </h2>
+            <p class="lang-gate-sub">
+                <span class="lang-gate-sub-en">The introduction video will play in your language.</span>
+                <span class="lang-gate-sub-zh">介紹影片將以你選擇的語言播放。</span>
+            </p>
             <div class="lang-gate-actions">
-                <button type="button" class="lang-gate-btn" data-lang="en" onclick="chooseLandingLang('en')"><span class="lang-gate-main">English</span><span class="lang-gate-note">Watch the video in English</span></button>
-                <button type="button" class="lang-gate-btn" data-lang="zh" lang="zh-Hant" onclick="chooseLandingLang('zh')"><span class="lang-gate-main">繁體中文</span><span class="lang-gate-note">以繁體中文觀看影片</span></button>
+                <button type="button" class="lang-gate-btn" data-lang="en" onclick="chooseLandingLang('en')">
+                    <span class="lang-gate-main">English</span>
+                    <span class="lang-gate-sub-zh">英文</span>
+                    <span class="lang-gate-note">Watch the video in English</span>
+                </button>
+                <button type="button" class="lang-gate-btn" data-lang="zh" lang="zh-Hant" onclick="chooseLandingLang('zh')">
+                    <span class="lang-gate-main">Traditional Chinese</span>
+                    <span class="lang-gate-sub-zh">繁體中文</span>
+                    <span class="lang-gate-note">以繁體中文觀看影片</span>
+                </button>
             </div>
         </div>
     </div>
@@ -1009,8 +1023,8 @@
         <div class="glass-panel modal-content" onclick="event.stopPropagation()" style="max-width: 1080px; width: 94%; height: 88vh; max-height: 90vh; display: flex; flex-direction: column; padding: 0; overflow: hidden; border: 1px solid rgba(245, 197, 24, 0.4);">
             <div style="flex-shrink: 0; padding: 18px 24px; border-bottom: 1px solid var(--panel-border); display: flex; justify-content: space-between; align-items: center; gap: 12px; background: rgba(15, 23, 42, 0.98);">
                 <div>
-                    <h3 id="csv-guide-title" style="margin: 0; color: #fff;">CSV Column Guide</h3>
-                    <p id="csv-guide-subtitle" style="margin: 4px 0 0; font-size: var(--fs-body); color: #94a3b8;"></p>
+                    <h3 id="csv-guide-title" style="margin: 0; color: #fff; font-size: var(--fs-title);">CSV Column Guide</h3>
+                    <p id="csv-guide-subtitle" style="margin: 4px 0 0; font-size: var(--fs-small); color: #94a3b8;"></p>
                 </div>
                 <button class="btn btn-secondary" onclick="closeCsvGuide()" aria-label="Close" style="flex-shrink: 0;">&#10005;</button>
             </div>

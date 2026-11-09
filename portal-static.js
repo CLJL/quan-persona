@@ -426,12 +426,12 @@
             ['text', zh ? '開放式回答' : 'Open text'], ['journey', zh ? '歷程地圖（AR / PR）' : 'Journey map (AR / PR)'], ['other', zh ? '其他' : 'Other']
         ];
         const esc = escapeHtml;
-        const th = 'padding:8px 10px; text-align:left; font-size:0.875rem; color:#94a3b8; border-bottom:1px solid rgba(255,255,255,0.15); white-space:nowrap;';
-        const td = 'padding:8px 10px; font-size:0.875rem; vertical-align:top; border-bottom:1px solid rgba(255,255,255,0.06); line-height:1.5;';
+        const th = 'padding:8px 10px; text-align:left; font-size:var(--fs-caption, 0.8125rem); color:#94a3b8; border-bottom:1px solid rgba(255,255,255,0.15); white-space:nowrap; font-weight:600;';
+        const td = 'padding:8px 10px; font-size:var(--fs-small, 0.875rem); vertical-align:top; border-bottom:1px solid rgba(255,255,255,0.06); line-height:1.5;';
         const body = groups.map(([g, title]) => {
             const rs = rows.filter(r => r.group === g); if (!rs.length) return '';
             return '<details ' + (g === 'identity' || g === 'behaviour' ? 'open' : '') + ' style="border:1px solid rgba(255,255,255,0.12); border-radius:8px; margin-bottom:10px; background:rgba(255,255,255,0.02);">' +
-                '<summary style="cursor:pointer; padding:12px 14px; font-size:1rem; font-weight:700; color:#fff;">' + esc(title) + ' <span style="font-weight:400; color:#94a3b8; font-size:0.875rem;">(' + rs.length + ' ' + (zh ? '欄' : 'columns') + ')</span></summary>' +
+                '<summary style="cursor:pointer; padding:10px 14px; font-size:var(--fs-body, 0.9375rem); font-weight:600; color:#fff;">' + esc(title) + ' <span style="font-weight:400; color:#94a3b8; font-size:var(--fs-caption, 0.8125rem);">(' + rs.length + ' ' + (zh ? '欄' : 'columns') + ')</span></summary>' +
                 '<div style="overflow-x:auto; padding:0 6px 8px;"><table style="border-collapse:collapse; width:100%; min-width:860px; table-layout:fixed;"><colgroup><col style="width:22%"><col style="width:24%"><col style="width:38%"><col style="width:16%"></colgroup>' +
                     '<thead><tr><th style="' + th + '">' + (zh ? 'CSV 欄位名稱' : 'CSV column') + '</th><th style="' + th + '">' + (zh ? '題目' : 'Question') + '</th><th style="' + th + '">' + (zh ? '可填內容／格式' : 'Allowed values / format') + '</th><th style="' + th + '">' + (zh ? '用於' : 'Used for') + '</th></tr></thead>' +
                     '<tbody>' + rs.map(r => '<tr>' +
@@ -445,7 +445,7 @@
             : ['UTF-8 encoded CSV, first row = column names, one row per respondent.', 'Column names must match the table below exactly (use "Download CSV Template" to get the header row). Order does not matter; missing columns fall back to neutral defaults.', 'Multi-select answers go in one cell, separated by a semicolon ( ; ). Use the option wording shown below.', 'Leave a cell empty when the respondent did not answer; missing ratings fall back to neutral defaults.'];
         document.getElementById('csv-guide-title').textContent = zh ? 'CSV 欄位說明' : 'CSV Column Guide';
         document.getElementById('csv-guide-subtitle').textContent = (zh ? (schema.nameZh || schema.name) : schema.name) + ' · ' + rows.length + (zh ? ' 欄' : ' columns');
-        document.getElementById('csv-guide-body').innerHTML = '<ul style="margin:0 0 16px; padding-left:20px; font-size:0.95rem; color:#cbd5e1; line-height:1.7;">' + rules.map(r => '<li>' + esc(r) + '</li>').join('') + '</ul>' + body;
+        document.getElementById('csv-guide-body').innerHTML = '<ul style="margin:0 0 16px; padding-left:20px; font-size:var(--fs-small, 0.875rem); color:#cbd5e1; line-height:1.55;">' + rules.map(r => '<li>' + esc(r) + '</li>').join('') + '</ul>' + body;
         document.getElementById('csv-guide-btn-template').textContent = zh ? '下載 CSV 範本（表頭＋範例列）' : 'Download CSV Template (header + example row)';
         document.getElementById('csv-guide-btn-dict').textContent = zh ? '下載欄位字典（CSV）' : 'Download Column Dictionary (CSV)';
 

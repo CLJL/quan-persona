@@ -44,7 +44,18 @@
             --fs-heading: 1.5rem;      /* page headings */
             --fs-display: 1.9rem;      /* big numbers */
         }
-        button, input, select, textarea { font-family: inherit; font-size: var(--fs-body); }
+        @media (max-width: 900px) {
+            :root {
+                --fs-caption: 0.75rem;    /* 12px */
+                --fs-small: 0.8125rem;    /* 13px */
+                --fs-body: 0.875rem;      /* 14px */
+                --fs-subtitle: 1rem;      /* 16px */
+                --fs-title: 1.125rem;     /* 18px */
+                --fs-heading: 1.35rem;    /* 21.6px */
+                --fs-display: 1.65rem;    /* 26.4px */
+            }
+        }
+        button, input, select, textarea { font-family: inherit; font-size: var(--fs-small); }
 
         :root {
             --bg-page: #0b0f17;
@@ -75,6 +86,7 @@
             background: var(--bg-page);
             color: var(--text-main);
             font-family: var(--font-ui);
+            font-size: var(--fs-body);
             min-height: 100vh;
             line-height: 1.5;
         }
@@ -276,10 +288,10 @@
             margin: 0 0 4px 0;
         }
         .designer-desc {
-            font-size: var(--fs-body);
+            font-size: var(--fs-small);
             color: var(--text-muted);
             margin: 0;
-            line-height: 1.55;
+            line-height: 1.5;
         }
 
         /* Preset Row */
@@ -302,9 +314,9 @@
             background: #111827;
             border: 1px solid rgba(255, 255, 255, 0.15);
             color: #fff;
-            padding: 6px 14px;
+            padding: 6px 12px;
             border-radius: 6px;
-            font-size: var(--fs-body);
+            font-size: var(--fs-small);
             font-weight: 600;
             outline: none;
             cursor: pointer;
@@ -1056,8 +1068,14 @@
         .top-action-bar-right {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             flex-shrink: 0;
+        }
+        .top-action-bar-right .btn {
+            font-size: var(--fs-small) !important;
+            font-weight: 600 !important;
+            padding: 6px 14px !important;
+            min-height: 34px !important;
         }
         @media (max-width: 768px) {
             .top-action-bar-inner {
@@ -1326,20 +1344,20 @@
         /* ROLE OVERRIDES: headings follow the role definitions above */
         h1 { font-size: var(--fs-heading) !important; }
 
-        /* readability for filling in data: everything the author types or picks is body size (15px) */
+        /* readability for filling in data: everything the author types or picks aligns with portal design system */
         input[type="text"], textarea, select, .choice-input, .matrix-item-input, .q-type-select, .opt-kind-select,
-        .q-prompt-textarea, .q-prompt-textarea.q-prompt-2lines, .percent-select, .meta-input { font-size: var(--fs-body) !important; }
-        .sec-title-input { font-size: var(--fs-title) !important; font-weight: 700 !important; }
-        .stage-title-input { font-size: var(--fs-subtitle) !important; font-weight: 700 !important; }
-        .action-title-input { font-size: var(--fs-body) !important; font-weight: 600 !important; }
-        .matrix-scale-select { font-size: var(--fs-small) !important; }
+        .q-prompt-textarea, .q-prompt-textarea.q-prompt-2lines, .percent-select, .meta-input { font-size: var(--fs-small) !important; }
+        .sec-title-input { font-size: var(--fs-subtitle) !important; font-weight: 700 !important; }
+        .stage-title-input { font-size: var(--fs-body) !important; font-weight: 700 !important; }
+        .action-title-input { font-size: var(--fs-small) !important; font-weight: 600 !important; }
+        .matrix-scale-select { font-size: var(--fs-caption) !important; }
         .tag-chip-input { font-size: var(--fs-small) !important; font-weight: 600 !important; }
-        .measure-note { font-size: var(--fs-small) !important; }
+        .measure-note { font-size: var(--fs-caption) !important; }
         .btn-pill, .btn-add-item, button { font-size: var(--fs-small); }
-        body { line-height: 1.55; }
+        body { line-height: 1.5; }
         .q-prompt-textarea, .choice-input, .matrix-item-input, .q-type-select { line-height: 1.45; }
         .choice-input, .matrix-item-input { padding-top: 8px; padding-bottom: 8px; }
-        .measure-note, #measure-coverage-panel .mc-purpose, #measure-coverage-panel .mc-role { color: #cbd5e1 !important; line-height: 1.6; }
+        .measure-note, #measure-coverage-panel .mc-purpose, #measure-coverage-panel .mc-role { color: #cbd5e1 !important; line-height: 1.5; }
         .q-top-row .q-type-select { width: 290px; flex: 0 0 290px; }
         @media (min-width: 901px) {
             #row-q16 .q-top-row .q-type-select, #row-q17 .q-top-row .q-type-select,
@@ -1378,7 +1396,7 @@
     <!-- MAIN DESIGNER SHELL (Strictly matching Design Patterns.png) -->
     <div class="designer-container" id="designer-view">
         <div class="designer-shell">
-            <p class="designer-desc" id="lbl-designer-desc" style="margin-bottom: 14px; font-size: var(--fs-body); color: var(--text-muted); line-height: 1.55;">
+            <p class="designer-desc" id="lbl-designer-desc" style="margin-bottom: 14px; font-size: var(--fs-small); color: var(--text-muted); line-height: 1.5;">
                 Configure background demographics, competency rating scales, and journey stages. When saved, all settings reflect directly across the platform and the downloadable questionnaire module.
             </p>
 

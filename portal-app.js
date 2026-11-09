@@ -10395,9 +10395,23 @@ window.activeSection = activeSection;
             if (tgl && isMobile()) tgl.setAttribute('aria-expanded', on ? 'true' : 'false');
             if (typeof setBrandRole === 'function') setBrandRole();
         }
+        let _lastRailToggle = 0;
         window.setRailDrawer = setDrawer;
         window.closeRailDrawer = () => setDrawer(false);
-        window.toggleRailDrawer = e => { if (e) e.stopPropagation(); setDrawer(!document.body.classList.contains('drawer-open')); };
+        window.toggleRailDrawer = function (e) {
+            if (e) {
+                try { e.preventDefault(); } catch (err) {}
+                try { e.stopPropagation(); } catch (err) {}
+            }
+            const now = Date.now();
+            if (now - _lastRailToggle < 250) return; // Prevent double execution from inline onclick + event listener or touch/click duplicate
+            _lastRailToggle = now;
+            if (isMobile()) {
+                const willOpen = !document.body.classList.contains('drawer-open');
+                setDrawer(willOpen);
+                setBrandRole();
+            }
+        };
         const brand = document.getElementById('brand-cell');
         function setBrandRole() {
             if (!brand) return;
@@ -10416,8 +10430,13 @@ window.activeSection = activeSection;
         }
         setBrandRole();
         if (brand) {
-            brand.addEventListener('click', e => { if (isMobile()) { e.stopPropagation(); setDrawer(!document.body.classList.contains('drawer-open')); setBrandRole(); } });
-            brand.addEventListener('keydown', e => { if (isMobile() && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); setDrawer(!document.body.classList.contains('drawer-open')); setBrandRole(); } });
+            brand.onclick = window.toggleRailDrawer;
+            brand.addEventListener('keydown', e => {
+                if (isMobile() && (e.key === 'Enter' || e.key === ' ')) {
+                    e.preventDefault();
+                    window.toggleRailDrawer(e);
+                }
+            });
         }
         if (nav) nav.addEventListener('click', e => { if (e.target.closest && e.target.closest('.nav-tab-btn')) setDrawer(false); });
         document.addEventListener('keydown', e => {
