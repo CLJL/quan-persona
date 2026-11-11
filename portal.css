@@ -458,7 +458,7 @@
             width: 250px;
             height: 54px;
             box-sizing: border-box;
-            padding: 0 14px 0 8px;
+            padding: 0 14px 0 12px;
             background: #221D21;
             border: 1px solid #221D21;
             border-radius: 10px;
@@ -481,22 +481,22 @@
         .badge-action-left {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
         .badge-action-brand {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            width: 40px;
-            height: 40px;
+            width: 31px;
+            height: 31px;
             border-radius: 50%;
             overflow: hidden;
         }
         .badge-action-brand svg {
             display: block;
-            width: 40px;
-            height: 40px;
+            width: 31px;
+            height: 31px;
         }
         .badge-action-text {
             display: inline-flex;
