@@ -478,8 +478,8 @@
                 <tr style="text-align:left;"><th>K</th><th>${zh ? '輪廓係數' : 'Silhouette'}</th><th>${zh ? '穩定度 (ARI, 平均±SD)' : 'Stability (ARI, mean ± SD)'}</th></tr>` +
                 rows.map(r => `<tr style="${r.k === chosenK ? 'font-weight:700;color:var(--text-primary);' : ''}"><td>${r.k}${r.k === chosenK ? ' ◂' : ''}</td><td>${bar(r.sil, bestS)}${r.sil.toFixed(3)}</td><td>${bar(r.mean, best.mean)}${f(r.mean)} ± ${f(r.sd)}${r === best ? ' ★' : ''}</td></tr>`).join('') +
                 `</table><div style="margin-top:6px;color:var(--text-muted);">${zh
-                    ? `基於 ${n} 筆${parsedData.length > CLUSTER_FIT_SAMPLE ? '抽樣' : ''}非離群樣本（共 ${parsedData.length} 筆回覆）。這是參考證據，不是標準答案，K 仍由研究者決定。`
-                    : `Based on ${n} ${parsedData.length > CLUSTER_FIT_SAMPLE ? 'sampled ' : ''}inlier respondents (of ${parsedData.length}). Evidence, not an answer: K remains the researcher's decision.`}</div>`;
+                    ? `基於 ${n} 筆${parsedData.length > CLUSTER_FIT_SAMPLE ? '抽樣' : ''}非離群樣本（共 ${parsedData.length} 筆回覆）。這是參考證據，不是標準答案，K 仍由研究者決定。${parsedData.length < 100 ? '（⚠️ 樣本數低於 Nielsen Norman Group 統計人物誌建議之 100 位最低門檻，建議作為初步探索性參考）' : ''}`
+                    : `Based on ${n} ${parsedData.length > CLUSTER_FIT_SAMPLE ? 'sampled ' : ''}inlier respondents (of ${parsedData.length}). Evidence, not an answer: K remains the researcher's decision.${parsedData.length < 100 ? ' (⚠️ Sample size is below Nielsen Norman Group’s recommended minimum of 100 respondents for statistical personas; treat as exploratory)' : ''}`}</div>`;
             el.innerHTML = `<div style="color:var(--text-secondary);">${line} <a href="#" onclick="toggleKDiagDetails(event)" style="color:var(--accent-primary);">${zh ? '詳細資料' : 'Details'}</a></div><div id="k-diag-details" style="display:none;">${table}</div>`;
         }
 
@@ -585,14 +585,17 @@
             resetClusterSeed();
             if (!list || list.length === 0) return;
 
-            // Too few respondents for stable K-means -- fall back to single cluster
+            // Computational / algorithmic hard floor:
+            // K-means (K=3..8) and DBSCAN require a minimum number of data points to avoid singular matrices or empty clusters.
+            // Note: While the mathematical execution floor is 15 respondents, Nielsen Norman Group guidelines for statistical personas
+            // recommend at least 100 respondents (ideally 500+) so clusters reflect genuine behavioural patterns rather than random noise.
             if (list.length < 15) {
                 list.forEach(agent => { agent.archetype = 'c0'; agent._dynamicClusterId = 0; });
                 window.__dynamicClusterProfiles = [{
                     id: 0, key: 'c0', label: 'All Respondents', color: CLUSTER_COLORS[0],
                     count: list.length, topFeatures: [], centroidRaw: null
                 }];
-                console.warn(`[Dynamic Classification] Only ${list.length} respondents -- too few for stable K-means, grouped as a single cluster.`);
+                console.warn(`[Dynamic Classification] Only ${list.length} respondents -- below algorithmic floor (15) for K-means; grouped as a single cluster. (Note: Nielsen Norman Group recommends >=100 respondents, ideally 500+, for statistical personas).`);
                 return;
             }
 
@@ -776,8 +779,8 @@
                 const isZh = (typeof currentLang !== 'undefined' && currentLang === 'zh');
                 if (statusEl) {
                     statusEl.textContent = isZh
-                        ? `⚠️ 資料筆數不足以進行穩定分群（目前 ${parsedData ? parsedData.length : 0} 筆，建議至少 ${k * 3} 筆以上再執行，或請降低 K 值）。`
-                        : `⚠️ Insufficient data points for stable clustering (${parsedData ? parsedData.length : 0} records currently; recommend at least ${k * 3} records, or reduce K).`;
+                        ? `⚠️ 資料筆數不足以執行分群（目前 ${parsedData ? parsedData.length : 0} 筆，演算法至少需 ${k * 3} 筆；依 Nielsen Norman Group 規範，統計人物誌建議至少需 100 筆以上）。`
+                        : `⚠️ Insufficient data points for clustering (${parsedData ? parsedData.length : 0} records currently; algorithm requires at least ${k * 3} records. Note: Nielsen Norman Group recommends at least 100 respondents for statistical personas).`;
                 }
                 const cr = document.getElementById('cluster-discovery-results');
                 if (cr) cr.style.display = 'none';
@@ -837,8 +840,19 @@
 
             lastClusterResult = { clusters, k, inertia: 0 };
             if (statusEl) {
-                statusEl.textContent = (typeof currentLang !== 'undefined' && currentLang === 'zh') ? `完成！已對 ${parsedData.length} 筆資料執行 K-means 分群（K=${k}）。人物誌與歷程頁的分群分頁已更新，顯示全部 ${k} 群！` + (window.__clusterSampleNote ? ` 備註：K-means 以 ${window.__clusterSampleNote.fit.toLocaleString()} 位（共 ${window.__clusterSampleNote.total.toLocaleString()} 位）受訪者的樣本建模，其餘受訪者再歸入最近的分群。` : '') : `Completed! Ran K-means clustering on ${parsedData.length} records with K=${k}. Group tabs on the Persona Dashboard and Journeys page have been successfully updated to show all ${k} clusters!`
-                + (window.__clusterSampleNote ? ` Note: K-means was fitted on a sample of ${window.__clusterSampleNote.fit.toLocaleString()} of ${window.__clusterSampleNote.total.toLocaleString()} respondents; all respondents were then assigned to the nearest cluster.` : '');
+                const zh = (typeof currentLang !== 'undefined' && currentLang === 'zh');
+                const sampleNote = window.__clusterSampleNote
+                    ? (zh ? ` 備註：K-means 以 ${window.__clusterSampleNote.fit.toLocaleString()} 位（共 ${window.__clusterSampleNote.total.toLocaleString()} 位）受訪者的樣本建模，其餘受訪者再歸入最近的分群。`
+                          : ` Note: K-means was fitted on a sample of ${window.__clusterSampleNote.fit.toLocaleString()} of ${window.__clusterSampleNote.total.toLocaleString()} respondents; all respondents were then assigned to the nearest cluster.`)
+                    : '';
+                const nngAdvisory = parsedData.length < 100
+                    ? (zh ? ` ⚠️ 提示：受訪者為 ${parsedData.length} 位（未滿 100 位），依 Nielsen Norman Group 統計人物誌指引（至少 100 位，建議 500 位以上），目前分群應視為初步探索性質。`
+                          : ` ⚠️ Note: With ${parsedData.length} respondents (<100), clusters should be treated as exploratory per Nielsen Norman Group guidelines for statistical personas (at least 100, ideally 500+).`)
+                    : '';
+                statusEl.textContent = (zh
+                    ? `完成！已對 ${parsedData.length} 筆資料執行 K-means 分群（K=${k}）。人物誌與歷程頁的分群分頁已更新，顯示全部 ${k} 群！`
+                    : `Completed! Ran K-means clustering on ${parsedData.length} records with K=${k}. Group tabs on the Persona Dashboard and Journeys page have been successfully updated to show all ${k} clusters!`)
+                    + sampleNote + nngAdvisory;
             }
             renderClusterDiscovery();
             if (typeof initAnalyticsRadarChart === 'function') {
