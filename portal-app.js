@@ -8074,7 +8074,7 @@ window.activeSection = activeSection;
                 
                 // Read from manualOverrides if the user renamed the cluster
                 const override = manualOverrides[p.key];
-                const displayName = (override && override.name) ? override.name : `${t('cluster')} ${idx + 1}`;
+                const displayName = (override && override.name) ? override.name : (p.key === 'c0' ? (typeof currentLang !== 'undefined' && currentLang === 'zh' ? '全體受訪者' : 'All Respondents') : `${t('cluster')} ${idx + 1}`);
                 const displayDesc = `${p.label} (n=${p.count})`;
                 
                 const borderStyle = isActive ? `border-color: ${p.color};` : 'border-color: rgba(255,255,255,0.08);';
@@ -8094,7 +8094,15 @@ window.activeSection = activeSection;
             }).join('');
 
             const allActive = activePersona === 'all';
-            container.innerHTML = tabsHtml + `<button class="capsule-tab all-tab${allActive ? ' active' : ''}" data-key="all" style="display: none;" onclick="switchArchetype('all')"><span class="dot"></span>All</button>`;
+            const eb = window.__evidenceBasedStatus;
+            const isZh = (typeof currentLang !== 'undefined' && currentLang === 'zh');
+            let badgeHtml = '';
+            if (window.__allowExploratoryClustering && eb && !eb.passed) {
+                badgeHtml = `<span style="display:inline-flex; align-items:center; margin-left:8px; padding:3px 8px; border-radius:12px; background:rgba(245, 158, 11, 0.15); border:1px solid rgba(245, 158, 11, 0.4); color:#fbbf24; font-size:11px; font-weight:700;">⚠️ ${isZh ? '探索模式（未經驗證）' : 'Exploratory (Unvalidated)'}</span>`;
+            } else if (window.__evidenceBasedBlocked) {
+                badgeHtml = `<span style="display:inline-flex; align-items:center; margin-left:8px; padding:3px 8px; border-radius:12px; background:rgba(239, 68, 68, 0.12); border:1px solid rgba(239, 68, 68, 0.35); color:#f87171; font-size:11px; font-weight:700;">🛡️ ${isZh ? '實證防護（單一人群）' : 'Evidence Guard (Single Cohort)'}</span>`;
+            }
+            container.innerHTML = tabsHtml + `<button class="capsule-tab all-tab${allActive ? ' active' : ''}" data-key="all" style="display: none;" onclick="switchArchetype('all')"><span class="dot"></span>All</button>` + badgeHtml;
 
             // If the currently active key no longer exists in the new profile set (e.g. after
             // re-clustering a new upload), fall back to the first discovered cluster.

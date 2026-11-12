@@ -94,6 +94,10 @@ Raw Survey Responses (CSV)
 2. **K-Means Clustering ($K = 3$ to $8$)**: Partitions inliers into $K$ empirical clusters based on Euclidean distance across normalised behavioural vectors. While theoretical K-means and silhouette scoring allow $K \ge 2$, the user-facing interactive slider is intentionally constrained to $K = 3$ through $K = 8$ (defaulting to 5)—binary 2-cluster splits are rarely meaningful for persona differentiation in UX and service design.
 3. **Automated K-Check ($K = 3$ to $8$)**: Evaluates silhouette coefficients and centroid stability (subsample Adjusted Rand Index) across $K = 3$ through $K = 8$ to guide researchers toward optimal mathematical and practical cluster boundaries.
 4. **Deterministic Reproducibility**: Seeded clustering guarantees that uploading the same dataset always reproduces identical cluster assignments.
+5. **Strict Evidence-Based Enforcement**: To prevent clustering random sampling noise into specious personas, the platform strictly enforces dual empirical benchmarks:
+   - **Nielsen Norman Group (UX Personas)**: Requires a minimum of $N \ge 100$ respondents (ideally $500+$) for statistical persona validity.
+   - **Statistical Cluster Analysis Literature (Dolnicar 2002; Formann 1984)**: Requires sample size $N \ge 10 \times d$ (where $d$ is the number of active behavioural dimensions; Formann recommends $5 \times 2^d$).
+   Datasets failing these thresholds are paused by the **Evidence-Based Gate** and consolidated into a single cohort (`All Respondents`). Researchers conducting pilot testing or software evaluation may deliberately unlock **Exploratory Mode**, which enables clustering down to technical execution minimums while stamping an exploratory advisory badge across all visualisations.
 
 ---
 
