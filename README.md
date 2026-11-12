@@ -15,7 +15,7 @@ Traditional UX personas often rely on static qualitative archetypes, demographic
 - **Behaviour Over Demographics**: Clusters respondents based on what they actually *do*, *feel*, and *struggle with* across service touchpoints—capturing shadow systems, workarounds, digital dropouts, and peer reliance.
 - **Unsupervised Empirical Clustering**: DBSCAN isolates outliers and noise, while dynamic K-means identifies balanced, natural behavioural cohorts without forcing pre-baked assumptions.
 - **Human-in-the-Loop Synthesis**: Algorithms find empirical patterns; researchers and service designers supply the strategic interpretation—naming personas, synthesising narratives, identifying emotional turning points, and framing design opportunities.
-- **Zero-Backend Privacy (Local-First)**: Built on a client-side architecture where all data processing, clustering math, and visualisation occur locally in your browser session. No survey responses or corporate data are ever uploaded to an external server.
+- **Zero-Backend Privacy (Local-First)**: Built on a client-side architecture where all data processing, clustering math, and visualisation occur locally in your browser. No survey responses or corporate data are ever uploaded to an external server.
 
 ---
 
@@ -146,10 +146,11 @@ No Node.js, Python, or local web server is required.
 
 ## 8. Data Privacy & Governance
 
-- **100% Client-Side Processing**: All parsing, feature extraction, and matrix computations run in browser volatile memory (`RAM`).
+- **100% Client-Side Processing**: All parsing, feature extraction, and matrix computations run locally on your device in the browser.
 - **No Remote Telemetry**: Uploaded CSV files are never transmitted to any external server or cloud endpoint.
 - **Offline Self-Contained**: All fonts, styling, icons, and libraries are locally bundled—operating seamlessly inside air-gapped or restricted enterprise networks.
-- **Data Persistence**: Only custom schemas, the active schema selection, and language preference are stored in browser `localStorage`. Raw respondent records are automatically cleared when the browser tab is closed.
+- **Client-Side Persistence (This Device Only)**: Uploaded survey datasets are saved locally in the browser’s `IndexedDB` (`quan_persona_store`) so that your working data automatically reloads on page refresh or subsequent visits on that specific device and browser. Custom schemas, active domain selections, and language preferences are stored in browser `localStorage`.
+- **Data Deletion & Shared Device Advisory**: Saved datasets remain in your browser until replaced by another CSV upload or explicitly purged by choosing **Restore Default Data** in the Data menu (which permanently deletes the saved dataset from IndexedDB). For shared or public workstations, users should always perform **Restore Default Data** before leaving. Edits to persona card text/photos are ephemeral in-memory and are not persisted.
 
 ---
 
