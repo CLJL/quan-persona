@@ -118,10 +118,10 @@
     <!-- Offline Core Libraries & Deferred Application Modules (sample data loads asynchronously on demand) -->
     <script src="chart.min.js" defer></script>
     <script src="journey_schemas_modular.js?v=20261105i" defer></script>
-    <script src="portal-clustering.js?v=20261113e" defer></script>
+    <script src="portal-clustering.js?v=20261113f" defer></script>
     <script src="portal-csv.js?v=20261112a" defer></script>
     <script src="portal-app.js?v=20261113c" defer></script>
-    <script src="portal-start.js?v=20261112a" defer></script>
+    <script src="portal-start.js?v=20261113a" defer></script>
 </head>
 <body>
     <noscript>
@@ -342,7 +342,7 @@
                         <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
                             <label style="font-size:var(--fs-small); color:var(--text-secondary); display:flex; align-items:center; gap:8px;">
                                 <span data-i18n="numClusters">Number of Clusters (K)</span>
-                                <input type="range" id="cluster-k-slider" min="3" max="8" value="5" style="accent-color: var(--accent-primary);" oninput="document.getElementById('cluster-k-value').textContent=this.value; runClusterDiscovery({ runKCheck: true });" onchange="runClusterDiscovery({ runKCheck: true });">
+                                <input type="range" id="cluster-k-slider" min="2" max="10" value="5" style="accent-color: var(--accent-primary);" oninput="document.getElementById('cluster-k-value').textContent=this.value; runClusterDiscovery({ runKCheck: true });" onchange="runClusterDiscovery({ runKCheck: true });">
                                 <span id="cluster-k-value" style="color:var(--accent-primary); font-weight:700; min-width: 14px; display:inline-block;">5</span>
                             </label>
                         </div>

@@ -45,7 +45,7 @@ The platform provides three synchronised viewpoints to inspect findings:
 | :--- | :--- | :--- |
 | **Persona Dashboard** | *Who your respondents are* | Deep-dive profile per empirical cluster: demographics, daily working hour allocations, preferred tools, core conflict quotes, and exportable, high-resolution persona cards (PNG). |
 | **Journey Map** | *What they experience step-by-step* | Stage-by-stage satisfaction trajectory, emotional sentiment curves, actions, environments, and friction points—paired with an actionable **Optimisation Opportunity** and target KPI per stage. |
-| **Analytics & Database** | *Macro data distribution & clustering rigor* | Real-time K slider (K = 3 to 8), automated **K-Check** stability and silhouette score evaluation, radar attribute comparisons, dimension cross-tabulations, and an interactive respondent directory. |
+| **Analytics & Database** | *Macro data distribution & clustering rigor* | Real-time K slider (K = 2 to 10, suggested 3 to 8), automated **K-Check** stability and silhouette score evaluation, radar attribute comparisons, dimension cross-tabulations, and an interactive respondent directory. |
 
 ---
 
@@ -81,7 +81,7 @@ Raw Survey Responses (CSV)
 3. Inlier Normalisation (Z-score standardisation)
    │
    ▼
-4. K-Means Clustering (K = 3 to 8, interactive)
+4. K-Means Clustering (K = 2 to 10, suggested 3 to 8, interactive)
    │
    ▼
 5. Silhouette & Stability Evaluation (Automated K-Choice Validation)
@@ -91,8 +91,8 @@ Raw Survey Responses (CSV)
 ```
 
 1. **DBSCAN Filtering**: DBSCAN identifies potential outliers and noise points based on the density and distribution of the uploaded survey data. The proportion of responses classified as noise varies depending on the dataset characteristics and clustering parameters.
-2. **K-Means Clustering ($K = 3$ to $8$)**: Partitions inliers into $K$ empirical clusters based on Euclidean distance across normalised behavioural vectors. While theoretical K-means and silhouette scoring allow $K \ge 2$, the user-facing interactive slider is intentionally constrained to $K = 3$ through $K = 8$ (defaulting to 5)—binary 2-cluster splits are rarely meaningful for persona differentiation in UX and service design.
-3. **Automated K-Check ($K = 3$ to $8$)**: Evaluates silhouette coefficients and centroid stability (subsample Adjusted Rand Index) across $K = 3$ through $K = 8$ to guide researchers toward optimal mathematical and practical cluster boundaries.
+2. **K-Means Clustering ($K = 2$ to $10$)**: Partitions inliers into $K$ empirical clusters based on Euclidean distance across normalised behavioural vectors. While theoretical K-means and silhouette scoring allow $K \ge 2$, the user-facing interactive slider offers $K = 2$ through $K = 10$ (defaulting to 5). We suggest $K = 3$ to $8$: in our experience a two-group split rarely gives enough to design for, and more than 8 clusters would quickly become unwieldy. This range is based on our experience, not a published rule, and we welcome further examination to determine the best range.
+3. **Automated K-Check ($K = 2$ to $10$)**: Evaluates silhouette coefficients and centroid stability (subsample Adjusted Rand Index) across $K = 2$ through $K = 10$ (limited on small datasets to at most one group per three respondents) to guide researchers toward optimal mathematical and practical cluster boundaries.
 4. **Deterministic Reproducibility**: Seeded clustering guarantees that uploading the same dataset always reproduces identical cluster assignments.
 5. **Strict Evidence-Based Enforcement**: To prevent clustering random sampling noise into specious personas, the platform strictly enforces dual empirical benchmarks:
    - **Nielsen Norman Group (UX Personas)**: Requires a minimum of $N \ge 100$ respondents (ideally $500+$) for statistical persona validity.

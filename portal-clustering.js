@@ -82,7 +82,7 @@
         }
 
         const ARCHETYPE_LABELS = { explorer: 'Explorer', expert: 'Expert', optimizer: 'Optimiser', skeptic: 'Skeptic', parttimer: 'Part-timer' };
-        const CLUSTER_COLORS = ['#8b5cf6', '#54a0ff', '#1dd1a1', '#ff9f43', '#ff6b6b', '#f5c518', '#a29bfe', '#fd79a8'];
+        const CLUSTER_COLORS = ['#8b5cf6', '#54a0ff', '#1dd1a1', '#ff9f43', '#ff6b6b', '#f5c518', '#a29bfe', '#fd79a8', '#00cec9', '#d4a373'];
 
 
 
@@ -327,11 +327,11 @@
         // feature vectors (skills + stage satisfaction + SUP/WP/AR/PR). An initial DBSCAN stage
         // isolates statistical outliers into a dedicated noise cohort.
         //
-        // The cluster count K is fully user-adjustable (K=3..8) via the AI Clustering slider.
+        // The cluster count K is fully user-adjustable (K=2..10, suggested 3..8) via the AI Clustering slider.
         // Dynamic cluster tabs (C1..CK) update responsively with auto-extracted distinguishing
         // features, mode demographics, and radar profiles.
         //
-        // In addition, autoDiscoverK() runs a silhouette-score evaluation across K=3..8 to
+        // In addition, autoDiscoverK() runs a silhouette-score evaluation across K=2..10 to
         // diagnose the mathematically optimal cluster count, stored in window.__autoDiscoveredClusters.
 
         function silhouetteScoreLocal(data, assignments) {
@@ -359,7 +359,7 @@
             return total / n;
         }
 
-        function autoDiscoverK(standardized, kMin = 3, kMax = 8) {
+        function autoDiscoverK(standardized, kMin = 2, kMax = 10) {
             const upper = Math.min(kMax, Math.max(kMin, Math.floor(standardized.length / 3)));
             let best = null;
             for (let k = kMin; k <= upper; k++) {
@@ -371,7 +371,7 @@
         }
 
         // ==================== K CHOICE CHECK (silhouette + subsample stability) ====================
-        // Runs after every clustering run and reports how well-supported the chosen K is versus K=3..8.
+        // Runs after every clustering run and reports how well-supported the chosen K is versus K=2..10 (each K needs at least 3 respondents per group, so fewer values are tested on small datasets).
         // Uses its own seeds per K and restores the global seed, so it never changes the clustering results.
         function adjustedRandIndex(a, b) {
             const n = a.length, tab = {}, ra = {}, rb = {};
@@ -437,7 +437,7 @@
             if (n < 24) { el.innerHTML = ''; return; }
             const shuffled = () => { const a = [...Array(n).keys()]; for (let i = n - 1; i > 0; i--) { const j = Math.floor(seededRandom() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
             const rows = [];
-            for (let k = 3; k <= 8; k++) {
+            for (let k = 2; k <= Math.min(10, Math.floor(n / 3)); k++) {
                 await tick();
                 if (token !== window.__kDiagToken) return;
                 const savedSeed = _clusterSeed;

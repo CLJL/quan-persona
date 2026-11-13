@@ -109,8 +109,8 @@
               en: ['Journey Map: emotional experience', 'The emojis and curve show how this group feels at each stage of the journey. Highs reflect satisfaction, while dips highlight friction and key opportunities.'],
               zh: ['歷程地圖：整個歷程的情緒體驗', '曲線與表情符號呈現該族群在歷程各階段的感受與滿意度；谷底代表痛點與最需優化的關鍵時刻。'] },
             { id: 'k', section: 'analytics', sel: () => { const sl = document.getElementById('cluster-k-slider'); return sl ? sl.closest('label') || sl : null; }, wait: { change: '#cluster-k-slider' },
-              en: ['Analytics & DB: try a different number of groups', 'Drag the slider (3 to 8). The groups, charts and tables are automatically recalculated in real time.'],
-              zh: ['數據分析與資料庫：試試不同的分群數量', '拖曳滑桿（3 到 8 組），分群、圖表與表格便會即時自動重新計算。'] },
+              en: ['Analytics & DB: try a different number of groups', 'Drag the slider (2 to 10 groups; we suggest 3 to 8). The groups, charts and tables are automatically recalculated in real time.'],
+              zh: ['數據分析與資料庫：試試不同的分群數量', '拖曳滑桿（2 到 10 組，建議 3 到 8 組），分群、圖表與表格便會即時自動重新計算。'] },
             { id: 'end', center: true, last: true, buttons: ['toQuest'],
               en: ['You have seen the full loop', 'Personas, then Journey Map, then Analytics. Next, learn how to design a questionnaire.'],
               zh: ['完整流程你已經走過一遍', '人物誌、歷程地圖、數據分析。接下來，來看看怎麼設計問卷。'] }
