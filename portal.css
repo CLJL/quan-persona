@@ -1658,38 +1658,54 @@
 
         /* ==================== CSV COLUMN GUIDE MODAL ==================== */
         #csv-guide-modal #csv-guide-title {
-            font-size: var(--fs-title) !important;
+            font-size: 1.5rem !important;
             font-weight: 700 !important;
             color: #fff;
+            letter-spacing: -0.01em;
         }
         #csv-guide-modal #csv-guide-subtitle {
-            font-size: var(--fs-body) !important;
+            font-size: 1.0625rem !important;
             color: #94a3b8 !important;
-            line-height: 1.45 !important;
+            line-height: 1.5 !important;
         }
         #csv-guide-modal ul {
-            font-size: var(--fs-body) !important;
-            line-height: 1.6 !important;
+            font-size: 1.0625rem !important;
+            line-height: 1.65 !important;
             color: #cbd5e1 !important;
         }
+        #csv-guide-modal ul li {
+            margin-bottom: 8px !important;
+        }
         #csv-guide-modal summary {
-            font-size: var(--fs-subtitle) !important;
+            font-size: 1.1875rem !important;
             font-weight: 700 !important;
             color: #fff;
+            padding: 13px 16px !important;
         }
         #csv-guide-modal summary span {
-            font-size: var(--fs-small) !important;
+            font-size: 1rem !important;
             font-weight: 500 !important;
             color: #94a3b8;
         }
         #csv-guide-modal th {
-            font-size: var(--fs-small) !important;
-            font-weight: 600 !important;
+            font-size: 1.05rem !important;
+            font-weight: 700 !important;
             color: #94a3b8;
+            padding: 12px 14px !important;
         }
         #csv-guide-modal td {
-            font-size: var(--fs-small) !important;
-            line-height: 1.55 !important;
+            font-size: 1rem !important;
+            line-height: 1.6 !important;
+            padding: 12px 14px !important;
+        }
+        #csv-guide-modal td strong {
+            font-size: 1.05rem !important;
+        }
+        #csv-guide-btn-dict,
+        #csv-guide-btn-template {
+            font-size: 1.0625rem !important;
+            font-weight: 600 !important;
+            padding: 12px 22px !important;
         }
 
         /* ==================== COMMERCIAL VIDEO MODAL ==================== */
@@ -3122,41 +3138,44 @@ body:has(#view-faq.active) .capsule-tabs-container { display: none !important; }
 
     /* CSV Guide Modal Typography Consistency */
     #csv-guide-modal #csv-guide-title {
-        font-size: var(--fs-title) !important;
+        font-size: 1.35rem !important;
         font-weight: 700 !important;
     }
     #csv-guide-modal #csv-guide-subtitle {
-        font-size: var(--fs-body) !important;
+        font-size: 1rem !important;
         color: #94a3b8 !important;
-        line-height: 1.45 !important;
+        line-height: 1.5 !important;
     }
     #csv-guide-modal ul {
-        font-size: var(--fs-body) !important;
+        font-size: 1rem !important;
         line-height: 1.6 !important;
         padding-left: 20px !important;
         color: #cbd5e1 !important;
     }
     #csv-guide-modal ul li {
-        margin-bottom: 6px !important;
+        margin-bottom: 8px !important;
     }
     #csv-guide-modal summary {
-        font-size: var(--fs-subtitle) !important;
+        font-size: 1.125rem !important;
         font-weight: 700 !important;
         padding: 12px 14px !important;
     }
     #csv-guide-modal summary span {
-        font-size: var(--fs-small) !important;
+        font-size: 0.9375rem !important;
         font-weight: 500 !important;
     }
     #csv-guide-modal th {
-        font-size: var(--fs-small) !important;
-        font-weight: 600 !important;
+        font-size: 0.95rem !important;
+        font-weight: 700 !important;
         padding: 10px 12px !important;
     }
     #csv-guide-modal td {
-        font-size: var(--fs-small) !important;
+        font-size: 0.9375rem !important;
         line-height: 1.55 !important;
         padding: 10px 12px !important;
+    }
+    #csv-guide-modal td strong {
+        font-size: 0.95rem !important;
     }
 
     /* CSV Guide Modal Responsive & Synchronized Button Typography */
