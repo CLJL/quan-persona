@@ -419,7 +419,7 @@
             const zh = typeof currentLang !== 'undefined' && currentLang === 'zh';
             const token = window.__kDiagToken = (window.__kDiagToken || 0) + 1; // a newer run cancels this one
             const tick = () => new Promise(r => setTimeout(r, 0));
-            if (typeof parsedData === 'undefined' || !parsedData || parsedData.length < 24) { el.innerHTML = ''; return; }
+            if (typeof parsedData === 'undefined' || !parsedData || parsedData.length < 24 || window.__evidenceBasedBlocked) { el.innerHTML = ''; return; }
             if (!manual && parsedData.length > K_CHECK_AUTO_MAX) {
                 el.innerHTML = `<div style="color:var(--text-muted);">${zh ? `資料量較大（${parsedData.length} 筆），未自動執行 K 值評估。` : `Large dataset (${parsedData.length} respondents): K check not run automatically.`} <a href="#" onclick="event.preventDefault(); runKChoiceCheck(${chosenK}, true)" style="color:var(--accent-primary);">${zh ? '執行 K 值評估' : 'Run K check'}</a></div>`;
                 return;
@@ -474,12 +474,17 @@
             }
             const bar = (v, top) => `<span style="display:inline-block;height:8px;width:${Math.max(2, Math.round(Math.max(v, 0) * 100))}px;background:var(--accent-primary);opacity:${v === top ? 1 : 0.45};vertical-align:middle;margin-right:6px;"></span>`;
             const bestS = Math.max(...rows.map(r => r.sil));
+            const eb = window.__evidenceBasedStatus;
+            const ebFootnote = (window.__allowExploratoryClustering && eb && !eb.passed)
+                ? (zh ? `（⚠️ 探索模式進行中：樣本數未達 NN/g N≥100 與 Dolnicar 2002 N≥${eb.dolnicarMin} 實證標準，此處穩定度與輪廓係數僅供參考）`
+                      : ` (⚠️ Exploratory Mode: Sample size fails NN/g N≥100 and Dolnicar 2002 N≥${eb.dolnicarMin} criteria; stability metrics are preliminary)`)
+                : '';
             const table = `<table style="border-collapse:collapse;width:100%;max-width:600px;color:var(--text-secondary);margin-top:6px;">
                 <tr style="text-align:left;"><th>K</th><th>${zh ? '輪廓係數' : 'Silhouette'}</th><th>${zh ? '穩定度 (ARI, 平均±SD)' : 'Stability (ARI, mean ± SD)'}</th></tr>` +
                 rows.map(r => `<tr style="${r.k === chosenK ? 'font-weight:700;color:var(--text-primary);' : ''}"><td>${r.k}${r.k === chosenK ? ' ◂' : ''}</td><td>${bar(r.sil, bestS)}${r.sil.toFixed(3)}</td><td>${bar(r.mean, best.mean)}${f(r.mean)} ± ${f(r.sd)}${r === best ? ' ★' : ''}</td></tr>`).join('') +
                 `</table><div style="margin-top:6px;color:var(--text-muted);">${zh
-                    ? `基於 ${n} 筆${parsedData.length > CLUSTER_FIT_SAMPLE ? '抽樣' : ''}非離群樣本（共 ${parsedData.length} 筆回覆）。這是參考證據，不是標準答案，K 仍由研究者決定。${parsedData.length < 100 ? '（⚠️ 樣本數低於 Nielsen Norman Group 統計人物誌建議之 100 位最低門檻，建議作為初步探索性參考）' : ''}`
-                    : `Based on ${n} ${parsedData.length > CLUSTER_FIT_SAMPLE ? 'sampled ' : ''}inlier respondents (of ${parsedData.length}). Evidence, not an answer: K remains the researcher's decision.${parsedData.length < 100 ? ' (⚠️ Sample size is below Nielsen Norman Group’s recommended minimum of 100 respondents for statistical personas; treat as exploratory)' : ''}`}</div>`;
+                    ? `基於 ${n} 筆${parsedData.length > CLUSTER_FIT_SAMPLE ? '抽樣' : ''}非離群樣本（共 ${parsedData.length} 筆回覆）。這是參考證據，不是標準答案，K 仍由研究者決定。${ebFootnote}`
+                    : `Based on ${n} ${parsedData.length > CLUSTER_FIT_SAMPLE ? 'sampled ' : ''}inlier respondents (of ${parsedData.length}). Evidence, not an answer: K remains the researcher's decision.${ebFootnote}`}</div>`;
             el.innerHTML = `<div style="color:var(--text-secondary);">${line} <a href="#" onclick="toggleKDiagDetails(event)" style="color:var(--accent-primary);">${zh ? '詳細資料' : 'Details'}</a></div><div id="k-diag-details" style="display:none;">${table}</div>`;
         }
 
@@ -573,7 +578,38 @@
         const CLUSTER_FIT_SAMPLE = 3000;   // max respondents used to fit K-means
         const K_CHECK_AUTO_MAX = 3000;     // K check runs automatically up to this many respondents
 
-        // Cheap fingerprint of everything that decides a clustering run: the data, K, language and the feature set
+        /**
+         * ==================== EVIDENCE-BASED THRESHOLD SPECIFICATION ====================
+         * 1. Nielsen Norman Group (UX Personas):
+         *    - Minimum: N >= 100 respondents (ideally N >= 500)
+         *    - Rationale: Surveys with < 100 respondents reflect random sampling variance
+         *      rather than reproducible statistical personas.
+         * 2. Statistical Cluster Analysis Literature (Dolnicar 2002; Formann 1984):
+         *    - Dolnicar (2002): N >= 10 * d (where d is the number of active clustering variables)
+         *    - Formann (1984): N >= 5 * 2^d (combinatorial bound for discrete feature spaces)
+         * Strict Evidence-Based Minimum Threshold: max(100, 10 * d)
+         */
+        function getEvidenceBasedMetrics(n, dims) {
+            const d = Math.max(1, dims || 1);
+            const nngMin = 100;
+            const nngIdeal = 500;
+            const dolnicarMin = d * 10;
+            const formannMin = d <= 8 ? 5 * Math.pow(2, d) : null;
+            const requiredMin = Math.max(nngMin, dolnicarMin);
+            const passed = n >= requiredMin;
+            return { n, dims: d, nngMin, nngIdeal, dolnicarMin, formannMin, requiredMin, passed };
+        }
+        window.getEvidenceBasedMetrics = getEvidenceBasedMetrics;
+
+        function toggleExploratoryMode(enable) {
+            window.__allowExploratoryClustering = !!enable;
+            if (typeof runClusterDiscovery === 'function') {
+                runClusterDiscovery({ recluster: true, runKCheck: true });
+            }
+        }
+        window.toggleExploratoryMode = toggleExploratoryMode;
+
+        // Cheap fingerprint of everything that decides a clustering run: the data, K, language, feature set and exploratory-mode setting
         function clusterRunSignature(list, k) {
             let sum = 0, dims = 0;
             for (let i = 0; i < list.length; i++) {
@@ -582,7 +618,7 @@
             }
             const sc = typeof getActiveJourneySchema === 'function' ? getActiveJourneySchema() : null;
             const lang = typeof currentLang !== 'undefined' ? currentLang : '';
-            return [list.length, dims, k, lang, (sc && sc.id) || '', CLUSTER_FEATURES.map(f => f.label).join('|'), sum.toFixed(4)].join('#');
+            return [list.length, dims, k, lang, window.__allowExploratoryClustering ? 'x' : '-', (sc && sc.id) || '', CLUSTER_FEATURES.map(f => f.label).join('|'), sum.toFixed(4)].join('#');
         }
 
         function assignDynamicArchetypes(list, overrideK) {
@@ -597,7 +633,7 @@
             resetClusterSeed();
             if (!list || list.length === 0) return;
 
-            // Same data, same K, same language and features as the run that just finished: its results are still in place, so reuse them.
+            // Same data, same K, same language, features and exploratory-mode setting as the run that just finished: its results are still in place, so reuse them.
             // (Callers often do assignDynamicArchetypes(...) and then runClusterDiscovery(), which would otherwise cluster twice.)
             const __reqK = overrideK || (document.getElementById('cluster-k-slider') ? parseInt(document.getElementById('cluster-k-slider').value, 10) || 5 : 5);
             const __sig = clusterRunSignature(list, __reqK);
@@ -607,26 +643,40 @@
                 return;
             }
 
-            // Computational / algorithmic hard floor:
-            // K-means (K=3..8) and DBSCAN require a minimum number of data points to avoid singular matrices or empty clusters.
-            // Note: While the mathematical execution floor is 15 respondents, Nielsen Norman Group guidelines for statistical personas
-            // recommend at least 100 respondents (ideally 500+) so clusters reflect genuine behavioural patterns rather than random noise.
-            if (list.length < 15) {
+            const vectors = list.map(extractClusterVector);
+            const dims = vectors[0] ? vectors[0].length : 1;
+            const eb = getEvidenceBasedMetrics(list.length, dims);
+            window.__evidenceBasedStatus = eb;
+
+            // Strict Evidence-Based Enforcement:
+            // Unless the researcher explicitly enables Exploratory Mode,
+            // refuse multi-cluster segmentation when underpowered to prevent capturing random noise.
+            if (!eb.passed && !window.__allowExploratoryClustering) {
+                list.forEach(agent => { agent.archetype = 'c0'; agent._dynamicClusterId = 0; });
+                window.__dynamicClusterProfiles = [{
+                    id: 0, key: 'c0', label: 'All Respondents (Single Cohort - Evidence Guard)', color: CLUSTER_COLORS[0],
+                    count: list.length, topFeatures: [], centroidRaw: null
+                }];
+                window.__evidenceBasedBlocked = true;
+                console.warn(`[Evidence-Based Enforcement] Dataset (N=${list.length}, d=${dims}) fails evidence-based thresholds: NN/g requires N>=100, Dolnicar (2002) requires N>=10*d (${eb.dolnicarMin}). Multi-cluster statistical personas blocked. Unlock Exploratory Mode to override.`);
+                return;
+            }
+            window.__evidenceBasedBlocked = false;
+
+            // Absolute computational floor (even in exploratory mode):
+            if (list.length < 10) {
                 list.forEach(agent => { agent.archetype = 'c0'; agent._dynamicClusterId = 0; });
                 window.__dynamicClusterProfiles = [{
                     id: 0, key: 'c0', label: 'All Respondents', color: CLUSTER_COLORS[0],
                     count: list.length, topFeatures: [], centroidRaw: null
                 }];
-                console.warn(`[Dynamic Classification] Only ${list.length} respondents -- below algorithmic floor (15) for K-means; grouped as a single cluster. (Note: Nielsen Norman Group recommends >=100 respondents, ideally 500+, for statistical personas).`);
-                window.__assignMemo = { list, sig: __sig, profiles: window.__dynamicClusterProfiles, first: list[0].archetype, last: list[list.length - 1].archetype };
+                console.warn(`[Exploratory Mode] Only ${list.length} respondents -- below absolute computational floor (10), grouped as a single cohort.`);
                 return;
             }
 
-            const vectors = list.map(extractClusterVector);
             const { standardized, means, stds } = standardizeMatrix(vectors);
 
             // DBSCAN Outlier Pre-filtering on standardized coordinates based on density and distribution
-            const dims = standardized[0] ? standardized[0].length : 1;
             const { eps, minPts } = calculateDBSCANParams(dims, list.length);
             const dbscanLabels = runDBSCAN(standardized, eps, minPts);
 
@@ -652,7 +702,8 @@
             let k = overrideK || (sliderEl ? parseInt(sliderEl.value, 10) || 5 : 5);
             let labels, centroids;
 
-            if (inliers.length < k * 3) {
+            const minInliersRequired = window.__allowExploratoryClustering ? Math.max(k * 2, 6) : k * 3;
+            if (inliers.length < minInliersRequired) {
                 // Fall back if too few inliers for full K-means, treat all inliers as c0
                 inliers.forEach(agent => { agent.archetype = 'c0'; agent._dynamicClusterId = 0; });
                 k = 1;
@@ -810,23 +861,17 @@
             resetClusterSeed();
             const statusEl = document.getElementById('cluster-discovery-status');
             const k = parseInt(document.getElementById('cluster-k-slider').value, 10);
+            const isZh = (typeof currentLang !== 'undefined' && currentLang === 'zh');
 
-            if (!parsedData || parsedData.length < k * 3) {
-                const isZh = (typeof currentLang !== 'undefined' && currentLang === 'zh');
-                if (statusEl) {
-                    statusEl.textContent = isZh
-                        ? `⚠️ 資料筆數不足以執行分群（目前 ${parsedData ? parsedData.length : 0} 筆，演算法至少需 ${k * 3} 筆；依 Nielsen Norman Group 規範，統計人物誌建議至少需 100 筆以上）。`
-                        : `⚠️ Insufficient data points for clustering (${parsedData ? parsedData.length : 0} records currently; algorithm requires at least ${k * 3} records. Note: Nielsen Norman Group recommends at least 100 respondents for statistical personas).`;
-                }
-                const cr = document.getElementById('cluster-discovery-results');
-                if (cr) cr.style.display = 'none';
+            if (!parsedData || parsedData.length === 0) {
+                if (statusEl) statusEl.textContent = isZh ? '⚠️ 尚未載入資料。' : '⚠️ No data loaded.';
                 return;
             }
 
-            if (statusEl) {
-                const isZh = (typeof currentLang !== 'undefined' && currentLang === 'zh');
-                statusEl.textContent = isZh ? '正在執行 K-means 分群演算法⋯⋯' : 'Running K-means algorithm......';
-            }
+            const rawMatrix = parsedData.map(extractClusterVector);
+            const dims = rawMatrix[0] ? rawMatrix[0].length : 1;
+            const eb = getEvidenceBasedMetrics(parsedData.length, dims);
+            window.__evidenceBasedStatus = eb;
 
             // Only re-cluster if requested or not yet clustered
             if (options.recluster !== false || !window.__dynamicClusterProfiles || window.__dynamicClusterProfiles.length === 0) {
@@ -838,9 +883,55 @@
                 renderArchetypeTabs();
             }
 
-            const profiles = window.__dynamicClusterProfiles || [];
-            const rawMatrix = parsedData.map(extractClusterVector);
+            // Check if blocked by Strict Evidence-Based Methodology Gate
+            if (window.__evidenceBasedBlocked) {
+                if (statusEl) {
+                    statusEl.innerHTML = isZh ? `
+                    <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.35); border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; color: var(--text-primary); line-height: 1.6;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:8px;">
+                            <div style="font-weight: 700; color: #f87171; display:flex; align-items:center; gap:6px;">
+                                <span>🛡️ 實證方法學防護：已暫停多群統計分群</span>
+                            </div>
+                            <button type="button" onclick="toggleExploratoryMode(true)" class="btn btn-secondary" style="font-size:12px; padding:4px 12px; border-color:#f87171; color:#f87171; cursor:pointer;">
+                                解鎖探索模式（未經驗證雛形分析）
+                            </button>
+                        </div>
+                        <div style="font-size: var(--fs-small); color: var(--text-secondary);">
+                            目前資料集（<strong>${parsedData.length} 位受訪者</strong>、<strong>${dims} 個維度</strong>）未達統計人物誌之實證研究標準（最低門檻為 <strong>${eb.requiredMin} 位</strong>）：
+                            <ul style="margin: 6px 0 8px 18px; padding:0;">
+                                <li><strong>Nielsen Norman Group 人物誌指引</strong>：統計型人物誌建議至少需 <strong>100 位受訪者</strong>（理想為 500 位以上），以避免演算法捕捉到隨機抽樣雜訊。</li>
+                                <li><strong>統計分群文獻（Dolnicar 2002；Formann 1984）</strong>：樣本數需滿足 <strong>N ≥ 10 × 維度數</strong>（針對 ${dims} 個維度至少需 <strong>${eb.dolnicarMin} 位</strong>；Formann 針對離散空間建議為 5 × 2<sup>d</sup>）。</li>
+                            </ul>
+                            為避免產出失真或不具統計意義的人物誌，平台依實證原則將全員歸入單一人群。若您為功能測試或課堂示範，可點擊上方按鈕解鎖探索模式。
+                        </div>
+                    </div>` : `
+                    <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.35); border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; color: var(--text-primary); line-height: 1.6;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:8px;">
+                            <div style="font-weight: 700; color: #f87171; display:flex; align-items:center; gap:6px;">
+                                <span>🛡️ Evidence-Based Methodology Gate: Statistical Clustering Paused</span>
+                            </div>
+                            <button type="button" onclick="toggleExploratoryMode(true)" class="btn btn-secondary" style="font-size:12px; padding:4px 12px; border-color:#f87171; color:#f87171; cursor:pointer;">
+                                Unlock Exploratory Mode (Unvalidated)
+                            </button>
+                        </div>
+                        <div style="font-size: var(--fs-small); color: var(--text-secondary);">
+                            Current dataset (<strong>${parsedData.length} respondents</strong>, <strong>${dims} dimensions</strong>) does not meet empirical standards for statistical persona clustering (requires minimum <strong>${eb.requiredMin} respondents</strong>):
+                            <ul style="margin: 6px 0 8px 18px; padding:0;">
+                                <li><strong>Nielsen Norman Group (UX Personas)</strong>: Requires a minimum of <strong>100 respondents</strong> (ideally 500+) so clusters reflect genuine behavioural archetypes rather than random sampling noise.</li>
+                                <li><strong>Statistical Literature (Dolnicar 2002, Formann 1984)</strong>: Requires <strong>N ≥ 10 × variables</strong> (minimum <strong>${eb.dolnicarMin} respondents</strong> for ${dims} variables; Formann recommends 5 × 2<sup>d</sup> for discrete features).</li>
+                            </ul>
+                            To prevent generating unscientific personas, respondents are grouped into a single cohort. If you are conducting a pilot test or UI evaluation, you may unlock <strong>Exploratory Mode</strong> above.
+                        </div>
+                    </div>`;
+                }
+                const cr = document.getElementById('cluster-discovery-results');
+                if (cr) cr.style.display = 'block';
+                renderClusterDiscovery();
+                if (typeof initAnalyticsRadarChart === 'function') initAnalyticsRadarChart();
+                return;
+            }
 
+            const profiles = window.__dynamicClusterProfiles || [];
             const clusters = profiles.map((p, idx) => {
                 const members = parsedData.filter(m => m.archetype === p.key);
                 const sums = new Array(rawMatrix[0].length).fill(0);
@@ -876,19 +967,43 @@
 
             lastClusterResult = { clusters, k, inertia: 0 };
             if (statusEl) {
-                const zh = (typeof currentLang !== 'undefined' && currentLang === 'zh');
                 const sampleNote = window.__clusterSampleNote
-                    ? (zh ? ` 備註：K-means 以 ${window.__clusterSampleNote.fit.toLocaleString()} 位（共 ${window.__clusterSampleNote.total.toLocaleString()} 位）受訪者的樣本建模，其餘受訪者再歸入最近的分群。`
+                    ? (isZh ? ` 備註：K-means 以 ${window.__clusterSampleNote.fit.toLocaleString()} 位（共 ${window.__clusterSampleNote.total.toLocaleString()} 位）受訪者的樣本建模，其餘受訪者再歸入最近的分群。`
                           : ` Note: K-means was fitted on a sample of ${window.__clusterSampleNote.fit.toLocaleString()} of ${window.__clusterSampleNote.total.toLocaleString()} respondents; all respondents were then assigned to the nearest cluster.`)
                     : '';
-                const nngAdvisory = parsedData.length < 100
-                    ? (zh ? ` ⚠️ 提示：受訪者為 ${parsedData.length} 位（未滿 100 位），依 Nielsen Norman Group 統計人物誌指引（至少 100 位，建議 500 位以上），目前分群應視為初步探索性質。`
-                          : ` ⚠️ Note: With ${parsedData.length} respondents (<100), clusters should be treated as exploratory per Nielsen Norman Group guidelines for statistical personas (at least 100, ideally 500+).`)
-                    : '';
-                statusEl.textContent = (zh
+                
+                let bannerHtml = '';
+                if (window.__allowExploratoryClustering && !eb.passed) {
+                    bannerHtml = isZh ? `
+                    <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; line-height: 1.5;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                            <span style="font-weight:700; color:#fbbf24;">⚠️ 探索模式進行中（未經驗證分析：N = ${parsedData.length} &lt; ${eb.requiredMin}）</span>
+                            <button type="button" onclick="toggleExploratoryMode(false)" class="btn btn-secondary" style="font-size:11px; padding:3px 10px; cursor:pointer;">重新啟用實證防護</button>
+                        </div>
+                        <div style="font-size: var(--fs-small); color: var(--text-secondary); margin-top:3px;">
+                            樣本數未達 NN/g（N ≥ 100）與 Dolnicar 2002（N ≥ ${eb.dolnicarMin}）實證標準。此分群結果純屬探索假設，不宜作為正式決策依據。
+                        </div>
+                    </div>` : `
+                    <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; line-height: 1.5;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                            <span style="font-weight:700; color:#fbbf24;">⚠️ Exploratory Mode Active (Unvalidated: N = ${parsedData.length} &lt; ${eb.requiredMin})</span>
+                            <button type="button" onclick="toggleExploratoryMode(false)" class="btn btn-secondary" style="font-size:11px; padding:3px 10px; cursor:pointer;">Re-lock Evidence Gate</button>
+                        </div>
+                        <div style="font-size: var(--fs-small); color: var(--text-secondary); margin-top:3px;">
+                            Dataset falls below NN/g (N ≥ 100) and Dolnicar 2002 (N ≥ ${eb.dolnicarMin}) guidelines. Generated clusters are exploratory and should not be used as definitive statistical segments.
+                        </div>
+                    </div>`;
+                } else if (eb.passed) {
+                    if (parsedData.length >= 500) {
+                        bannerHtml = `<div style="font-size:var(--fs-small); color:#34d399; margin-bottom:6px;">🌟 ${isZh ? `樣本數充裕（N = ${parsedData.length} ≥ 500），完全符合 NN/g 與統計文獻（Dolnicar 2002, Formann 1984）之實證標準。` : `Robust sample size (N = ${parsedData.length} ≥ 500), satisfying both Nielsen Norman Group and statistical literature (Dolnicar 2002, Formann 1984) standards.`}</div>`;
+                    } else {
+                        bannerHtml = `<div style="font-size:var(--fs-small); color:#60a5fa; margin-bottom:6px;">✅ ${isZh ? `符合實證研究基本門檻（NN/g N ≥ 100，Dolnicar 2002 N ≥ ${eb.dolnicarMin}）；若追求更高分群穩定度，建議達 500 位以上。` : `Meets evidence-based minimum thresholds (NN/g N ≥ 100, Dolnicar 2002 N ≥ ${eb.dolnicarMin}); 500+ respondents recommended for optimal stability.`}</div>`;
+                    }
+                }
+
+                statusEl.innerHTML = bannerHtml + `<div style="color:var(--text-secondary);">${isZh
                     ? `完成！已對 ${parsedData.length} 筆資料執行 K-means 分群（K=${k}）。人物誌與歷程頁的分群分頁已更新，顯示全部 ${k} 群！`
-                    : `Completed! Ran K-means clustering on ${parsedData.length} records with K=${k}. Group tabs on the Persona Dashboard and Journeys page have been successfully updated to show all ${k} clusters!`)
-                    + sampleNote + nngAdvisory;
+                    : `Completed! Ran K-means clustering on ${parsedData.length} records with K=${k}. Group tabs on the Persona Dashboard and Journeys page have been successfully updated to show all ${k} clusters!`} ${sampleNote}</div>`;
             }
             renderClusterDiscovery();
             if (typeof initAnalyticsRadarChart === 'function') {
