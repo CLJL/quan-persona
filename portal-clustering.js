@@ -476,8 +476,8 @@
             const bestS = Math.max(...rows.map(r => r.sil));
             const eb = window.__evidenceBasedStatus;
             const ebFootnote = (window.__allowExploratoryClustering && eb && !eb.passed)
-                ? (zh ? `（⚠️ 探索模式進行中：樣本數未達 NN/g N≥100 與 Dolnicar 2002 N≥${eb.dolnicarMin} 實證標準，此處穩定度與輪廓係數僅供參考）`
-                      : ` (⚠️ Exploratory Mode: Sample size fails NN/g N≥100 and Dolnicar 2002 N≥${eb.dolnicarMin} criteria; stability metrics are preliminary)`)
+                ? (zh ? `（⚠️ 探索模式進行中：樣本數未達 NN/g N≥100 與 10×變數數 N≥${eb.dolnicarMin} 的內建門檻，此處穩定度與輪廓係數僅供參考）`
+                      : ` (⚠️ Exploratory Mode: Sample size fails NN/g N≥100 and the 10×variables rule N≥${eb.dolnicarMin}; stability metrics are preliminary)`)
                 : '';
             const table = `<table style="border-collapse:collapse;width:100%;max-width:600px;color:var(--text-secondary);margin-top:6px;">
                 <tr style="text-align:left;"><th>K</th><th>${zh ? '輪廓係數' : 'Silhouette'}</th><th>${zh ? '穩定度 (ARI, 平均±SD)' : 'Stability (ARI, mean ± SD)'}</th></tr>` +
@@ -584,9 +584,10 @@
          *    - Minimum: N >= 100 respondents (ideally N >= 500)
          *    - Rationale: Surveys with < 100 respondents reflect random sampling variance
          *      rather than reproducible statistical personas.
-         * 2. Statistical Cluster Analysis Literature (Dolnicar 2002; Formann 1984):
-         *    - Dolnicar (2002): N >= 10 * d (where d is the number of active clustering variables)
-         *    - Formann (1984): N >= 5 * 2^d (combinatorial bound for discrete feature spaces)
+         * 2. quan-persona working rule (not attributed to a published source):
+         *    - N >= 10 * d (where d is the number of active clustering variables)
+         *    - Reference only, not enforced: Formann's 5 * 2^d guideline for binary data,
+         *      as cited in Dolnicar, Kaiser, Lazarevski & Leisch (2012), J. Travel Research 51(1).
          * Strict Evidence-Based Minimum Threshold: max(100, 10 * d)
          */
         function getEvidenceBasedMetrics(n, dims) {
@@ -636,7 +637,7 @@
                     count: list.length, topFeatures: [], centroidRaw: null
                 }];
                 window.__evidenceBasedBlocked = true;
-                console.warn(`[Evidence-Based Enforcement] Dataset (N=${list.length}, d=${dims}) fails evidence-based thresholds: NN/g requires N>=100, Dolnicar (2002) requires N>=10*d (${eb.dolnicarMin}). Multi-cluster statistical personas blocked. Unlock Exploratory Mode to override.`);
+                console.warn(`[Evidence-Based Enforcement] Dataset (N=${list.length}, d=${dims}) fails evidence-based thresholds: NN/g requires N>=100, quan-persona's working rule requires N>=10*d (${eb.dolnicarMin}). Multi-cluster statistical personas blocked. Unlock Exploratory Mode to override.`);
                 return;
             }
             window.__evidenceBasedBlocked = false;
@@ -856,7 +857,7 @@
                             目前資料集（<strong>${parsedData.length} 位受訪者</strong>、<strong>${dims} 個維度</strong>）未達統計人物誌之實證研究標準（最低門檻為 <strong>${eb.requiredMin} 位</strong>）：
                             <ul style="margin: 6px 0 8px 18px; padding:0;">
                                 <li><strong>Nielsen Norman Group 人物誌指引</strong>：統計型人物誌建議至少需 <strong>100 位受訪者</strong>（理想為 500 位以上），以避免演算法捕捉到隨機抽樣雜訊。</li>
-                                <li><strong>統計分群文獻（Dolnicar 2002；Formann 1984）</strong>：樣本數需滿足 <strong>N ≥ 10 × 維度數</strong>（針對 ${dims} 個維度至少需 <strong>${eb.dolnicarMin} 位</strong>；Formann 針對離散空間建議為 5 × 2<sup>d</sup>）。</li>
+                                <li><strong>quan-persona 內建門檻</strong>：樣本數需滿足 <strong>N ≥ 10 × 維度數</strong>（針對 ${dims} 個維度至少需 <strong>${eb.dolnicarMin} 位</strong>）。此為本平台的經驗法則，並非出自特定文獻。若參照 Formann 針對二元變數的 5 × 2<sup>d</sup> 建議（引自 Dolnicar 等人，2012），所需樣本數更高，此處僅供參考，不列入檢核。</li>
                             </ul>
                             為避免產出失真或不具統計意義的人物誌，平台依實證原則將全員歸入單一人群。若您為功能測試或課堂示範，可點擊上方按鈕解鎖探索模式。
                         </div>
@@ -874,7 +875,7 @@
                             Current dataset (<strong>${parsedData.length} respondents</strong>, <strong>${dims} dimensions</strong>) does not meet empirical standards for statistical persona clustering (requires minimum <strong>${eb.requiredMin} respondents</strong>):
                             <ul style="margin: 6px 0 8px 18px; padding:0;">
                                 <li><strong>Nielsen Norman Group (UX Personas)</strong>: Requires a minimum of <strong>100 respondents</strong> (ideally 500+) so clusters reflect genuine behavioural archetypes rather than random sampling noise.</li>
-                                <li><strong>Statistical Literature (Dolnicar 2002, Formann 1984)</strong>: Requires <strong>N ≥ 10 × variables</strong> (minimum <strong>${eb.dolnicarMin} respondents</strong> for ${dims} variables; Formann recommends 5 × 2<sup>d</sup> for discrete features).</li>
+                                <li><strong>quan-persona working rule</strong>: Requires <strong>N ≥ 10 × variables</strong> (minimum <strong>${eb.dolnicarMin} respondents</strong> for ${dims} variables). This is the platform's own rule of thumb, not attributed to a published source. Formann's 5 × 2<sup>d</sup> guideline for binary data (as cited in Dolnicar et al., 2012) is higher; it is shown for reference only and is not enforced.</li>
                             </ul>
                             To prevent generating unscientific personas, respondents are grouped into a single cohort. If you are conducting a pilot test or UI evaluation, you may unlock <strong>Exploratory Mode</strong> above.
                         </div>
@@ -946,7 +947,7 @@
                             <button type="button" onclick="toggleExploratoryMode(false)" class="btn btn-secondary" style="font-size:11px; padding:3px 10px; cursor:pointer;">重新啟用實證防護</button>
                         </div>
                         <div style="font-size: var(--fs-small); color: var(--text-secondary); margin-top:3px;">
-                            樣本數未達 NN/g（N ≥ 100）與 Dolnicar 2002（N ≥ ${eb.dolnicarMin}）實證標準。此分群結果純屬探索假設，不宜作為正式決策依據。
+                            樣本數未達 NN/g（N ≥ 100）與本平台 10×變數數（N ≥ ${eb.dolnicarMin}）的內建門檻。此分群結果純屬探索假設，不宜作為正式決策依據。
                         </div>
                     </div>` : `
                     <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; line-height: 1.5;">
@@ -955,14 +956,14 @@
                             <button type="button" onclick="toggleExploratoryMode(false)" class="btn btn-secondary" style="font-size:11px; padding:3px 10px; cursor:pointer;">Re-lock Evidence Gate</button>
                         </div>
                         <div style="font-size: var(--fs-small); color: var(--text-secondary); margin-top:3px;">
-                            Dataset falls below NN/g (N ≥ 100) and Dolnicar 2002 (N ≥ ${eb.dolnicarMin}) guidelines. Generated clusters are exploratory and should not be used as definitive statistical segments.
+                            Dataset falls below NN/g (N ≥ 100) and the platform's 10×variables rule (N ≥ ${eb.dolnicarMin}). Generated clusters are exploratory and should not be used as definitive statistical segments.
                         </div>
                     </div>`;
                 } else if (eb.passed) {
                     if (parsedData.length >= 500) {
-                        bannerHtml = `<div style="font-size:var(--fs-small); color:#34d399; margin-bottom:6px;">🌟 ${isZh ? `樣本數充裕（N = ${parsedData.length} ≥ 500），完全符合 NN/g 與統計文獻（Dolnicar 2002, Formann 1984）之實證標準。` : `Robust sample size (N = ${parsedData.length} ≥ 500), satisfying both Nielsen Norman Group and statistical literature (Dolnicar 2002, Formann 1984) standards.`}</div>`;
+                        bannerHtml = `<div style="font-size:var(--fs-small); color:#34d399; margin-bottom:6px;">🌟 ${isZh ? `樣本數充裕（N = ${parsedData.length} ≥ 500），符合 NN/g 的建議，也符合本平台 10×變數數的內建門檻。` : `Robust sample size (N = ${parsedData.length} ≥ 500), meeting the Nielsen Norman Group guidance and the platform's 10×variables rule.`}</div>`;
                     } else {
-                        bannerHtml = `<div style="font-size:var(--fs-small); color:#60a5fa; margin-bottom:6px;">✅ ${isZh ? `符合實證研究基本門檻（NN/g N ≥ 100，Dolnicar 2002 N ≥ ${eb.dolnicarMin}）；若追求更高分群穩定度，建議達 500 位以上。` : `Meets evidence-based minimum thresholds (NN/g N ≥ 100, Dolnicar 2002 N ≥ ${eb.dolnicarMin}); 500+ respondents recommended for optimal stability.`}</div>`;
+                        bannerHtml = `<div style="font-size:var(--fs-small); color:#60a5fa; margin-bottom:6px;">✅ ${isZh ? `符合實證研究基本門檻（NN/g N ≥ 100；本平台 10×變數數 N ≥ ${eb.dolnicarMin}）；若追求更高分群穩定度，建議達 500 位以上。` : `Meets evidence-based minimum thresholds (NN/g N ≥ 100; platform 10×variables rule N ≥ ${eb.dolnicarMin}); 500+ respondents recommended for optimal stability.`}</div>`;
                     }
                 }
 
