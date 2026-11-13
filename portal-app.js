@@ -4,6 +4,17 @@
             if (typeof PRE_LOADED_DATA !== 'undefined' && PRE_LOADED_DATA.length > 0) return Promise.resolve();
             if (window.__enDataPromise) return window.__enDataPromise;
             window.__enDataPromise = new Promise(function (resolve) {
+                if (typeof PRE_LOADED_DATA !== 'undefined' && PRE_LOADED_DATA.length > 0) {
+                    window.__enDataLoaded = true;
+                    resolve();
+                    return;
+                }
+                const existing = document.querySelector('script[src*="survey_data_2500."]');
+                if (existing) {
+                    existing.addEventListener('load', function () { window.__enDataLoaded = true; resolve(); });
+                    existing.addEventListener('error', function (e) { console.error('Failed to load EN survey data', e); resolve(); });
+                    return;
+                }
                 const sc = document.createElement('script');
                 sc.src = 'survey_data_2500.js?v=20261105i';
                 sc.onload = function () { window.__enDataLoaded = true; resolve(); };
@@ -18,6 +29,16 @@
             if (typeof PRE_LOADED_DATA_ZH !== 'undefined' && PRE_LOADED_DATA_ZH.length > 0) return Promise.resolve();
             if (window.__zhDataPromise) return window.__zhDataPromise;
             window.__zhDataPromise = new Promise(function (resolve) {
+                if (typeof PRE_LOADED_DATA_ZH !== 'undefined' && PRE_LOADED_DATA_ZH.length > 0) {
+                    resolve();
+                    return;
+                }
+                const existing = document.querySelector('script[src*="survey_data_zh_2500."]');
+                if (existing) {
+                    existing.addEventListener('load', function () { resolve(); });
+                    existing.addEventListener('error', function (e) { console.error('Failed to load ZH survey data', e); resolve(); });
+                    return;
+                }
                 const sc = document.createElement('script');
                 sc.src = 'survey_data_zh_2500.js?v=20261105i';
                 sc.onload = function () { resolve(); };
@@ -10338,10 +10359,15 @@ window.activeSection = activeSection;
                 return;
             }
 
-            const initLang = detectInitialLanguage();
-            if (initLang === 'zh') {
-                currentLang = 'zh';
-                window.currentLang = 'zh';
+            if (window.__pendingLang) {
+                currentLang = window.__pendingLang;
+                window.currentLang = window.__pendingLang;
+            } else {
+                const initLang = detectInitialLanguage();
+                if (initLang === 'zh') {
+                    currentLang = 'zh';
+                    window.currentLang = 'zh';
+                }
             }
 
             window.__skipLandingVideo = false;

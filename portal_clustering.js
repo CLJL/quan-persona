@@ -688,22 +688,13 @@
                 labels = new Array(inliers.length).fill(0);
                 centroids = [new Array(vectors[0].length).fill(0)];
             } else {
-                // Wire in autoDiscoverK: compute and store silhouette-optimal K diagnostic
-                if (inlierStandardized.length >= 6 && inlierStandardized.length <= CLUSTER_FIT_SAMPLE) {
-                    const autoK = autoDiscoverK(inlierStandardized, 3, 8);
-                    window.__autoDiscoveredClusters = autoK;
-                    if (autoK) {
-                        console.info(`[Dynamic Classification] Silhouette-optimal K=${autoK.k} (score: ${autoK.score.toFixed(3)})`);
-                    }
-                }
-
                 let result;
                 window.__clusterSampleNote = null;
                 if (inlierStandardized.length > CLUSTER_FIT_SAMPLE) {
                     // Large upload: fit K-means on a seeded sample, then assign everyone to the nearest centroid.
                     const idx = [...Array(inlierStandardized.length).keys()];
                     for (let i = idx.length - 1; i > 0; i--) { const j = Math.floor(seededRandom() * (i + 1)); [idx[i], idx[j]] = [idx[j], idx[i]]; }
-                    const fit = kmeansBestOf(idx.slice(0, CLUSTER_FIT_SAMPLE).map(i => inlierStandardized[i]), k, 12);
+                    const fit = kmeansBestOf(idx.slice(0, CLUSTER_FIT_SAMPLE).map(i => inlierStandardized[i]), k, 10);
                     const cents = fit.centroids;
                     result = {
                         centroids: cents,
@@ -712,7 +703,7 @@
                     window.__clusterSampleNote = { fit: CLUSTER_FIT_SAMPLE, total: list.length };
                     console.info(`[Dynamic Classification] ${inlierStandardized.length} inliers: K-means fitted on a ${CLUSTER_FIT_SAMPLE}-respondent sample, all respondents assigned to nearest centroid.`);
                 } else {
-                    result = kmeansBestOf(inlierStandardized, k, 25);
+                    result = kmeansBestOf(inlierStandardized, k, inlierStandardized.length >= 500 ? 10 : 25);
                 }
                 labels = result.assignments;
                 centroids = result.centroids;
@@ -897,29 +888,38 @@
             }
 
             const profiles = window.__dynamicClusterProfiles || [];
-            const clusters = profiles.map((p, idx) => {
-                const members = parsedData.filter(m => m.archetype === p.key);
-                const sums = new Array(rawMatrix[0].length).fill(0);
-                
-                members.forEach(m => {
-                    const agentIdx = parsedData.indexOf(m);
-                    if (agentIdx !== -1) {
-                        const v = rawMatrix[agentIdx];
-                        v.forEach((val, d) => { sums[d] += val; });
+            // Linear O(N) grouping by cluster key
+            const clusterMembersMap = {};
+            const clusterSumsMap = {};
+            const clusterArchetypesMap = {};
+            profiles.forEach(p => {
+                clusterMembersMap[p.key] = [];
+                clusterSumsMap[p.key] = new Float64Array(rawMatrix[0] ? rawMatrix[0].length : 0);
+                clusterArchetypesMap[p.key] = {};
+            });
+            for (let i = 0; i < parsedData.length; i++) {
+                const m = parsedData[i];
+                const key = m.archetype;
+                if (clusterMembersMap[key]) {
+                    clusterMembersMap[key].push(m);
+                    const v = rawMatrix[i];
+                    if (v) {
+                        const sums = clusterSumsMap[key];
+                        for (let d = 0; d < v.length; d++) sums[d] += v[d];
                     }
-                });
-                
-                const n = members.length || 1;
-                const avg = sums.map(s => s / n);
-                
-                const archetypeCounts = {};
-                members.forEach(m => {
                     const a = m.researchArchetype || 'unknown';
-                    archetypeCounts[a] = (archetypeCounts[a] || 0) + 1;
-                });
+                    clusterArchetypesMap[key][a] = (clusterArchetypesMap[key][a] || 0) + 1;
+                }
+            }
+
+            const clusters = profiles.map(p => {
+                const members = clusterMembersMap[p.key] || [];
+                const n = members.length || 1;
+                const sums = clusterSumsMap[p.key] || [];
+                const avg = Array.from(sums, s => s / n);
+                const archetypeCounts = clusterArchetypesMap[p.key] || {};
                 const dominant = Object.entries(archetypeCounts).sort((a, b) => b[1] - a[1])[0];
                 const dominantArchetype = dominant ? dominant[0] : 'explorer';
-                
                 return {
                     id: p.id,
                     key: p.key,

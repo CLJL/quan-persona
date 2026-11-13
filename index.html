@@ -118,9 +118,9 @@
     <!-- Offline Core Libraries & Deferred Application Modules (sample data loads asynchronously on demand) -->
     <script src="chart.min.js" defer></script>
     <script src="journey_schemas_modular.js?v=20261105i" defer></script>
-    <script src="portal_clustering.js?v=20261112c" defer></script>
+    <script src="portal_clustering.js?v=20261113b" defer></script>
     <script src="portal-csv.js?v=20261112a" defer></script>
-    <script src="portal-app.js?v=20261113a" defer></script>
+    <script src="portal-app.js?v=20261113b" defer></script>
     <script src="portal-start.js?v=20261112a" defer></script>
 </head>
 <body>
@@ -830,11 +830,14 @@
             } catch (e) {}
             try {
                 var dataScript = (lang === 'zh') ? 'survey_data_zh_2500.js?v=20261105i' : 'survey_data_2500.js?v=20261105i';
-                var pl = document.createElement('link');
-                pl.rel = 'preload';
-                pl.as = 'script';
-                pl.href = dataScript;
-                document.head.appendChild(pl);
+                var scriptId = (lang === 'zh') ? 'survey-data-zh-script' : 'survey-data-en-script';
+                if (!document.getElementById(scriptId)) {
+                    var sc = document.createElement('script');
+                    sc.id = scriptId;
+                    sc.src = dataScript;
+                    sc.async = true;
+                    document.head.appendChild(sc);
+                }
             } catch (e) {}
             var skip = false; try { skip = localStorage.getItem('quan_persona_dont_show_video') === 'true'; } catch (e) {}
             if (g) {
@@ -922,6 +925,16 @@
         } else {
             var initLang = guess();
             window.__qpSetVideo(initLang);
+            try {
+                var earlyScriptId = (initLang === 'zh') ? 'survey-data-zh-script' : 'survey-data-en-script';
+                if (!document.getElementById(earlyScriptId)) {
+                    var sc = document.createElement('script');
+                    sc.id = earlyScriptId;
+                    sc.src = (initLang === 'zh') ? 'survey_data_zh_2500.js?v=20261105i' : 'survey_data_2500.js?v=20261105i';
+                    sc.async = true;
+                    document.head.appendChild(sc);
+                }
+            } catch (e) {}
         }
 
         function spin(p) {
