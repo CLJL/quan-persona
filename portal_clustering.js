@@ -632,7 +632,7 @@
             if (!eb.passed && !window.__allowExploratoryClustering) {
                 list.forEach(agent => { agent.archetype = 'c0'; agent._dynamicClusterId = 0; });
                 window.__dynamicClusterProfiles = [{
-                    id: 0, key: 'c0', label: 'All Respondents (Single Cohort - Evidence Guard)', color: CLUSTER_COLORS[0],
+                    id: 0, ordinal: 0, key: 'c0', label: 'All Respondents (Single Cohort - Evidence Guard)', color: CLUSTER_COLORS[0],
                     count: list.length, topFeatures: [], centroidRaw: null
                 }];
                 window.__evidenceBasedBlocked = true;
@@ -645,7 +645,7 @@
             if (list.length < 10) {
                 list.forEach(agent => { agent.archetype = 'c0'; agent._dynamicClusterId = 0; });
                 window.__dynamicClusterProfiles = [{
-                    id: 0, key: 'c0', label: 'All Respondents', color: CLUSTER_COLORS[0],
+                    id: 0, ordinal: 0, key: 'c0', label: 'All Respondents', color: CLUSTER_COLORS[0],
                     count: list.length, topFeatures: [], centroidRaw: null
                 }];
                 console.warn(`[Exploratory Mode] Only ${list.length} respondents -- below absolute computational floor (10), grouped as a single cohort.`);

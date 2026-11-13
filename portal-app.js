@@ -1,24 +1,40 @@
 
         // Asynchronously load language-specific survey dataset on demand without blocking landing or video
         function loadEnglishDataAsync() {
-            if (typeof PRE_LOADED_DATA !== 'undefined' && PRE_LOADED_DATA.length > 0) return Promise.resolve();
+            var data = (typeof PRE_LOADED_DATA !== 'undefined' && PRE_LOADED_DATA) || (typeof window !== 'undefined' && window.PRE_LOADED_DATA);
+            if (data && data.length > 0) {
+                window.__enDataLoaded = true;
+                return Promise.resolve();
+            }
             if (window.__enDataPromise) return window.__enDataPromise;
             window.__enDataPromise = new Promise(function (resolve) {
-                if (typeof PRE_LOADED_DATA !== 'undefined' && PRE_LOADED_DATA.length > 0) {
-                    window.__enDataLoaded = true;
-                    resolve();
-                    return;
+                function checkDone() {
+                    var d = (typeof PRE_LOADED_DATA !== 'undefined' && PRE_LOADED_DATA) || (typeof window !== 'undefined' && window.PRE_LOADED_DATA);
+                    if (d && d.length > 0) {
+                        window.__enDataLoaded = true;
+                        resolve();
+                        return true;
+                    }
+                    return false;
                 }
-                const existing = document.querySelector('script[src*="survey_data_2500."]');
+                if (checkDone()) return;
+                
+                // Continuous poll until data is evaluated in scope
+                var poll = setInterval(function () {
+                    if (checkDone()) clearInterval(poll);
+                }, 50);
+
+                var existing = document.querySelector('script[src*="survey_data_2500."]');
                 if (existing) {
-                    existing.addEventListener('load', function () { window.__enDataLoaded = true; resolve(); });
-                    existing.addEventListener('error', function (e) { console.error('Failed to load EN survey data', e); resolve(); });
+                    existing.addEventListener('load', function () { setTimeout(checkDone, 10); });
                     return;
                 }
-                const sc = document.createElement('script');
-                sc.src = 'survey_data_2500.js?v=20261105i';
-                sc.onload = function () { window.__enDataLoaded = true; resolve(); };
-                sc.onerror = function (e) { console.error('Failed to load EN survey data', e); resolve(); };
+                var sc = document.createElement('script');
+                sc.id = 'survey-data-en-script';
+                sc.src = 'survey_data_2500.js?v=20261113c';
+                sc.async = true;
+                sc.onload = function () { setTimeout(checkDone, 10); };
+                sc.onerror = function (e) { console.error('Failed to load EN survey data', e); };
                 document.head.appendChild(sc);
             });
             return window.__enDataPromise;
@@ -26,23 +42,40 @@
         window.loadEnglishDataAsync = loadEnglishDataAsync;
 
         function loadChineseDataAsync() {
-            if (typeof PRE_LOADED_DATA_ZH !== 'undefined' && PRE_LOADED_DATA_ZH.length > 0) return Promise.resolve();
+            var data = (typeof PRE_LOADED_DATA_ZH !== 'undefined' && PRE_LOADED_DATA_ZH) || (typeof window !== 'undefined' && window.PRE_LOADED_DATA_ZH);
+            if (data && data.length > 0) {
+                window.__zhDataLoaded = true;
+                return Promise.resolve();
+            }
             if (window.__zhDataPromise) return window.__zhDataPromise;
             window.__zhDataPromise = new Promise(function (resolve) {
-                if (typeof PRE_LOADED_DATA_ZH !== 'undefined' && PRE_LOADED_DATA_ZH.length > 0) {
-                    resolve();
-                    return;
+                function checkDone() {
+                    var d = (typeof PRE_LOADED_DATA_ZH !== 'undefined' && PRE_LOADED_DATA_ZH) || (typeof window !== 'undefined' && window.PRE_LOADED_DATA_ZH);
+                    if (d && d.length > 0) {
+                        window.__zhDataLoaded = true;
+                        resolve();
+                        return true;
+                    }
+                    return false;
                 }
-                const existing = document.querySelector('script[src*="survey_data_zh_2500."]');
+                if (checkDone()) return;
+
+                // Continuous poll until data is evaluated in scope
+                var poll = setInterval(function () {
+                    if (checkDone()) clearInterval(poll);
+                }, 50);
+
+                var existing = document.querySelector('script[src*="survey_data_zh_2500."]');
                 if (existing) {
-                    existing.addEventListener('load', function () { resolve(); });
-                    existing.addEventListener('error', function (e) { console.error('Failed to load ZH survey data', e); resolve(); });
+                    existing.addEventListener('load', function () { setTimeout(checkDone, 10); });
                     return;
                 }
-                const sc = document.createElement('script');
-                sc.src = 'survey_data_zh_2500.js?v=20261105i';
-                sc.onload = function () { resolve(); };
-                sc.onerror = function (e) { console.error('Failed to load ZH survey data', e); resolve(); };
+                var sc = document.createElement('script');
+                sc.id = 'survey-data-zh-script';
+                sc.src = 'survey_data_zh_2500.js?v=20261113c';
+                sc.async = true;
+                sc.onload = function () { setTimeout(checkDone, 10); };
+                sc.onerror = function (e) { console.error('Failed to load ZH survey data', e); };
                 document.head.appendChild(sc);
             });
             return window.__zhDataPromise;
@@ -1294,14 +1327,18 @@ window.activeSection = activeSection;
             }
             
             const profiles = window.__dynamicClusterProfiles || [];
-            const profile = profiles.find(p => p.key === key);
+            let profile = profiles.find(p => p.key === key);
+            if (!profile && profiles.length > 0) {
+                profile = profiles[0];
+            }
             if (!profile) {
-                // Nothing clustered yet -- minimal placeholder so renders don't crash.
-                return { name: isZh ? '未分類' : 'Unclassified', avatar: '❔', role: isZh ? '等待數據' : 'Awaiting data', desc: '', age: '-', exp: '-', customers: '-',
+                // Nothing clustered yet -- minimal placeholder so renders don't crash while data loads.
+                return { name: isZh ? '正在載入數據...' : 'Loading Data...', avatar: '⏳', role: isZh ? '準備中' : 'Preparing...', desc: '', age: '-', exp: '-', customers: '-',
                     skills: { device: 50, knowledge: 50, salesPitch: 50, customerRelations: 50, digitalTools: 50 },
                     work: [20, 20, 20, 20, 20], contradiction: '', needs: [], pains: [], journey: [], tools: '', quote: '', verbatim: [] };
             }
-            const featureText = profile.topFeatures.map(f => {
+            const ordinal = (typeof profile.ordinal === 'number') ? profile.ordinal : (typeof profile.id === 'number' ? profile.id : 0);
+            const featureText = (profile.topFeatures || []).map(f => {
                 if (isZh) {
                     const dir = (f.direction === 'High' || f.direction === '高') ? '偏高' : '偏低';
                     return `${f.label}${dir}`;
@@ -1315,10 +1352,10 @@ window.activeSection = activeSection;
                 'assets/li_xie_gang.jpg',
                 'assets/hao_ren_han.jpg'
             ];
-            const assignedPhoto = photoList[profile.ordinal % photoList.length];
+            const assignedPhoto = photoList[ordinal % photoList.length];
 
-            const override = manualOverrides[key];
-            const defaultName = isZh ? `分群 ${profile.ordinal + 1}` : `Cluster ${profile.ordinal + 1}`;
+            const override = manualOverrides[key] || manualOverrides[profile.key];
+            const defaultName = isZh ? `分群 ${ordinal + 1}` : `Cluster ${ordinal + 1}`;
             const displayName = (override && override.name) ? override.name : defaultName;
             const clusterDesc = isZh 
                 ? `${profile.label} (n=${profile.count}) — 點擊以修改客群描述`
@@ -10012,7 +10049,7 @@ window.activeSection = activeSection;
             }
 
             // If platform data is already warm and initialized, transition immediately without loading overlay
-            if (window.__platformDataInitialized) {
+            if (window.__platformDataInitialized && parsedData && parsedData.length >= 100) {
                 if (typeof switchMainSection === 'function') {
                     switchMainSection('personas');
                 }
@@ -10026,9 +10063,11 @@ window.activeSection = activeSection;
 
             // Fallback: If data is still loading
             const isZh = (typeof currentLang !== 'undefined' && currentLang === 'zh') || (typeof detectInitialLanguage === 'function' && detectInitialLanguage() === 'zh');
-            const isDataLoaded = isZh ? (typeof PRE_LOADED_DATA_ZH !== 'undefined' && PRE_LOADED_DATA_ZH.length > 0)
-                                      : (typeof PRE_LOADED_DATA !== 'undefined' && PRE_LOADED_DATA.length > 0);
-            const needsLoading = !isDataLoaded || !window.__platformDataInitialized;
+            const dataCandidate = isZh
+                ? ((typeof PRE_LOADED_DATA_ZH !== 'undefined' && PRE_LOADED_DATA_ZH) || (typeof window !== 'undefined' && window.PRE_LOADED_DATA_ZH))
+                : ((typeof PRE_LOADED_DATA !== 'undefined' && PRE_LOADED_DATA) || (typeof window !== 'undefined' && window.PRE_LOADED_DATA));
+            const isDataLoaded = !!(dataCandidate && dataCandidate.length > 0);
+            const needsLoading = !isDataLoaded || !window.__platformDataInitialized || !parsedData || parsedData.length < 100;
 
             if (needsLoading) {
                 const title = isZh ? '正在載入問卷數據...' : 'Loading Survey Data...';
@@ -10128,9 +10167,6 @@ window.activeSection = activeSection;
 
         // Initialize Platform Data & Views on demand
         function initPlatformData() {
-            if (window.__platformDataInitialized) return;
-            window.__platformDataInitialized = true;
-
             // Respect initial detected language or existing choice
             const initialDetected = detectInitialLanguage();
             if (initialDetected === 'zh' || currentLang === 'zh') {
@@ -10143,22 +10179,35 @@ window.activeSection = activeSection;
             if (typeof updateClusterFeatures === 'function') updateClusterFeatures();
 
             const isZh = (currentLang === 'zh');
-            if (isZh && typeof PRE_LOADED_DATA_ZH !== 'undefined' && PRE_LOADED_DATA_ZH.length > 0) {
-                parsedData = PRE_LOADED_DATA_ZH;
-            } else if (!isZh && typeof PRE_LOADED_DATA !== 'undefined' && PRE_LOADED_DATA.length > 0) {
-                parsedData = PRE_LOADED_DATA;
-            } else if (typeof PRE_LOADED_DATA !== 'undefined' && PRE_LOADED_DATA.length > 0) {
-                parsedData = PRE_LOADED_DATA;
-            } else if (isZh && typeof PRE_LOADED_DATA_ZH !== 'undefined' && PRE_LOADED_DATA_ZH.length > 0) {
-                parsedData = PRE_LOADED_DATA_ZH;
-            } else {
-                loadDefaultMockData();
+            const dataCandidate = isZh 
+                ? ((typeof PRE_LOADED_DATA_ZH !== 'undefined' && PRE_LOADED_DATA_ZH) || (typeof window !== 'undefined' && window.PRE_LOADED_DATA_ZH))
+                : ((typeof PRE_LOADED_DATA !== 'undefined' && PRE_LOADED_DATA) || (typeof window !== 'undefined' && window.PRE_LOADED_DATA));
+            
+            const fallbackCandidate = isZh
+                ? ((typeof PRE_LOADED_DATA !== 'undefined' && PRE_LOADED_DATA) || (typeof window !== 'undefined' && window.PRE_LOADED_DATA))
+                : ((typeof PRE_LOADED_DATA_ZH !== 'undefined' && PRE_LOADED_DATA_ZH) || (typeof window !== 'undefined' && window.PRE_LOADED_DATA_ZH));
+
+            const activeSource = (dataCandidate && dataCandidate.length > 0) ? dataCandidate : ((fallbackCandidate && fallbackCandidate.length > 0) ? fallbackCandidate : null);
+
+            // CRITICAL: If dataset is still in-flight, do NOT commit platformDataInitialized or fall back to broken mock data!
+            if (!activeSource) {
+                whenDataReady(function () {
+                    initPlatformData();
+                });
+                return;
             }
-            if (parsedData && parsedData.length > 0) {
-                assignDynamicArchetypes(parsedData);
-                renderArchetypeTabs();
-                runClusterDiscovery({ recluster: false, runKCheck: false });
+
+            if (window.__platformDataInitialized && parsedData && parsedData.length >= 100) return;
+            window.__platformDataInitialized = true;
+
+            parsedData = activeSource;
+            assignDynamicArchetypes(parsedData);
+            const profiles = window.__dynamicClusterProfiles || [];
+            if (profiles.length > 0 && (!activePersona || activePersona === 'all' || !profiles.some(p => p.key === activePersona))) {
+                activePersona = profiles[0].key;
             }
+            renderArchetypeTabs();
+            runClusterDiscovery({ recluster: false, runKCheck: false });
             updateAgentDropdown();
 
             const urlParams = new URLSearchParams(window.location.search);

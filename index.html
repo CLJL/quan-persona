@@ -118,9 +118,9 @@
     <!-- Offline Core Libraries & Deferred Application Modules (sample data loads asynchronously on demand) -->
     <script src="chart.min.js" defer></script>
     <script src="journey_schemas_modular.js?v=20261105i" defer></script>
-    <script src="portal_clustering.js?v=20261113b" defer></script>
+    <script src="portal_clustering.js?v=20261113c" defer></script>
     <script src="portal-csv.js?v=20261112a" defer></script>
-    <script src="portal-app.js?v=20261113b" defer></script>
+    <script src="portal-app.js?v=20261113c" defer></script>
     <script src="portal-start.js?v=20261112a" defer></script>
 </head>
 <body>
@@ -829,7 +829,7 @@
                 localStorage.setItem('portal_lang', lang);
             } catch (e) {}
             try {
-                var dataScript = (lang === 'zh') ? 'survey_data_zh_2500.js?v=20261105i' : 'survey_data_2500.js?v=20261105i';
+                var dataScript = (lang === 'zh') ? 'survey_data_zh_2500.js?v=20261113c' : 'survey_data_2500.js?v=20261113c';
                 var scriptId = (lang === 'zh') ? 'survey-data-zh-script' : 'survey-data-en-script';
                 if (!document.getElementById(scriptId)) {
                     var sc = document.createElement('script');
@@ -930,7 +930,7 @@
                 if (!document.getElementById(earlyScriptId)) {
                     var sc = document.createElement('script');
                     sc.id = earlyScriptId;
-                    sc.src = (initLang === 'zh') ? 'survey_data_zh_2500.js?v=20261105i' : 'survey_data_2500.js?v=20261105i';
+                    sc.src = (initLang === 'zh') ? 'survey_data_zh_2500.js?v=20261113c' : 'survey_data_2500.js?v=20261113c';
                     sc.async = true;
                     document.head.appendChild(sc);
                 }
