@@ -8162,7 +8162,7 @@ window.activeSection = activeSection;
             if (window.__allowExploratoryClustering && eb && !eb.passed) {
                 badgeHtml = `<span style="display:inline-flex; align-items:center; margin-left:8px; padding:3px 8px; border-radius:12px; background:rgba(245, 158, 11, 0.15); border:1px solid rgba(245, 158, 11, 0.4); color:#fbbf24; font-size:11px; font-weight:700;">⚠️ ${isZh ? '探索模式（未經驗證）' : 'Exploratory (Unvalidated)'}</span>`;
             } else if (window.__evidenceBasedBlocked) {
-                badgeHtml = `<span style="display:inline-flex; align-items:center; margin-left:8px; padding:3px 8px; border-radius:12px; background:rgba(239, 68, 68, 0.12); border:1px solid rgba(239, 68, 68, 0.35); color:#f87171; font-size:11px; font-weight:700;">🛡️ ${isZh ? '實證防護（單一人群）' : 'Evidence Guard (Single Cohort)'}</span>`;
+                badgeHtml = `<button type="button" onclick="toggleExploratoryMode(true)" title="${isZh ? '樣本數低於實證門檻（N<100），點擊可解鎖探索模式執行雛形分群' : 'Sample size under empirical threshold (N<100). Click to unlock Exploratory Mode for prototype clustering'}" style="cursor:pointer; display:inline-flex; align-items:center; gap:4px; margin-left:8px; padding:3px 10px; border-radius:12px; background:rgba(239, 68, 68, 0.15); border:1px solid rgba(239, 68, 68, 0.45); color:#f87171; font-size:11px; font-weight:700; transition:all 0.2s;">🛡️ ${isZh ? '實證防護（單一人群）· 點此解鎖探索分群' : 'Evidence Guard (Single Cohort) · Click to Unlock'}</button>`;
             }
             container.innerHTML = tabsHtml + `<button class="capsule-tab all-tab${allActive ? ' active' : ''}" data-key="all" style="display: none;" onclick="switchArchetype('all')"><span class="dot"></span>All</button>` + badgeHtml;
 

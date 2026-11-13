@@ -1494,11 +1494,18 @@
                 const isZh = (typeof currentLang !== 'undefined' && currentLang === 'zh');
                 const isRestore = !!(opts && opts.restore);
                 if (!isRestore) saveUploadedCsv(data, userMapping);
-                const successMsg = isRestore
-                    ? (isZh ? `已載入您上次儲存的問卷資料（${list.length} 筆）。` : `Loaded your saved survey data (${list.length} responses).`)
-                    : (isZh
+                let successMsg;
+                if (isRestore) {
+                    successMsg = isZh ? `已載入您上次儲存的問卷資料（${list.length} 筆）。` : `Loaded your saved survey data (${list.length} responses).`;
+                } else if (window.__evidenceBasedBlocked) {
+                    successMsg = isZh
+                        ? `✓ 成功解析並匯入 ${list.length} 筆問卷數據。因樣本數未達統計門檻（N<100），實證防護已暫停多群分群並以單一人群呈現。如欲強行分群請點擊分頁上的「解鎖探索分群」。`
+                        : `✓ Successfully imported ${list.length} survey responses. Because sample size is under the empirical threshold (N<100), Evidence Guard has grouped all respondents into a single cohort. Click the badge to unlock Exploratory Mode.`;
+                } else {
+                    successMsg = isZh
                         ? `✓ 成功解析並匯入 ${list.length} 筆問卷數據，AI 客群分群與歷程地圖已即時更新！`
-                        : `✓ Successfully parsed and imported ${list.length} survey responses, AI clusters & journeys updated!`);
+                        : `✓ Successfully parsed and imported ${list.length} survey responses, AI clusters & journeys updated!`;
+                }
                 if (typeof showPlatformNotification === 'function') {
                     showPlatformNotification(successMsg, true);
                 } else {

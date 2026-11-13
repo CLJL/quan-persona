@@ -607,6 +607,9 @@
             if (typeof runClusterDiscovery === 'function') {
                 runClusterDiscovery({ recluster: true, runKCheck: true });
             }
+            if (typeof renderAll === 'function') {
+                renderAll();
+            }
         }
         window.toggleExploratoryMode = toggleExploratoryMode;
 
