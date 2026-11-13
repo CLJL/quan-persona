@@ -118,9 +118,9 @@
     <!-- Offline Core Libraries & Deferred Application Modules (sample data loads asynchronously on demand) -->
     <script src="chart.min.js" defer></script>
     <script src="journey_schemas_modular.js?v=20261105i" defer></script>
-    <script src="portal_clustering.js?v=20261113a" defer></script>
+    <script src="portal_clustering.js?v=20261112c" defer></script>
     <script src="portal-csv.js?v=20261112a" defer></script>
-    <script src="portal-app.js?v=20261112c" defer></script>
+    <script src="portal-app.js?v=20261113a" defer></script>
     <script src="portal-start.js?v=20261112a" defer></script>
 </head>
 <body>
@@ -828,6 +828,14 @@
             try {
                 localStorage.setItem('portal_lang', lang);
             } catch (e) {}
+            try {
+                var dataScript = (lang === 'zh') ? 'survey_data_zh_2500.js?v=20261105i' : 'survey_data_2500.js?v=20261105i';
+                var pl = document.createElement('link');
+                pl.rel = 'preload';
+                pl.as = 'script';
+                pl.href = dataScript;
+                document.head.appendChild(pl);
+            } catch (e) {}
             var skip = false; try { skip = localStorage.getItem('quan_persona_dont_show_video') === 'true'; } catch (e) {}
             if (g) {
                 g.classList.remove('show');
@@ -951,6 +959,10 @@
         };
         // Closing the video before the app has loaded: remembered, and finished by the app as soon as it is ready
         window.closeCommercialModal = function () {
+            if (window.__videoAutoAdvanceTimer) {
+                clearTimeout(window.__videoAutoAdvanceTimer);
+                window.__videoAutoAdvanceTimer = null;
+            }
             window.__qpCloseWanted = true;
             var m = document.getElementById('commercial-video-modal'), p = document.getElementById('commercial-video-player');
             if (p) { try { p.pause(); } catch (e) {} }

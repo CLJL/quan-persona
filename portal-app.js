@@ -51,6 +51,10 @@
         }
 
         window.toggleDontShowVideo = function (checked) {
+            if (window.__videoAutoAdvanceTimer) {
+                clearTimeout(window.__videoAutoAdvanceTimer);
+                window.__videoAutoAdvanceTimer = null;
+            }
             try {
                 if (checked) {
                     localStorage.setItem('quan_persona_dont_show_video', 'true');
@@ -9897,23 +9901,22 @@ window.activeSection = activeSection;
                     }
                 }
 
-                // If already playing smoothly from early click, don't restart or disrupt
+                // If already playing smoothly from early click, ensure background data warmup is running and don't restart or disrupt
                 if (!player.paused && player.currentTime > 0) {
                     hidePlayBtn();
+                    triggerBackgroundWarmup();
                     return;
                 }
 
                 showCommercialLoading(player);
 
-                // Queue background dataset warmup only after video is happily playing
+                // Queue background dataset warmup as soon as video playback commences smoothly
                 player.addEventListener('playing', function onVideoPlayingOnce() {
                     player.removeEventListener('playing', onVideoPlayingOnce);
                     hidePlayBtn();
                     const sp = document.getElementById('commercial-loading');
                     if (sp) sp.style.display = 'none';
-                    setTimeout(function () {
-                        if (typeof whenDataReady === 'function') whenDataReady();
-                    }, 2500);
+                    setTimeout(triggerBackgroundWarmup, 350);
                 });
 
                 if (player.currentTime !== 0) {
@@ -9946,7 +9949,29 @@ window.activeSection = activeSection;
             }
         }
 
+        // Background dataset pre-warming helper to prepare dashboard & clustering during video playback
+        function triggerBackgroundWarmup() {
+            if (window.__platformDataInitialized || window.__warmingUpPlatform) return;
+            window.__warmingUpPlatform = true;
+            whenDataReady(function () {
+                if (!window.__platformDataInitialized && typeof initPlatformData === 'function') {
+                    if ('requestIdleCallback' in window) {
+                        window.requestIdleCallback(function () {
+                            initPlatformData();
+                        }, { timeout: 1500 });
+                    } else {
+                        setTimeout(initPlatformData, 50);
+                    }
+                }
+            });
+        }
+        window.triggerBackgroundWarmup = triggerBackgroundWarmup;
+
         function closeCommercialModal(immediate = false) {
+            if (window.__videoAutoAdvanceTimer) {
+                clearTimeout(window.__videoAutoAdvanceTimer);
+                window.__videoAutoAdvanceTimer = null;
+            }
             commercialHasOpened = true;
             hidePlayBtn();
             removeCommercialStartListeners();
@@ -9959,20 +9984,26 @@ window.activeSection = activeSection;
                 player.pause();
                 try { player.muted = true; } catch (e) {}
             }
-            if (immediate) {
-                modal.style.display = 'none';
-                document.body.style.overflow = '';
-            } else {
-                setTimeout(function () {
-                    modal.style.display = 'none';
-                    document.body.style.overflow = '';
-                }, 200);
-            }
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
             if (footer) {
                 footer.style.display = 'none';
             }
 
-            // Check if dataset is already loaded and platform is initialized
+            // If platform data is already warm and initialized, transition immediately without loading overlay
+            if (window.__platformDataInitialized) {
+                if (typeof switchMainSection === 'function') {
+                    switchMainSection('personas');
+                }
+                if (typeof window.openStartHereAuto === 'function') {
+                    window.openStartHereAuto();
+                } else if (typeof window.openStartHere === 'function') {
+                    window.openStartHere();
+                }
+                return;
+            }
+
+            // Fallback: If data is still loading
             const isZh = (typeof currentLang !== 'undefined' && currentLang === 'zh') || (typeof detectInitialLanguage === 'function' && detectInitialLanguage() === 'zh');
             const isDataLoaded = isZh ? (typeof PRE_LOADED_DATA_ZH !== 'undefined' && PRE_LOADED_DATA_ZH.length > 0)
                                       : (typeof PRE_LOADED_DATA !== 'undefined' && PRE_LOADED_DATA.length > 0);
@@ -10008,7 +10039,7 @@ window.activeSection = activeSection;
                     const overlay = document.getElementById('csv-loading-overlay');
                     if (overlay) {
                         overlay.style.opacity = '0';
-                        setTimeout(() => { if (overlay && overlay.style.opacity === '0') overlay.style.display = 'none'; }, 260);
+                        setTimeout(() => { if (overlay && overlay.style.opacity === '0') overlay.style.display = 'none'; }, 100);
                     }
                 }
 
@@ -10022,7 +10053,7 @@ window.activeSection = activeSection;
                     } else if (typeof window.openStartHere === 'function') {
                         window.openStartHere();
                     }
-                }, 250);
+                }, 100);
             });
         }
         window.openCommercialModal = openCommercialModal;
@@ -10050,7 +10081,26 @@ window.activeSection = activeSection;
                     }
                     if (footer) {
                         footer.style.display = 'flex';
+                        ['mouseenter', 'touchstart', 'focusin'].forEach(function (evt) {
+                            footer.addEventListener(evt, function () {
+                                if (window.__videoAutoAdvanceTimer) {
+                                    clearTimeout(window.__videoAutoAdvanceTimer);
+                                    window.__videoAutoAdvanceTimer = null;
+                                }
+                            }, { passive: true });
+                        });
                     }
+
+                    // Auto-advance smoothly after 1.8 seconds if user does not interact, eliminating freeze on finished frame
+                    if (window.__videoAutoAdvanceTimer) {
+                        clearTimeout(window.__videoAutoAdvanceTimer);
+                    }
+                    window.__videoAutoAdvanceTimer = setTimeout(function () {
+                        const modal = document.getElementById('commercial-video-modal');
+                        if (modal && (modal.classList.contains('active') || modal.style.display === 'flex')) {
+                            closeCommercialModal(true);
+                        }
+                    }, 1800);
                 });
             }
         })();
@@ -10186,6 +10236,9 @@ window.activeSection = activeSection;
             }
             document.body.style.overflow = '';
 
+            // Warm up survey dataset and cluster computation in background immediately
+            triggerBackgroundWarmup();
+
             let skip = false;
             try { skip = (localStorage.getItem('quan_persona_dont_show_video') === 'true'); } catch (e) {}
 
@@ -10193,6 +10246,17 @@ window.activeSection = activeSection;
                 openCommercialModal(true);
             } else {
                 // Video skipped or early closed: proceed directly to portal
+                if (window.__platformDataInitialized) {
+                    currentLang = lang; window.currentLang = lang;
+                    if (typeof applyLanguage === 'function') applyLanguage(lang);
+                    if (typeof switchMainSection === 'function') switchMainSection('personas');
+                    if (typeof window.openStartHereAuto === 'function') {
+                        window.openStartHereAuto();
+                    } else if (typeof window.openStartHere === 'function') {
+                        window.openStartHere();
+                    }
+                    return;
+                }
                 const isZh = (lang === 'zh');
                 const isDataLoaded = isZh ? (typeof PRE_LOADED_DATA_ZH !== 'undefined' && PRE_LOADED_DATA_ZH.length > 0)
                                           : (typeof PRE_LOADED_DATA !== 'undefined' && PRE_LOADED_DATA.length > 0);
@@ -10223,7 +10287,7 @@ window.activeSection = activeSection;
                         const overlay = document.getElementById('csv-loading-overlay');
                         if (overlay) {
                             overlay.style.opacity = '0';
-                            setTimeout(() => { if (overlay && overlay.style.opacity === '0') overlay.style.display = 'none'; }, 260);
+                            setTimeout(() => { if (overlay && overlay.style.opacity === '0') overlay.style.display = 'none'; }, 100);
                         }
                     }
                     currentLang = lang; window.currentLang = lang;
@@ -10235,7 +10299,7 @@ window.activeSection = activeSection;
                         } else if (typeof window.openStartHere === 'function') {
                             window.openStartHere();
                         }
-                    }, 250);
+                    }, 100);
                 });
             }
         };
@@ -10282,7 +10346,7 @@ window.activeSection = activeSection;
 
             window.__skipLandingVideo = false;
 
-            // If video has already been opened by early script or is currently open, keep it playing
+            // If video has already been opened by early script or is currently open, keep it playing and pre-warm data
             const modal = document.getElementById('commercial-video-modal');
             const isVideoActive = modal && (modal.classList.contains('active') || modal.style.display === 'flex');
             if (isVideoActive || window.__commercialHasOpened) {
@@ -10291,6 +10355,7 @@ window.activeSection = activeSection;
                     gate.classList.remove('show');
                     gate.style.display = 'none';
                 }
+                triggerBackgroundWarmup();
                 return;
             }
 
@@ -10309,6 +10374,7 @@ window.activeSection = activeSection;
                 if (modal && (modal.classList.contains('active') || modal.style.display === 'flex')) {
                     currentLang = pl;
                     window.currentLang = pl;
+                    triggerBackgroundWarmup();
                 } else {
                     window.chooseLandingLang(pl);
                 }
@@ -10323,11 +10389,9 @@ window.activeSection = activeSection;
 
         window.addEventListener('load', () => {
             const g = document.getElementById('lang-gate');
-            const v = document.getElementById('commercial-video-modal');
             const isGateVisible = g && (g.style.display !== 'none' && g.classList.contains('show'));
-            const isVideoActive = v && v.classList.contains('active');
-            if (!isGateVisible && !isVideoActive) {
-                whenDataReady(initPlatformData);
+            if (!isGateVisible) {
+                triggerBackgroundWarmup();
             }
         });
     (function () {
